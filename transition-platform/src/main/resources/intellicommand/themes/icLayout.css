@@ -1,0 +1,141 @@
+html, 
+body {
+	background:white;
+	font-family: 'Open Sans', Tahoma, Arial, Verdana, Helvetica, sans-serif;
+}
+h2 { 
+	font-size: 1.5em; 
+	line-height: 30px;
+	margin: .25em 0;
+}
+
+
+
+/* blue color */
+.ic-body-panel-header,
+.ic-modal-header {
+  background-color: #3399cc;
+}
+/* gray color */
+.ic-body-panel-button, .ic-header>*,.ic-footer>* {
+  background-color: #bfbfbf;
+}
+/* red color */
+.ic-header a:hover,.ic-footer a:hover, a.active {
+  background: #d90000;
+}
+
+.no-space {
+  padding: 3px;
+  margin: 0;
+}
+.no-no-space {
+  padding: 0;
+  margin: 0;
+}
+
+.ic-sidebar {position:fixed;padding-top: 6px}
+
+/* Body specific */
+
+@media ( min-width : 992px) {
+	.modal-xl {
+		width: 80%;
+	}
+}
+.ic-modal-header {
+	border-bottom: 2px solid black;
+	font-size: 1.8em;
+	color:white;
+}
+
+.ic-body-panel-header {
+  color:white;
+  margin: 0;
+  border: 1px solid black;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 5px;
+  font-size: 1.2em;
+}
+.ic-body-panel-button {
+	color: black;
+	border-radius:5px;
+	border: 1px solid black;
+}
+.ic-body-panel-body {
+  padding: 10px;
+  border: 1px solid black;
+  overflow:auto;
+}
+/* End body specific */
+
+/* Header and footer shared */
+.ic-header,.ic-footer {
+	border-top: 10px solid white;
+	border-bottom: 10px solid white;
+	background-color: white;
+	color: black;
+	z-index: 5; /* keeps in front of main window */
+}
+
+.ic-header>*,.ic-footer>* {
+	margin: 0;
+	padding: 10px;
+	border-radius: 10px;
+	vertical-align: middle;
+	height: 100%;
+}
+
+.ic-header a,.ic-footer a {
+	display: inline-block; /* puts them side by side */
+	padding: 5px;
+	cursor: pointer;
+	color: black;
+	text-align: center;
+	text-decoration: underline;
+	border-radius: 10px;
+}
+
+.ic-header a:hover, .ic-footer a:hover, a.active{
+	color: white;
+}
+/* End header and footer shared */
+
+
+/* Header-specific */
+.ic-header {
+	top: 0;
+	position:fixed;
+}
+
+.ic-header-img-box {
+	margin-top:3px;
+	margin-bottom: 3px;
+	background-color: white;
+	border-radius: 10px;
+	display: table;
+	text-align: center;
+}
+
+.ic-header-img {
+	position: relative;
+	margin: auto;
+	padding: 5px;
+	max-height: 100px;
+	max-width: 100%;
+}
+
+.ic-header-data-box {
+	text-align: center;
+}
+/* End header-specific */
+
+/* Footer-specific */
+.ic-footer {
+	position: fixed;
+	bottom: 0;
+}
+/* End footer-specific */
+
+

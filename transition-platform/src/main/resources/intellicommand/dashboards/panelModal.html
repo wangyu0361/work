@@ -1,0 +1,14 @@
+<div class="modal-header ic-modal-header">
+	<div class="row">
+		<div class="col-sm-6">{{title}}</div>
+		<div class="col-sm-6" style="text-align:right">
+			<span ng-if="extras" header-dynamic="{{extras}}"></span>
+			<span><button class="ic-body-panel-button" title="Zoom Out" ng-click="ok()"><span class="glyphicon glyphicon-minus"/></button></span>
+		</div>
+	</div>
+</div>
+
+<div class="modal-body">
+{{customConfig}}
+	<div id="modalDirective" body-dynamic="{{content}}"></div>
+</div>

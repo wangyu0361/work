@@ -1,0 +1,81 @@
+<div ng-controller="loginPageCtrl">
+
+<div class="login_area">
+	<img class="login_logo" src="images/clientLogos/IntelliCommand_Square.png" />
+	<div class="login_form">
+		<form class="login" name="loginForm">
+			<input required type="text" class="login" id="userId" ng-model="user.name" placeholder="username">
+			<input required type="password" class="login" id="pwd" ng-model = "user.pwd" placeholder="password">
+			<input type="submit" class="login_btn" value="Log in to IntelliCommand" ng-click="login(user)">
+		</form>
+		<div id="invalid" class="login_invalid">ERROR: invalid user name or password. Please try again!</div>
+	</div>
+	
+	<div class="login_forgot" ng-click="showForgotCreds()">
+		<u>forget</u> user name or password?
+	</div>
+</div>
+
+<div class="login_footer" ng-click="showRequestAcct()">
+	Don't have an IntelliCommand account? <u>Request one</u> today!
+</div>
+
+<div id="forgotCreds" class="modalDialogHidden">
+	<form name="forgotCredsForm">
+		<div ng-click="closeModal('forgotCreds')" class="login-close">X</div>
+		<h2>Forgot Credentials</h2>
+		<p>Please enter your email address and directions for resetting
+			the account will be sent shortly</p>
+		<table width="100%">
+			<tr>
+				<td>Email:</td>
+				<td><input required type="email" class="login_modal" id="email"
+					placeholder="email"></td>
+			</tr>
+		</table>
+		<input type="submit" class="login_mdl_btn" value="Submit" ng-click="submitForgotCreds()"/>
+	</form>
+</div>
+
+<div id="requestAcct" class="modalDialogHidden">
+	<form name="requestAcctForm">
+		<div ng-click="closeModal('requestAcct')" class="login-close">X</div>
+		<h2>Request an Account</h2>
+		<p>Please fill out all information and submit the form. You will
+			be contacted within 5 business days regarding this account.</p>
+		<table width="100%">
+			<tr>
+				<td>Full Name:</td>
+				<td><input required type="text" class="login_modal" id="name"
+					placeholder="full name"></td>
+			</tr>
+			<tr>
+				<td>Email:</td>
+				<td><input required type="email" class="login_modal" id="email"
+					placeholder="email"></td>
+			</tr>
+			<tr>
+				<td>Phone #:</td>
+				<td><input required type="tel" class="login_modal" id="phone"
+					placeholder="phone number"></td>
+			</tr>
+			<tr>
+				<td>Position:</td>
+				<td><input required type="text" class="login_modal" id="title"
+					placeholder="title"></td>
+			</tr>
+			<tr>
+				<td>Company:</td>
+				<td><input required type="text" class="login_modal"
+					id="company" placeholder="company"></td>
+			</tr>
+			<tr>
+				<td>Campus:</td>
+				<td><input required type="text" class="login_modal"
+					id="facility" placeholder="campus"></td>
+			</tr>
+		</table>
+		<input type="submit" class="login_mdl_btn" value="Submit" ng-click="submitRequestAcct()"/>
+	</form>
+</div>
+</div>

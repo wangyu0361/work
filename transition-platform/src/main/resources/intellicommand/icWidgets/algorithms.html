@@ -1,0 +1,24 @@
+<div ng-controller="algorithmsCtrl">
+	<div ng-if="!hasOrg && inEditor"><h1>Please select viewing preferences from the properties menu.</h1></div>
+	<img ng-if="!hasOrg && !inEditor" src="images/loading.gif"></img>
+	<div ng-if="noData"><h1>There is no data to display for the most recent request</h1></div>
+	<!-- <div ng-if="hasOrg" class="btn btn-default" ng-click="openWorkOrderGrid()"><img src="/intellicommand/smallChart.png"></div> -->
+	<!-- <div ng-if="!inDashboard" class="btn btn-default" ng-click="openPageConfiguration()"><img src="/app/config.png"></div> -->
+	<div collapse=hideGraphs style="transition:0.5s">
+		<div  class="row-sm-6 row-md-6 row-lg-6 row-xl-6" ng-if="hasOrg">	
+			<div collapse="!drawChartNow">
+				<r>Client Name: {{config.clientName}}</r><br>
+				<r>Station Name: {{config.stationName}}</r><br>
+				<r>Asset: {{config.assetName}}</r><br>
+				<div  id="anomaly_type_barchart_{{dcName}}" ng-click="facilityView()"></div>
+			</div>
+		
+			<div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">	
+				 <div id="facility_type_rowchart_{{dcFacilityName}}" collapse="!showFacilityView" ng-click="assetView(); makeAnAssetChart()" ></div>
+				 <div id="asset_type_rowchart_{{dcAssetName}}" collapse="!showAssetView" ></div>
+			</div> 
+			
+		</div>
+	</div>
+	<div ng-if="gridView" style="width: 100%" ui-grid="gridOptions" external-scopes="onRowClick" ui-grid-auto-resize></div>
+</div>

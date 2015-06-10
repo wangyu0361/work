@@ -1,0 +1,116 @@
+<!--Angela's code; equipmentTickets.html-->
+<style>
+.impulse-div {
+	display: inline-block;
+	vertical-align: top;
+	padding: 0px;
+	padding-top: 5px;
+}
+.tickets-div {
+	margin-bottom: 15px;
+	padding: 0px;
+	background-color: #bfbfbf;
+	cursor:pointer;
+}
+.ticket-div {
+	display: inline-block;
+	vertical-align: top;
+	overflow: hidden;
+	padding: 10px;
+}
+#eventsBoxes {
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 2000px;
+}
+</style>
+
+<div ng-controller="equipmentTicketsCtrl" class="container-fluid" ng-switch on="view" id="eventsBoxes">
+	<div ng-switch-when="loaded">
+		<div class="row"><!-- Image of the asset type -->
+			<div class="col-sm-12 col-md-6 col-xl-4">
+				<img ng-src="images/assetTypes/{{asset.type}}.png" class="img-responsive" />
+
+				<!-- hide these buttons until pages are made that they can link to...
+				<a ng-href="#">Asset Configuration</a></br>
+				<a ng-href="#">Analytic Configuration</a>
+				-->
+			</div>
+
+			<!-- Details about the asset -->
+			<div class="col-sm-12 col-md-6 col-xl-4">
+				<h1>{{asset.name}}</h1>
+				<b>Asset Type: </b><span style="text-transform: uppercase">{{asset.type}}</span><br>
+				<b>Asset Location: </b>{{asset.orgFullName}}<br>{{asset.campusFullName}}<br>{{asset.location}}<br>
+			</div>
+
+			<!-- Overall asset impulse chart -->
+			<div ng-if="events.length>0" class="col-sm-12 col-md-12 col-xl-4 impulse-div">
+				<equipment-tickets-impulse-chart chart-data="events"
+					bar-color="config.chartColor" y-label="'# of Tickets'" />
+			</div>
+		</div>
+		
+		<center>
+			<h2 ng-if="events.length>0">Open Events: {{events.length}}</h2>
+		</center>
+
+		<!-- Actual boxes per ticket -->
+		<div class="row tickets-div" ng-repeat="event in events" ng-if="events.length>0" ng-click="setTicket(event.pciEventId)">
+			<center style="padding: 1px">
+				<h3>Event ID: {{event.pciEventId}}</h3>
+			</center>
+
+			<div class="col-sm-12 col-md-6 ticket-div">
+				<equipment-tickets-impulse-chart chart-data="[event]" bar-color="config.chartColor" y-label="'# of Updates'" />
+			</div>
+
+			<div class="col-sm-12 col-md-6 ticket-div">
+				<center>
+					<h5><b>Ticket Information</b></h5>
+				</center>
+				<table class="table" style="margin: 0px">
+					<tbody style="text-align: center">
+						<tr>
+							<td>Anomaly:</td>
+							<td>{{event.anomaly}}</td>
+						</tr>
+						<tr>
+							<td>First Instance:</td>
+							<td>{{event.createdTime}}</td>
+						</tr>
+						<tr>
+							<td>Most Recent Update:</td>
+							<td>{{event.updatedTime[event.updatedTime.length-1]}}</td>
+						<tr>
+							<td>Number of Occurrences:</td>
+							<td>{{event.updatedTime.length + 1}}</td>
+							<!-- add 1 since the creation time is an update -->
+						<tr>
+							<td>Waste:</td>
+							<td>$ {{event.waste | number: 0}}</td>
+						</tr>
+						<tr>
+							<td>Potential:</td>
+							<td>$ {{event.potentialSaving | number: 0}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- Show this if there are no tickets for the asset currently open -->
+		<div style="background-color: #bfbfbf" ng-if="events.length==0">
+			<i>There are currently no open events for {{asset.name}}</i>
+		</div>
+	</div>
+
+	<div ng-switch-when="failed">Please check your parameters and try
+		again. This station/asset combination was not found in the database or
+		the database failed to respond.</div>
+
+	<div ng-switch-default>
+		<!-- Default view is the loading spinner -->
+		<img ng-src="images/loading.gif" class="img-responsive" /></br>
+	</div>
+</div>

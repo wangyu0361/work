@@ -1,0 +1,112 @@
+<!--<div ng-controller="eventPageConfigCtrl">
+
+	<button class="btn btn-default" ng-click="openSettings()">
+		<img src="/intellicommand/config.png">
+	</button>
+</div>-->
+
+<script type="text/ng-template" id="eventPageModal.html">
+	<div class="modal-body">
+		
+		<div class=row collapse="pointsUsed.length == 0">
+			<my-calendar name="startDate" class="col-md-4 col-md-offset-1"></my-calendar>
+			<my-calendar name="endDate" class="col-md-4 col-md-offset-1"></my-calendar>
+		</div>
+
+	  	<div class=row collapse="pointsUsed.length == 0">
+			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2 col-xs-offset-3 col-sm-offset-3 col-md-offset-3 col-lg-offset-3 col-xl-offset-3">
+	  			<button type="button" class='btn btn-default' ng-click="showNewAxis()">New Axis</button>
+			</div>
+			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
+	  			<button type="button" class='btn btn-default' ng-click="showEditAxis()">Edit Axis</button>
+			</div>
+			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xl-2">
+	       		<button type="button" class='btn btn-default' ng-click="openPointSelect()">Change Points On Chart</button>
+			</div>
+  		</div>
+	  	<hr>
+	  	<div collapse="editCollapsed"><!-- start editCollapsed -->
+			<div class="btn-group" dropdown id="axisDropdown">
+	      		<button type="button" class="btn btn-primary dropdown-toggle">
+	        		Stored Axis <span class="caret"></span>
+	      		</button>
+	      
+	      		<ul class="dropdown-menu" role="menu">
+	        		<li ng-repeat="axis in storedAxis">
+	          			<a ng-click="populateSettings(axis)">{{axis.label}}</a>
+	        		</li>
+	       		</ul>
+	    	</div>
+			<br>
+		</div> 						<!-- end editCollapsed -->
+	  	
+	  	<div collapse="newCollapsed"> <!-- start new collapsed -->
+	    	<div class="btn-group" dropdown id="pointDropdown" ng-click="$event.stopPropagation()">
+	      		<button type="button" class="btn btn-primary dropdown-toggle">
+	        		Points On Axis <span class="caret"></span>
+	      		</button>
+	      
+	      		<ul class="dropdown-menu" role="menu">
+	        		<li ng-repeat="point in pointsUsed">
+	          			<input type="checkbox" id="axisPointList" value={{point.pointName}} placeholder="">
+	          			{{point.pointName}}
+	        		</li>
+	       		</ul>
+	    	</div>
+	    	<br>
+	    
+	    	<input ng-model="autoAxis" type=checkbox>Automatic Axis
+	    	<h3 collapse=autoAxis> Warning: Creating an axis without automatic scaling will disable zooming on the chart!!</h3>
+	
+			<div collapse="autoAxis">
+	        	<div class="col-md-4">Min Value <input type="number" ng-model="domainLow"></div>
+	        	<div class="col-md-4">Max Value <input type="number" ng-model="domainHigh"></div>  
+	        	<br>
+	    	</div>
+	    	
+	    	<br>
+	    	Label
+	    	<input ng-model="titleText" type="text">
+	    	<input ng-model="titleUnits" type=checkbox>Units
+	    	
+	    	
+	  	</div> 		<!-- end newCollapsed -->
+
+		<div collapse="newCollapsed || (!newCollapsed && !editCollapsed)">
+	    	<br>
+			<button type="button" class='btn btn-default' ng-click="addAxis()">Add New Axis</button>
+			<hr>
+		</div>
+			
+		<div collapse="editCollapsed">
+	    	<br>
+			<button type="button" class='btn btn-default' ng-click="addAxis()">Edit Selected Axis</button>
+			<button type="button" class='btn btn-default' ng-click="removeAxis()">Delete Axis</button>
+			<hr>
+		</div>
+	    				
+		<button class="btn btn-default" ng-click="ok()">OK</button>
+		<button class="btn btn-default" ng-click="cancel()">Cancel</button>
+	</div>
+
+</script>
+<script type="text/ng-template" id="pointAdd.html">
+	<div class="modal-body">
+		<h3><b>Points On Chart</b></h3>
+		<ul>
+			<li ng-repeat='point in currentPoints'>
+				{{point.pointName}}
+				<button type="button"class="btn btn-default" ng-click='removePoint(point)'>
+					<i class='glyphicon glyphicon-trash'></i>
+				</button>
+			</li>
+			
+		</ul>
+
+		<h3><b>Available Points</b></h3>
+		<div class="gridStyle" ui-grid="pointData" ui-grid-selection ui-grid-auto-resize></div>
+
+		<button ng-click=ok()>OK</button>
+		<button ng-click=cancel()>Cancel</button>
+	</div>
+</script>

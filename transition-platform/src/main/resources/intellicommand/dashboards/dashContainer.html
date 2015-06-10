@@ -1,0 +1,74 @@
+<style>
+
+.col-sm-1-2 {
+	width: 4%;
+}
+.col-sm-2-2 {
+	width: 95%;
+}
+.col-sm-1-2, .col-sm-2-2 {
+	float: left;
+	position: relative;
+	min-height: 1px;
+}
+@media (min-width: 100px) {.col-sm-1-2 {width: 100%;}.col-sm-2-2 {width: 100%;}}
+@media (min-width: 768px) {.col-sm-1-2 {width: 5%;}.col-sm-2-2 {width: 95%;}}
+@media (min-width: 1400px) {.col-sm-1-2 {width: 3%;}.col-sm-2-2 {width: 97%;}}
+</style>
+
+<header>
+  <div ng-controller="dashCtrl" class="ic-header col-xs-12 col-md-10 col-md-offset-1">
+    <div class="row">
+      <div class="col-xs-12 col-sm-4 col-sm-push-4 ic-header-data-box">
+        <div class="row">
+          <h2>{{pageTitle}}</h2>
+        </div>
+        <div class="row">
+          <a ui-sref=".home" ui-sref-active="active">Home</a>
+          <a ui-sref=".energy" ui-sref-active="active">Energy</a>
+          <a ui-sref=".equip" ui-sref-active="active">Equipment</a>
+          <a ui-sref=".wo1" ui-sref-active="active">Work Orders 1</a>
+          <a ui-sref=".wo2" ui-sref-active="active">Work Orders 2</a>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-4 col-sm-pull-4 ic-header-img-box">
+        <img class="ic-header-img" src="images/clientLogos/IntelliCommand.png" />
+      </div>
+
+      <div class="col-xs-12 col-sm-4 ic-header-img-box">
+        <img class="ic-header-img" ng-src="images/clientLogos/{{orgImg}}.png" />
+      </div>
+    </div>
+  </div>
+</header>
+
+<div ng-controller="dashCtrl" id="mainContent" class="col-xs-12 col-md-10 col-md-offset-1">
+  <div id="dashSidebar" class="ic-sidebar col-sm-1-2 no-space">
+    <div ui-view="selector"></div>
+  </div>
+
+  <div id="dashMain" class="col-sm-2-2 no-space">
+    <div ui-view></div>
+  </div>
+
+</div>
+
+<footer>
+  <div ng-controller="dashCtrl" class="ic-footer col-xs-12 col-md-10 col-md-offset-1">
+    <div class="row">
+      <div class="col-xs-12 col-sm-4">
+        Copyright © {{currentYear}} Pacific Controls. All Rights Reserved.
+      </div>
+      <div class="col-xs-12 col-sm-5" style="text-align: center">
+        Contact IntelliCommand:
+        <a href="tel:+18887487284">(888) 748-7284</a>
+        <a href="mailto:intellicommand@pacificcontrols.net">intellicommand@pacificcontrols.net</a>
+      </div>
+      <div class="col-xs-12 col-sm-3" id="footerCurrentTime" style="text-align: right">
+        {{updatedDateTime}}
+        <a nohref ng-click="logOut()">Log Out</a>
+      </div>
+    </div>
+  </div>
+</footer>

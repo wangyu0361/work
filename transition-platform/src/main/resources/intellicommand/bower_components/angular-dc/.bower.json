@@ -1,0 +1,27 @@
+{
+  "name": "angular-dc",
+  "main": "./dist/angular-dc.js",
+  "version": "0.0.6",
+  "dependencies": {
+    "angular": ">=1.2.0",
+    "lodash": ">=2.4.1",
+    "dcjs": "2.0.0-alpha.2",
+    "crossfilter": "~1.3.0"
+  },
+  "devDependencies": {
+    "angular-mocks": "latest"
+  },
+  "resolutions": {
+    "crossfilter": "~1.3.0"
+  },
+  "homepage": "https://github.com/TomNeyland/angular-dc",
+  "_release": "0.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.6",
+    "commit": "c50a053e9df41932af52d2778a66cdc517595725"
+  },
+  "_source": "git://github.com/TomNeyland/angular-dc.git",
+  "_target": "~0.0.4",
+  "_originalSource": "angular-dc"
+}

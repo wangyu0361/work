@@ -1,0 +1,36 @@
+<div ng-controller='equipmentCtrl'>
+<div ng-if="!hasOrg && inEditor"><h1>Please select viewing preferences from the properties menu.</h1></div>
+<!-- <img ng-show="!hasOrg && !inEditor" src="/intellicommand/ajax-loader2.gif"></img>  -->
+<div ng-if="noData"><h1>There is no data to display for the most recent request</h1></div>
+<!-- <div ng-if="hasOrg" class="btn btn-default" ng-click="openWorkOrderGrid()"><img src="/intellicommand/smallChart.png"></div> -->
+<!-- <div ng-if="!inDashboard" class="btn btn-default" ng-click="openPageConfiguration()"><img src="/intellicommand/config.png"></div> -->
+<!-- <div collapse="hideGraphs">
+<div class="row-sm-6 row-md-6 row-lg-6 row-xl-6">	
+	<div>
+		<div ng-show="hasOrg"><r>Equipment Overview: {{config.clientName}}</r><br></div>
+		<div  id="station_barchart_{{config.chartId}}" ng-click="showAssetView()" collapse="!hasOrg"></div>
+	</div>
+
+	<div  class="col-sm-3 col-md-3 col-lg-3 col-xl-3">	
+		 <div collapse="!showAssetChart" id="asset_barchart_{{config.chartId}}"></div>
+	</div> 
+	
+</div>
+</div> -->
+<div collapse="hideGraphs">
+<!-- <img ng-if="!hasOrg && !inEditor" src="/intellicommand/ajax-loader2.gif"></img> --> 
+<div class="row-sm-6 row-md-6 row-lg-6 row-xl-6">	
+	<div>
+		<div ng-show="hasOrg"><r>Client Name: {{config.clientName}}</r><br></div>
+		<div  id="station_barchart_{{config.chartId}}" ng-click="showAssetView()" ></div>
+	</div>
+
+	<div  class="col-sm-3 col-md-3 col-lg-3 col-xl-3">	
+		 <div collapse="!showAssetChart" id="asset_barchart_{{config.chartId}}"></div>
+	</div> 
+	
+</div>
+</div>
+<div ng-if="gridView" style="width: 100%" ui-grid="gridOptions" external-scopes="onRowClick" ui-grid-auto-resize></div>
+
+</div>
