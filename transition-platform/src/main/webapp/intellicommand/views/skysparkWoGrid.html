@@ -1,0 +1,8 @@
+<div id='skysparkGrid' style="height:1000px; width:100%; position:relative"></div>
+<script type="text/javascript">
+$.ajax("http://localhost/api/demo/ext/intellicommand/equipPoints?ref=1ce7c40e-4e42e63b&root=skysparkGrid",
+	{headers:{"Authorization":"Basic c3U6UENJZGV2b3BzKjEyMzQ1Njc4"}, complete: function(r){
+		$("#skysparkGrid").append(r.responseText)
+		$("#skysparkGrid").find("div").css( "position", "relative" ) 
+	}})
+</script>
