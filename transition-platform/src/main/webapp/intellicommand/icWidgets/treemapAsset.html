@@ -4,35 +4,40 @@
 	height: 300px;
 	background: white;
 }
-tspan	{
+
+tspan {
 	font-size: large;
 }
 
 /* rect {
 	stroke: #000000;
 } */
-rect.parent,
-.grandparent rect {
+rect.parent,.grandparent rect {
 	stroke-width: 1px;
 }
+
 .grandparent rect {
 	fill: #3399cc;
 }
+
 .grandparent:hover rect {
 	fill: #007a80;
 }
-.children rect.parent,
-.grandparent rect {
+
+.children rect.parent,.grandparent rect {
 	cursor: pointer;
 }
+
 .children rect.parent {
 	fill: #fff;
 	fill-opacity: .5;
 }
+
 .children:hover rect.child {
 	fill: #bbb;
 }
-.overlaidText	{
+
+.overlaidText {
 	font-size: 1.4em;
 	text-anchor: middle;
 	fill: white;
@@ -44,12 +49,12 @@ rect.parent,
 </style>
 
 <div resize ng-controller="treemapAssetCtrl">
-	<div class="container-fluid" style="background-color:whitefloat:left" >
+	<div class="container-fluid" style="background-color: whitefloat:left">
 
 		<body ng-app="treemapApp">
 			<div>
 				<p id="chart"></p>
-			</div>	
+			</div>
 		</body>
 	</div>
 </div>

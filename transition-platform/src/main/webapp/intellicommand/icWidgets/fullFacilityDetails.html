@@ -1,9 +1,9 @@
 <style>
 .orgViewTable {
 	width: 100%;
-	text-align:center;
-	
+	text-align: center;
 }
+
 .orgViewTable td {
 	border-bottom: 1px dashed #bfbfbf;
 	text-align: center;
@@ -14,26 +14,28 @@
 	border-bottom:0;
 }
 */
-
 .facilityDetsTable {
 	width: 100%;
-	text-align:center;
+	text-align: center;
 	border: 2px solid #bfbfbf;
 	margin-bottom: 10px;
 }
+
 .facilityDetsTable td {
 	border-left: 2px solid #bfbfbf;
 	border-bottom: 1px dashed #bfbfbf;
 	text-align: center;
 }
+
 .facilityImg {
 	display: block;
 	margin: 10px auto;
 	border: 2px solid black;
 	border-radius: 10px;
-	max-width:100%;
+	max-width: 100%;
 	max-height: 500px;
 }
+
 .smallFacilityImg {
 	display: block;
 	margin: 10px auto;
@@ -42,79 +44,160 @@
 	max-width: 200px;
 	max-height: 300px;
 }
+
 .orgImg {
-	display:block;
-	margin:10px auto;
+	display: block;
+	margin: 10px auto;
 	max-height: 200px;
 	max-width: 300px;
 }
 </style>
 
-<div ng-controller="fullFacilityDetailsCtrl" ng-switch on="view" class="container-fluid">
+<div ng-controller="fullFacilityDetailsCtrl" ng-switch on="view"
+	class="container-fluid">
 	<div ng-switch-when="loaded">
 		<div ng-if="viewType == 'facility'">
-			<div class="col-xs-12 col-sm-4 col-md-6"> <!-- facility or organization image -->
-				<img class="facilityImg img-responsive" ng-if="!isBlank(facilities[0].stationName)" ng-src="images/clientFacilityImages/MRL.png"/>
+			<div class="col-xs-12 col-sm-4 col-md-6">
+				<!-- facility or organization image -->
+				<img class="facilityImg img-responsive"
+					ng-if="!isBlank(facilities[0].stationName)"
+					ng-src="images/clientFacilityImages/MRL.png" />
 			</div>
-					
+
 			<div class="col-xs-12 col-sm-8 col-md-6">
-				<h2 style="text-align:center">{{facilities[0].facilityName}}</h2>
-			</div>		
-					
-			<div class="col-xs-12 col-sm-12 col-md-6"> <!-- facility details -->
+				<h2 style="text-align: center">{{facilities[0].facilityName}}</h2>
+			</div>
+
+			<div class="col-xs-12 col-sm-12 col-md-6">
+				<!-- facility details -->
 				<table class="facilityDetsTable">
-					<tr ng-if="!isBlank(facilities[0].liveDate)"><td>Go-Live Date:</td><td>{{facilities[0].liveDate}}</td></tr>
-					<tr ng-if="!isBlank(facilities[0].address)"><td>Location:</td><td>{{facilities[0].address}} <span ng-if="!isBlank(facilities[0].city)">{{facilities[0].city}}</span><span ng-if="!isBlank(facilities[0].state)">, {{facilities[0].state}}</span></td></tr>
-					<tr ng-if="!isBlank(facilities[0].buildingType)"><td>Facility Type:</td><td>{{facilities[0].buildingType}}</td></tr>
-					<tr ng-if="!isZero(facilities[0].keyAssets)"><td>Key Assets Monitored:</td><td>{{facilities[0].keyAssets}}</td></tr>
-					<tr ng-if="!isBlank(facilities[0].squareFootage)"><td>Square Footage:</td><td>{{facilities[0].squareFootage}}</td></tr>
+					<tr ng-if="!isBlank(facilities[0].liveDate)">
+						<td>Go-Live Date:</td>
+						<td>{{facilities[0].liveDate}}</td>
+					</tr>
+					<tr ng-if="!isBlank(facilities[0].address)">
+						<td>Location:</td>
+						<td>{{facilities[0].address}} <span
+							ng-if="!isBlank(facilities[0].city)">{{facilities[0].city}}</span><span
+							ng-if="!isBlank(facilities[0].state)">,
+								{{facilities[0].state}}</span></td>
+					</tr>
+					<tr ng-if="!isBlank(facilities[0].buildingType)">
+						<td>Facility Type:</td>
+						<td>{{facilities[0].buildingType}}</td>
+					</tr>
+					<tr ng-if="!isZero(facilities[0].keyAssets)">
+						<td>Key Assets Monitored:</td>
+						<td>{{facilities[0].keyAssets}}</td>
+					</tr>
+					<tr ng-if="!isBlank(facilities[0].squareFootage)">
+						<td>Square Footage:</td>
+						<td>{{facilities[0].squareFootage}}</td>
+					</tr>
 				</table>
 			</div>
-			
-			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6"> <!-- 5 day forecast -->
-				<h3 style="text-align:center; margin-top:30px; margin-bottom: 5px">5 Day Forecast</h3>
+
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+				<!-- 5 day forecast -->
+				<h3 style="text-align: center; margin-top: 30px; margin-bottom: 5px">5
+					Day Forecast</h3>
 				<table class="facilityDetsTable">
-					<tr><td width="20%" ng-repeat="day in weatherData"><h2>{{day["name"]}}</h2></td></tr>
-					<tr><td ng-repeat="day in weatherData"><img ng-src="images/weatherIcons/{{day['image']}}.png"></img></td></tr>
-					<tr><td ng-repeat="day in weatherData">
-						<p style="text-transform: capitalize">{{day["desc"]}}</p>
-						<p ng-if="day['rain'] >= 1">{{day["rain"] | number:0}}% Chance of Rain</p>
-						<p ng-if="day['snow'] >= 1">{{day["snow"] | number:0}}% Chance of Snow</p>
-						<p ng-if="day['clouds'] >= 1">{{day["clouds"] | number:0}}% Cloudy</p>
-					</td></tr>
-					<tr><td ng-repeat="day in weatherData">High: {{day["highTemp"] | number:0}}&deg F</td></tr>
-					<tr><td ng-repeat="day in weatherData">Low: {{day["lowTemp"] | number:0}}&deg F</td></tr>
+					<tr>
+						<td width="20%" ng-repeat="day in weatherData"><h2>{{day["name"]}}</h2></td>
+					</tr>
+					<tr>
+						<td ng-repeat="day in weatherData"><img
+							ng-src="images/weatherIcons/{{day['image']}}.png"></img></td>
+					</tr>
+					<tr>
+						<td ng-repeat="day in weatherData">
+							<p style="text-transform: capitalize">{{day["desc"]}}</p>
+							<p ng-if="day['rain'] >= 1">{{day["rain"] | number:0}}%
+								Chance of Rain</p>
+							<p ng-if="day['snow'] >= 1">{{day["snow"] | number:0}}%
+								Chance of Snow</p>
+							<p ng-if="day['clouds'] >= 1">{{day["clouds"] | number:0}}%
+								Cloudy</p>
+						</td>
+					</tr>
+					<tr>
+						<td ng-repeat="day in weatherData">High: {{day["highTemp"] |
+							number:0}}&deg F</td>
+					</tr>
+					<tr>
+						<td ng-repeat="day in weatherData">Low: {{day["lowTemp"] |
+							number:0}}&deg F</td>
+					</tr>
 				</table>
 			</div>
 		</div>
-	
+
 		<div ng-if="viewType == 'organization'">
 			<table class="orgViewTable">
 				<tr>
-					<td><img ng-src="images/clientLogos/{{facilities[0].organization}}.png" class="orgImg img-responsive"></img></td>
+					<td><img
+						ng-src="images/clientLogos/{{facilities[0].organization}}.png"
+						class="orgImg img-responsive"></img></td>
 					<td>
 						<!--<h1 style="text-align:center">Organization-Wide Summary</h1>-->
 						<table class="facilityDetsTable">
-							<tr><td>Number of Facilities Monitored</td><td>{{orgDets.facilitiesMonitored}}</td></tr>
-							<tr><td>Total Square Footage</td><td>{{orgDets.totalSqFt}}</td></tr>
-							<tr><td>Average Square Footage per Facility</td><td>{{orgDets.totalSqFt / orgDets.facilitiesMonitored}}</td></tr>
-							<tr><td>Total Key Assets Monitored</td><td>{{orgDets.totalAssets}}</td></tr>
-							<tr><td>Average Key Assets Monitored per Facility</td><td>{{orgDets.totalAssets / orgDets.facilitiesMonitored}}</td></tr>
-							<tr><td>Average Age of IntelliCommand at {{facilities[0].organization}}</td><td>{{orgDets.avgAge | number:2}} years</td></tr>
+							<tr>
+								<td>Number of Facilities Monitored</td>
+								<td>{{orgDets.facilitiesMonitored}}</td>
+							</tr>
+							<tr>
+								<td>Total Square Footage</td>
+								<td>{{orgDets.totalSqFt}}</td>
+							</tr>
+							<tr>
+								<td>Average Square Footage per Facility</td>
+								<td>{{orgDets.totalSqFt / orgDets.facilitiesMonitored}}</td>
+							</tr>
+							<tr>
+								<td>Total Key Assets Monitored</td>
+								<td>{{orgDets.totalAssets}}</td>
+							</tr>
+							<tr>
+								<td>Average Key Assets Monitored per Facility</td>
+								<td>{{orgDets.totalAssets / orgDets.facilitiesMonitored}}</td>
+							</tr>
+							<tr>
+								<td>Average Age of IntelliCommand at
+									{{facilities[0].organization}}</td>
+								<td>{{orgDets.avgAge | number:2}} years</td>
+							</tr>
 						</table>
 					</td>
 				</tr>
 
 				<tr ng-repeat="facility in facilities">
-					<td><img ng-src="images/clientFacilityImages/MRL.png" class="smallFacilityImg img-responsive"></img></td>
+					<td><img ng-src="images/clientFacilityImages/MRL.png"
+						class="smallFacilityImg img-responsive"></img></td>
 					<td>
-						<h2 style="text-align:center">{{facility.facilityName}}</h2>
+						<h2 style="text-align: center">{{facility.facilityName}}</h2>
 						<table class="facilityDetsTable">
-							<tr ng-if="!isBlank(facility.liveDate)"><td>Go-Live Date:</td><td>{{facility.liveDate}}</td></tr>
-							<tr ng-if="!isBlank(facility.address)"><td>Location:</td><td>{{facility.address}} <span ng-if="!isBlank(facility.city)">{{facility.city}}</span><span ng-if="!isBlank(facility.state)">, {{facility.state}}</span></td></tr>
-							<tr ng-if="!isBlank(facility.buildingType)"><td>Facility Type:</td><td>{{facility.buildingType}}</td></tr>
-							<tr ng-if="!isZero(facility.keyAssets)"><td>Key Assets Monitored:</td><td>{{facility.keyAssets}}</td></tr>
-							<tr ng-if="!isBlank(facility.squareFootage)"><td>Square Footage:</td><td>{{facility.squareFootage}}</td></tr>
+							<tr ng-if="!isBlank(facility.liveDate)">
+								<td>Go-Live Date:</td>
+								<td>{{facility.liveDate}}</td>
+							</tr>
+							<tr ng-if="!isBlank(facility.address)">
+								<td>Location:</td>
+								<td>{{facility.address}} <span
+									ng-if="!isBlank(facility.city)">{{facility.city}}</span><span
+									ng-if="!isBlank(facility.state)">, {{facility.state}}</span></td>
+							</tr>
+							<tr ng-if="!isBlank(facility.buildingType)">
+								<td>Facility Type:</td>
+								<td>{{facility.buildingType}}</td>
+							</tr>
+							<tr ng-if="!isZero(facility.keyAssets)">
+								<td>Key Assets Monitored:</td>
+								<td>{{facility.keyAssets}}</td>
+							</tr>
+							<tr ng-if="!isBlank(facility.squareFootage)">
+								<td>Square Footage:</td>
+								<td>{{facility.squareFootage}}</td>
+							</tr>
 						</table>
 					</td>
 				</tr>
@@ -122,11 +205,6 @@
 		</div>
 	</div>
 
-	<div ng-switch-when="failed">
-		Please check your parameters and try again. This organization/facility combination was not found in the database or the database failed to respond.
-	</div>
-	
-	<div ng-switch-default> <!-- Default view is the loading spinner -->
-		<img ng-src="images/loading.gif" class="img-responsive"/></br>
-	</div>
+	<div ng-switch-when="failed" view-failed></div>
+	<div ng-switch-default view-loading></div>
 </div>

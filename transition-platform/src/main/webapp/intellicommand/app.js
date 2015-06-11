@@ -23,6 +23,7 @@ angular.module('icDash', ['ui.router',
   'icDash.dashContainer',
   'icDash.panel',
   'icDash.loginPage',
+  'icDash.viewIcons',
   
   // IC widgets
   'icDash.agedWorkOrders',
@@ -39,8 +40,6 @@ angular.module('icDash', ['ui.router',
   'icDash.treemapAsset',
   'icDash.workOrderCycleTime',
   'icDash.workOrderGrid',
-  
-  
 ])
 
 .config(function($stateProvider, $urlRouterProvider) {

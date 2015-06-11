@@ -33,13 +33,12 @@
 			</div>
 			<!-- end of !chartFinished -->
 
-			<img ng-if="chartFinished !== true"
-				src="images/loading.gif">
+			<div ng-if="chartFinished !== true" view-loading></div>
+
 		</div>
 		<div collapse="doMyGraphing === true">
-			<img ng-if="doMyGraphing === false"
-				src="images/loading.gif"> <img
-				ng-if="doMyGraphing === null" src="images/failed.png">
+			<div ng-if="doMyGraphing === false" view-loading></div>
+			<div ng-if="doMyGraphing === null" view-failed></div>
 		</div>
 	</div>
 	<h2 collapse=engage>Please Select a Work Order or

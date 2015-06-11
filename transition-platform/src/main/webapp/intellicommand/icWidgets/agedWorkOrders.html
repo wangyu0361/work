@@ -1,7 +1,9 @@
 <div ng-controller="agedWorkOrdersMainCtrl">
-	<div ng-if="!hasOrg && inEditor"><h1>Please select viewing preferences from the properties menu</h1></div>
-	<img ng-if="!hasOrg && !inEditor" src="images/loading.gif"></img>
-	<div ng-if="noData"><h1>There are no work orders to display for the most recent request</h1></div>
+	<div ng-if="!hasOrg && inEditor">
+		<h1>Please select viewing preferences from the properties menu</h1>
+	</div>
+	<div ng-if="!hasOrg && !inEditor" view-loading></div>
+	<div ng-if="noData" view-failed></div>
 	<!-- <div ng-if="!inDashboard" class="btn btn-default" ng-click="openPageConfiguration()"><img src="/intellicommand/config.png"></div> -->
 
 	<div ng-if="hasOrg">
@@ -9,14 +11,17 @@
 		<div>
 			<p>Client: {{client}}</p>
 		</div>
-		
-		<div class = "row-sm-6 row-md-6 row-lg-6 row-xl-6">
-			<div collapse="collapseClientChart" id="client_barChart_{{config.chartId}}"></div>
-			<div collapse="collapseClientChart" id="station_pieChart_{{config.chartId}}"></div>
+
+		<div class="row-sm-6 row-md-6 row-lg-6 row-xl-6">
+			<div collapse="collapseClientChart"
+				id="client_barChart_{{config.chartId}}"></div>
+			<div collapse="collapseClientChart"
+				id="station_pieChart_{{config.chartId}}"></div>
 		</div>
-		
-		
-		<div ng-if="gridView" class="gridStyleTwo" ui-grid="gridOptions" external-scopes="onRowClick" ui-grid-auto-resize></div>
+
+
+		<div ng-if="gridView" class="gridStyleTwo" ui-grid="gridOptions"
+			external-scopes="onRowClick" ui-grid-auto-resize></div>
 	</div>
 </div>
 
