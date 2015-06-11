@@ -63,18 +63,21 @@ angular.module('icDash.dashContainer', ['ui.router'])
 		}
 	};
 	
-	$scope.$on('userPrefsChanged',function(){
-		if (sessionStorage.getItem("organization")) $scope.orgImg = sessionStorage.getItem("organization"); else $scope.logOut();
-		if (sessionStorage.getItem("facility")) $scope.pageTitle = sessionStorage.getItem("facility"); else $scope.logOut();
+	$(window).bind("storage", function(e, changeType) {
+		if (changeType == "organization") {
+			$scope.pageTitle = "Entire " + sessionStorage.getItem("organization") + " Portfolio";
+			$scope.orgImg = sessionStorage.getItem("organization");
+		} else {
+			$scope.pageTitle = sessionStorage.getItem("facility");
+			$scope.orgImg = sessionStorage.getItem("organization");
+		}
 	});
-	
-	$scope.orgImg = sessionStorage.getItem("facility");
 	
 	$(window).resize(function() {evaluatePageSize();});
 	$(document).ready(function() {
 		if (sessionStorage.getItem("organization")) $scope.orgImg = sessionStorage.getItem("organization"); else $scope.logOut();
 		if (sessionStorage.getItem("facility")) $scope.pageTitle = sessionStorage.getItem("facility"); else $scope.logOut();
-		setTimeout(function() {evaluatePageSize();}, 10);
+		setTimeout(function() {evaluatePageSize();}, 50);
 	});
 	
 	$scope.currentYear = new Date().getFullYear();

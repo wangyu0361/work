@@ -55,6 +55,7 @@ angular.module('icDash.fullFacilityDetails', ['ui.router'])
 	}
 	
 	var getAllFacilityDets = function(org, facility) {
+		if (facility == "Merck Research Lab") facility = "Merck Research Laboratory  Boston"; // here until asset service gets updated to match skyspark!...
 		var facilityPromise = assetService.getFacilities(org, facility);
 		facilityPromise.then(function(facilityList) {
 			$scope.facilities = facilityList;
@@ -78,22 +79,23 @@ angular.module('icDash.fullFacilityDetails', ['ui.router'])
 		refreshConfigs();
 	}, true);
 	
-	/*/ Add this to change between facility and org view
+	// Add this to change between facility and org view
 	$(window).bind("storage", function(e, changeType) {
 		if (changeType == "organization") {
 			if ($scope.viewType != "organization" || sessionStorage.getItem("organization") != currentConfig.organizationName) {
 				$scope.viewType = "organization";
-				getAllFacilityDets(sessionStorage.getItem("organization"), {});
+				currentConfig.organizationName = sessionStorage.getItem("organization");
+				getAllFacilityDets(currentConfig.organizationName, {});
 			}
 		} else {
-		
 			if ($scope.viewType != "facility" || sessionStorage.getItem("facility") != currentConfig.facilityName) {
 				$scope.viewType = "facility";
-				getAllFacilityDets(sessionStorage.getItem("organization"), sessionStorage.getItem("facility"));
+				currentConfig.facilityName = sessionStorage.getItem("facility");
+				getAllFacilityDets(sessionStorage.getItem("organization"), currentConfig.facilityName);
 			}
 		}
 	});
-	*/
+	
 	// Queries for the weather
 	var getWeather = function(city,state){
 		if(state==="null"){state="";}

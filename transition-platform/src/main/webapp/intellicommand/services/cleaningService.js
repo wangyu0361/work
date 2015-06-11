@@ -45,7 +45,7 @@ angular.module('icDash.cleaningService', ['ui.router'])
 				case "HYLO": {campus = "Hyatt Lodge"; break;}
 				
 				// Merck
-				case "MRL": {campus = "Merck Research Laboratory ? Boston"; break;}
+				case "MRL": {campus = "Merck Research Lab"; break;}
 				case "UGDB": {campus = "Upper Gwynedd"; break;}
 				
 				// P&G

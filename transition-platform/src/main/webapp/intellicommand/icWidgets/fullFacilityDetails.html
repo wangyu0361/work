@@ -58,7 +58,7 @@
 			</div>
 					
 			<div class="col-xs-12 col-sm-8 col-md-6">
-				<h1 style="text-align:center">{{facilities[0].facilityName}}</h1>
+				<h2 style="text-align:center">{{facilities[0].facilityName}}</h2>
 			</div>		
 					
 			<div class="col-xs-12 col-sm-12 col-md-6"> <!-- facility details -->
@@ -72,7 +72,7 @@
 			</div>
 			
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-6"> <!-- 5 day forecast -->
-				<h2 style="text-align:center; margin-top:30px; margin-bottom: 5px">5 Day Forecast</h2>
+				<h3 style="text-align:center; margin-top:30px; margin-bottom: 5px">5 Day Forecast</h3>
 				<table class="facilityDetsTable">
 					<tr><td width="20%" ng-repeat="day in weatherData"><h2>{{day["name"]}}</h2></td></tr>
 					<tr><td ng-repeat="day in weatherData"><img ng-src="images/weatherIcons/{{day['image']}}.png"></img></td></tr>
@@ -91,7 +91,7 @@
 		<div ng-if="viewType == 'organization'">
 			<table class="orgViewTable">
 				<tr>
-					<td><img ng-src="/intellicommand/pictures/clientLogos/{{facilities[0].organization}}.png" class="orgImg img-responsive"></img></td>
+					<td><img ng-src="images/clientLogos/{{facilities[0].organization}}.png" class="orgImg img-responsive"></img></td>
 					<td>
 						<!--<h1 style="text-align:center">Organization-Wide Summary</h1>-->
 						<table class="facilityDetsTable">
@@ -106,9 +106,9 @@
 				</tr>
 
 				<tr ng-repeat="facility in facilities">
-					<td><img ng-src="/intellicommand/pictures/clientFacilityImages/MRL.png" class="smallFacilityImg img-responsive"></img></td>
+					<td><img ng-src="images/clientFacilityImages/MRL.png" class="smallFacilityImg img-responsive"></img></td>
 					<td>
-						<h1 style="text-align:center">{{facility.facilityName}}</h1>
+						<h2 style="text-align:center">{{facility.facilityName}}</h2>
 						<table class="facilityDetsTable">
 							<tr ng-if="!isBlank(facility.liveDate)"><td>Go-Live Date:</td><td>{{facility.liveDate}}</td></tr>
 							<tr ng-if="!isBlank(facility.address)"><td>Location:</td><td>{{facility.address}} <span ng-if="!isBlank(facility.city)">{{facility.city}}</span><span ng-if="!isBlank(facility.state)">, {{facility.state}}</span></td></tr>

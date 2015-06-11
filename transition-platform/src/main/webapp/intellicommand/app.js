@@ -1,5 +1,6 @@
 angular.module('icDash', ['ui.router',
   // External dependencies
+  'calHeatmap',
   'colorpicker.module', // for treemap
   'ui.bootstrap',
   'ui.grid',
@@ -88,7 +89,7 @@ angular.module('icDash', ['ui.router',
               header: "Energy Spectrum",
               dirName: "energy-spectrum",
 			  controller: "heatmapCtrl"
-        */   }];
+*/           }];
           }
         },
       },

@@ -1,6 +1,6 @@
 angular.module('icDash.loginPage', ['ui.router'])
 
-.controller('loginPageCtrl', ['$scope', '$state', function($scope, $state){	  
+.controller('loginPageCtrl', ['$scope', '$state', 'SkySparkAPI', function($scope, $state, ssAPI){	  
 	$scope.login = function(user) {
 		// Need to actually check the DB for credentials here...
 		if(validateUser((user.name).toLowerCase(), user.pwd)) {
@@ -47,6 +47,35 @@ angular.module('icDash.loginPage', ['ui.router'])
 		document.cookie = "icUser=" + userName + "; " + expires;
 	}
 	function setSessionStorage(user) {
+		
+		/** for switching over to skyspark eventually... **
+		sessionStorage.setItem("userName", user);
+		
+		var stations = [];
+		var orgs = [];
+		ssAPI.getStations().then(
+			function(results) {
+				for (var i = 0; i < results.length; i++) {
+					if (results[i].users) {
+						siteUsers = JSON.parse(results[i].users);
+						if (_.contains(siteUsers, user)) {
+							orgs.push(results[i].organization);
+							stations.push(results[i].station);
+						}
+					}
+				}
+				
+				stations = _.uniq(stations);
+				orgs = _.uniq(orgs);
+				console.log("all stations for user " + user + ": " + stations);
+				console.log("all orgs for user " + user + ": " + orgs);
+				sessionStorage.setItem("userLimits.organization", orgs);
+				sessionStorage.setItem("userLimits.facility", stations);
+			},
+			function(error){reject(error);}
+		)
+		/** end area used to switch to skyspark... **/
+		
 		$.ajax({
 			url:'http://10.239.3.132:8111/db/query',
 			data: JSON.stringify({"userName":user}),
