@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('icDash.eventPage', ['ui.router'])
+angular.module('icDash.eventPage', ['ui.router','ui.grid.edit', 'ui.grid.autoResize', 'ui.grid.exporter', 'ui.grid.selection'])
 
 /**angular.module('myApp.eventPage', ['ngRoute', 'myApp.multiAxisChart', 'ui.grid', 'ui.grid.edit', 'ui.grid.autoResize', 'ui.grid.exporter', 'ui.grid.selection','myApp.dashboard',
 'myApp.pciService', 'myApp.ticketImpulse', 'ui.bootstrap', 'myApp.panelComponent', 'myApp.popout', 'myApp.dateSlider', 'myApp.facilitySelector', 'myApp.cleaningService','myApp.pciAccordion'])
