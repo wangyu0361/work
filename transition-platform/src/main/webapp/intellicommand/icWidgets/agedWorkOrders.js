@@ -103,8 +103,8 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 			_clientName = configObj.clientName;
 		}
 		var requestString;
-		var mongoUrl = "http://10.239.3.132:8111/db/query";
-		//var mongoUrl = "http://10.239.3.132:8111/db/query";
+		var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
+		//var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
 		
 		var client = configObj.clientName;
 		requestString = "{\"status\" : \"Open\", \"client\" : \""+client+"\"}"

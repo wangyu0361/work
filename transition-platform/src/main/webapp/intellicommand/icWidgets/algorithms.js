@@ -89,8 +89,8 @@ angular.module('icDash.algorithms', ['ui.router'])
 		if(organization === undefined || organization === ""){
 			////console.log(configObj);
 		}
-		//var mongoUrl = "http://10.239.3.132:8111/db/query";
-		var mongoUrl = "http://10.239.3.132:8111/db/query";
+		//var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
+		var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
 		
 		//var mongoUrl = "http://1.239.3.132:9763/MongoServlet-0.0.1-SNAPSHOT/query";
 		var config = {

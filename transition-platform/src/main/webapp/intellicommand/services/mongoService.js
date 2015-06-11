@@ -10,7 +10,7 @@ angular.module('icDash.mongoService', ['ui.router'])
 			var config = {
 				method:'POST',
 				headers: {'Collection': collection},
-				url:"http://10.239.3.132:8111/db/query",
+				url:"https://galaxy2021temp.pcsgalaxy.net:9453/db/query",
 				data: JSON.stringify(query)
 			};
 			var promise = $http(config);
@@ -26,7 +26,7 @@ angular.module('icDash.mongoService', ['ui.router'])
 			var config = {
 				method:'POST',
 				headers: {'Collection': collection},
-				url:"http://10.239.3.132:8111/db/update",
+				url:"https://galaxy2021temp.pcsgalaxy.net:9453/db/update",
 /*************** TODO figure out how to actually update the database!!! *******************
 				data: JSON.stringify(update)
 			};

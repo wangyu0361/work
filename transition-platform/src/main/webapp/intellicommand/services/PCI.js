@@ -1034,7 +1034,7 @@ angular.module('icDash.pciService', ['ui.router'])
 }])
 .factory('alarmRecordsAPI', ['$http', function($http){
 	
-	var _alarmsIp = "http://10.239.3.132:8111/db/query";
+	var _alarmsIp = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
 	
 	var _getAlarmsByStation = function(_station, _start, _end){
 		var _url = _alarmsIp;

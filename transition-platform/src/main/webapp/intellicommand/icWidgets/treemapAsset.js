@@ -120,7 +120,7 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 	var config = {
 			method:'POST',
 			headers: {'Collection': 'events'},
-			url:"http://10.239.3.132:8111/db/query",
+			url:"https://galaxy2021temp.pcsgalaxy.net:9453/db/query",
 			data:"{}"
 	};
 	dbService.getData(config).then(function(response){
@@ -969,7 +969,7 @@ console.log($scope.treemapConfig.facilityName);
 			var config = {
 					method:'POST',
 					headers: {'Collection': 'events'},
-					url:"http://10.239.3.132:8111/db/query",
+					url:"https://galaxy2021temp.pcsgalaxy.net:9453/db/query",
 					data:bodyString
 			}
 

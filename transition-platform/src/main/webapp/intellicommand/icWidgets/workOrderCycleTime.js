@@ -66,8 +66,8 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		if(workOrderCycleTimeSharedProperties.getOrganization() != null){
 			organization = workOrderCycleTimeSharedProperties.getOrganization();
 		}
-		//var mongoUrl = "http://10.239.3.132:8111/db/query";
-		var mongoUrl = "http://10.239.3.132:8111/db/query";
+		//var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
+		var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
 		var requestString = "{\"createdTime\" : {\"$gt\" : { \"$date\": \""+someTimeBefore.toJSON()+"\" }, \"$lt\": { \"$date\": \""+today.toJSON()+"\" }}, \"client\" : \""+organization+"\"}";
 		var config = {
 				method: 'POST',

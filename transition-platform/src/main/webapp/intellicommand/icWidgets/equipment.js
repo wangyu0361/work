@@ -47,8 +47,8 @@ angular.module('icDash.equipment', ['ui.router'])
 .factory('equipmentDataService', ['$http', 'equipmentViewControlService', function($http, equipmentViewControlService){
 	var _serviceObject = {};
 	var _getEventData = function(){
-		//var mongoUrl = "http://10.239.3.132:8111/db/query";
-		var mongoUrl = "http://10.239.3.132:8111/db/query";
+		//var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
+		var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
 		
 		var client = equipmentViewControlService.getClientName();		
 		var stationName = equipmentViewControlService.getStationName();

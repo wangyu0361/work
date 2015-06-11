@@ -520,7 +520,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 		var config = {
 				method:'POST',
 				headers: {'Collection': 'totalHierarchy'},
-				url:"http://10.239.3.132:8111/db/save",
+				url:"https://galaxy2021temp.pcsgalaxy.net:9453/db/save",
 				data:''+$scope.totalHierarchy+''
 		};
 		dbService.getData(config);
@@ -541,7 +541,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 		var config = {
 				method:'POST',
 				headers: {'Collection': 'totalHierarchy'},
-				url:"http://10.239.3.132:8111/db/query",
+				url:"https://galaxy2021temp.pcsgalaxy.net:9453/db/query",
 				data:'{}'
 		};
 		dbService.getData(config).then(function(response){
@@ -934,7 +934,7 @@ console.log(thisOrganizations);
 		var config = {
 				method:'POST',
 				headers: {'Collection': 'totalHierarchy'},
-				url:"http://10.239.3.132:8111/db/query",
+				url:"https://galaxy2021temp.pcsgalaxy.net:9453/db/query",
 				data:'{}'
 		};
 		dbService.getData(config).then(function(response){
