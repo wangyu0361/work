@@ -3,44 +3,49 @@
 	background: #bfbfbf;
 	border-radius: 5px;
 }
+
 .selector-div a {
-	color:black;
+	color: black;
 }
+
 .selector-div li.active>a {
-	color:white;
+	color: white;
 	background: #d90000;
 }
+
 .selector-div a:hover {
 	background: #3399cc !important;
-	color: white  !important;
+	color: white !important;
 }
 </style>
 
-<div ng-controller="facilitySelectorCtrl">     
-	
+<div ng-controller="facilitySelectorCtrl">
+
 	<form>
-		<input style="border-radius:10px" type="text" class="col-md-9" name="input" placeholder="filter by..." ng-model="filterTag">
-		<div class="col-md-3" style="text-align: right"><input type="submit" class="ic-body-panel-button" value="Apply" ng-click="applyFilter()"></div>
+		<input style="border-radius: 10px" type="text" class="col-md-9"
+			name="input" placeholder="filter by..." ng-model="filterTag">
+		<div class="col-md-3" style="text-align: right">
+			<input type="submit" class="ic-body-panel-button" value="Apply"
+				ng-click="applyFilter()">
+		</div>
 	</form>
-	
-	<br><br>
+
+	<br>
+	<br>
 
 	<table width="100%">
-		<tr><td>
-			<div class="selector-div">
-				<span ng-if="doing_async">...loading...</span>
-				
-				<abn-tree 
-				tree-data="my_data" 
-				tree-control="my_tree" 
-				icon-leaf = "icon-plus  glyphicon glyphicon-home  fa fa-file"
-				icon-expand = "icon-plus  glyphicon glyphicon-chevron-right  fa fa-caret-right"
-				icon-collapse = "icon-plus  glyphicon glyphicon-chevron-down  fa fa-caret-right"
-				on-select="my_tree_handler(branch)" 
-				expand-level="1" 
+		<tr>
+			<td>
+				<div class="selector-div">
+					<span ng-if="doing_async">...loading...</span>
 
-				></abn-tree>
-			</div>
-		</td></tr>
+					<abn-tree tree-data="my_data" tree-control="my_tree"
+						icon-leaf="icon-plus  glyphicon glyphicon-home  fa fa-file"
+						icon-expand="icon-plus  glyphicon glyphicon-chevron-right  fa fa-caret-right"
+						icon-collapse="icon-plus  glyphicon glyphicon-chevron-down  fa fa-caret-right"
+						on-select="my_tree_handler(branch)" expand-level="1"></abn-tree>
+				</div>
+			</td>
+		</tr>
 	</table>
 </div>

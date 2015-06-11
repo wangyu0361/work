@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('icDash.eventPage', ['ui.router'])
+angular.module('icDash.eventPage', [])
 
 /**angular.module('myApp.eventPage', ['ngRoute', 'myApp.multiAxisChart', 'ui.grid', 'ui.grid.edit', 'ui.grid.autoResize', 'ui.grid.exporter', 'ui.grid.selection','myApp.dashboard',
 'myApp.pciService', 'myApp.ticketImpulse', 'ui.bootstrap', 'myApp.panelComponent', 'myApp.popout', 'myApp.dateSlider', 'myApp.facilitySelector', 'myApp.cleaningService','myApp.pciAccordion'])
@@ -184,8 +184,6 @@ angular.module('icDash.eventPage', ['ui.router'])
 								 "ticket":entry
 							   } 
 						
-						console.log(timeObj);
-						
 						return timeObj;
 					}
 
@@ -286,14 +284,14 @@ angular.module('icDash.eventPage', ['ui.router'])
 				 )
 				 
 			 }
-			 console.log(currentConfig.stationName, currentConfig.assetName);
+			 
 			 thisController.findAssetByName(currentConfig.stationName,currentConfig.assetName).then( // find all points which belong to an asset
 				function(dbAsset){
 					if(dataStart < +(new Date(currentConfig.chartStart))){dataStart = +(new Date(currentConfig.chartStart))}
 					if(dataEnd < +(new Date(currentConfig.chartEnd))){dataEnd = +(new Date(currentConfig.chartEnd))}
 					$scope.config.allPoints = dbAsset.points.slice(0);
 					currentConfig.allPoints = dbAsset.points.slice(0);
-					console.log(currentConfig);
+					
 					for(var i = 0; i < dbAsset.points.length; i++){
 						addAPIPointsToArray(dbAsset.points[i],dbAsset.points.length);
 					}

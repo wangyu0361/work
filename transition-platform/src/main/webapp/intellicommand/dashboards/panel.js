@@ -41,7 +41,7 @@ angular.module('icDash.panel', ['ui.router'])
 		replace: true,
 		link: function(scope, element, attr) {
 			attr.$observe('bodyDynamic', function(val) {
-				var newVal = "<" + val + "/>";
+				var newVal = "<" + val + "></" + val + ">";
 				element.html('');
 				element.append($compile(newVal)(scope));
 			});

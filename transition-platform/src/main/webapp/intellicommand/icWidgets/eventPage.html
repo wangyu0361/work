@@ -4,44 +4,44 @@
 	</div>
 	<div collapse=!engage>
 		<div collapse="doMyGraphing !== true">
-			<div class="ui-grid-top-panel" style='text-align: center'
-				ng-if=engage>Station Name:
-				{{fancyName(config.stationName)}}&nbsp&nbsp&nbsp&nbsp-&nbsp&nbsp&nbsp&nbspAsset:
-				{{config.assetName}}</div>
-			<div class="gridStyleTwo" ui-grid="anomalySummary"
-				ui-grid-auto-resize></div>
-			<div collapse="chartFinished !== true">
-				<button ng-click=downloadChart()>Download Chart</button>
-				<multi-axis-composite-chart height=300 charts=subCharts
-					axis=config.axis start=config.chartStart end=config.chartEnd
-					chart-instance=chartInstance redraw-charts=redrawChart
-					finished=chartFinished></multi-axis-composite-chart>
-
-				<date-slider-chart chart=chartInstance edit-chart=false
-					start-end-dates=true start-time=config.chartStart
-					end-time=config.chartEnd></date-slider-chart>
-
-				<h3 ng-if=doMyGraphing>
-					<b>Point Data:</b> {{formattedChartStart}} - {{formattedChartEnd}}
-				</h3>
-				<div class="custom-csv-link-location">
-					<label>Link to file export:</label> <span
-						class="ui-grid-exporter-csv-link">&nbsp;</span>
-				</div>
-				<div class="gridStyle" ui-grid="pointData" ui-grid-exporter
-					ui-grid-selection ui-grid-auto-resize></div>
+			<div class="ui-grid-top-panel" style='text-align: center' ng-if=engage>Station Name: {{fancyName(config.stationName)}}&nbsp&nbsp&nbsp&nbsp-&nbsp&nbsp&nbsp&nbspAsset: {{config.assetName}}</div>
+	  		<div class="gridStyleTwo" ui-grid="anomalySummary" ui-grid-auto-resize></div>
+	  		<div style="height:300px">
+				<div collapse="chartFinished !== true">
+					<!-- <button ng-click=downloadChart()>Download Chart</button> -->
+					<multi-axis-composite-chart 
+						height=300 
+						charts=subCharts 
+						axis=config.axis
+						start=config.chartStart 
+						end=config.chartEnd 
+						chart-instance=chartInstance
+						redraw-charts=redrawChart
+						finished=chartFinished
+					></multi-axis-composite-chart>
+				</div> <!-- end of !chartFinished -->
+				<img ng-if="chartFinished !== true" src="images/loading.gif">
 			</div>
-			<!-- end of !chartFinished -->
-
-			<img ng-if="chartFinished !== true"
-				src="images/loading.gif">
+			<div style="height:80px">
+				<date-slider-chart 
+					chart=chartInstance 
+					edit-chart=false 
+					start-end-dates=true 
+					start-time=config.chartStart 
+					end-time=config.chartEnd
+				></date-slider-chart>
+			</div>
+			<h5 ng-if=doMyGraphing><b>Point Data:</b>  {{formattedChartStart}} - {{formattedChartEnd}}</h5>
+			<div class="custom-csv-link-location">
+				<label>Link to file export:</label>
+				<span class="ui-grid-exporter-csv-link">&nbsp;</span>
+			</div> 
+	  		<div class="gridStyle" ui-grid="pointData" ui-grid-exporter ui-grid-selection ui-grid-auto-resize></div>
+  		</div>
+  		<div collapse="doMyGraphing === true">
+  			<img ng-if="doMyGraphing === false" src="images/loading.gif">
+			<img ng-if="doMyGraphing === null" src="images/failed.png">
 		</div>
-		<div collapse="doMyGraphing === true">
-			<img ng-if="doMyGraphing === false"
-				src="images/loading.gif"> <img
-				ng-if="doMyGraphing === null" src="images/failed.png">
-		</div>
-	</div>
-	<h2 collapse=engage>Please Select a Work Order or
-		Asset,Organization and Anomaly Type</h2>
+  	</div>
+  	<h2 collapse=engage>Please Select a Work Order or Asset,Organization and Anomaly Type</h2>	
 </div>

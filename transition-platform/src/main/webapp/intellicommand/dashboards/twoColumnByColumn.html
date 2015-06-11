@@ -1,12 +1,18 @@
 <!--Angela's code; twoColumnByColumn.html-->
 
 <div class="col-sm-6 no-no-space">
-  <div ng-repeat="widget in widgets | limitTo: (widgets.length/2 | number: 0)" class="row no-space">
-    <panel header="{{widget.header}}" content="{{widget.dirName}}" controller="{{widget.controller}}" extras="{{widget.extras}}"></panel>
-  </div>
+	<div
+		ng-repeat="widget in widgets | limitTo: (widgets.length/2 | number: 0)"
+		class="row no-space">
+		<panel header="{{widget.header}}" content="{{widget.dirName}}"
+			controller="{{widget.controller}}" extras="{{widget.extras}}"></panel>
+	</div>
 </div>
 <div class="col-sm-6 no-no-space">
-  <div ng-repeat="widget in widgets | limitTo: widgets.length | limitTo: ((widgets.length/2 | number: 0) - widgets.length)" class="row no-space">
-    <panel header="{{widget.header}}" content="{{widget.dirName}}" controller="{{widget.controller}}" extras="{{widget.extras}}"></panel>
-  </div>
+	<div
+		ng-repeat="widget in widgets | limitTo: widgets.length | limitTo: ((widgets.length/2 | number: 0) - widgets.length)"
+		class="row no-space">
+		<panel header="{{widget.header}}" content="{{widget.dirName}}"
+			controller="{{widget.controller}}" extras="{{widget.extras}}"></panel>
+	</div>
 </div>

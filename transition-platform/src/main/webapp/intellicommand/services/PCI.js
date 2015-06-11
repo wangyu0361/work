@@ -713,8 +713,8 @@ angular.module('icDash.pciService', ['ui.router'])
 		return _actuallyRequest(_req);
 	}
 	
-	var _getByEquipAndSiteNamesAndTags = function(_equip,_site,_tags){
-		var _data = "\"id";
+	var _getByEquipAndSiteNamesAndTags = function(_equip,_site,_tags){ // Generic catch all, conveniece method for equipName and stationName, tags can be a single string or an array of filter strings
+		var _data = "\"id"; // contains id as a guaranteed call, so not have to deal with special exceptions around spaces and and
 
 		if(_equip !== undefined){_data += " and equipRef->navName==\\\""+_equip+"\\\""}
 		if(_site !== undefined){_data += " and siteRef->station==\\\""+_site+"\\\""}
@@ -751,7 +751,7 @@ angular.module('icDash.pciService', ['ui.router'])
 		var sparkDayFormat = d3.time.format("%Y-%m-%d");
 		var _data = "\"eventFilter(";
 
-		if(_facility !== undefined){_data += " \\\""+_facility+"\\\","}
+		if(_facility !== undefined){_data += "\\\""+_facility+"\\\","}
 		if(_createdDateRange !== undefined){_data += _createdDateRange === null ? null+"," : sparkDayFormat(new Date(_createdDateRange))+"..2999-01-01,";} 
 		if(_updatedDateRange !== undefined){_data += _updatedDateRange === null ? null+"," : sparkDayFormat(new Date(_updatedRateRange))+"..2999-01-01,";}
 		if(_status !== undefined){_data += _updatedDateRange+")"}
@@ -1032,183 +1032,6 @@ angular.module('icDash.pciService', ['ui.router'])
 	
 	return serviceObject;
 }])
-/*.factory('MongoAssetsAPI',['$http',function($http){	
-	var _AssetsIp = "http://10.239.3.132:8111/db/Assets";
-	
-	var _getUniqueAssetNames = function(_org,_facility){
-		var _url = _AssetsIp+"/getUniqueAssetNames?org="+_org+"&facility="+_facility;
-		
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					_data.hasOwnProperty("_embedded") ? 
-						resolve(_data._embedded.strings) : reject({})
-				})
-				.error(function(_data,_status){reject({data:_data,status:_status});})
-			;
-		})
-	}
-	
-	var _getAllAssetsByType = function(_org,_facility,_assetType){
-		var _url = _AssetsIp+"/getAllAssetsByType?assetType="+_assetType+"&org="+_org+"&facility="+_facility;
-		
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					_data.hasOwnProperty("_embedded") ? 
-						resolve(_data._embedded.Asset[0]) : reject({})
-				})
-				.error(function(_data,_status){reject({data:_data,status:_status});})
-			;
-		})		
-	}
-	
-	var _getAllAHUs = function(_org,_facility){
-		var _url = _AssetsIp+"/getAllAHUs?org="+_org+"&facility="+_facility;
-		
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					_data.hasOwnProperty("_embedded") ? 
-						resolve(_data._embedded.Asset[0]) : reject({})
-				})
-				.error(function(_data,_status){reject({data:_data,status:_status})})
-		})
-	}
-	
-	var _getAllVAVs = function(_org,_facility){
-		var _url = _AssetsIp+"/getAllVAVs?org="+_org+"&facility="+_facility;
-		
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					_data.hasOwnProperty("_embedded") ? 
-						resolve(_data._embedded.Asset[0]) : reject({})
-				})
-				.error(function(_data,_status){reject({data:_data,status:_status})})
-		})
-	}
-	
-	var _findAssetByName = function(_org,_facility,_assetName){
-		var _url = _AssetsIp+"/search/findAssetByName?timeStart="+_assetName+"&org="+_org+"&facility="+_facility;
-		
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					_data.hasOwnProperty("_embedded") ? 
-						resolve(_data._embedded.Asset[0]) : reject({})
-				})
-				.error(function(_data,_status){reject({data:_data,status:_status})})
-		})
-	}
-	 
-	var serviceObject = {
-			getUniqueAssetNames	:_getUniqueAssetNames,
-			getAllAssetsByType	:_getAllAssetsByType,
-			getAllAHUs			:_getAllAHUs,
-			getAllVAVs 			:_getAllVAVs,
-			findAssetByName		:_findAssetByName
-	}
-	
-	return serviceObject;
-}])*/
-/*.factory('MongoBMSRecordsAPI',['$http',function($http){	
-	var _BMSRecordsIp = "http://10.239.3.132:8111/db/BMSRecords";
-	
-	var _findNonEmptyTags = function(_org,_facility){
-		var _url = "http://localhost:8080/BMSRecords"+"/findNonEmptyTags?org="+_org+"&facility="+_facility;
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					resolve(_data.content);
-				})
-				.error(function(_data,_status){
-					reject({data:_data,status:_status});
-				})
-		});
-	}
-	
-	var _getExpectedConsumptionForDay = function(_org, _facility, _time, _zeroDdTemp){
-		var _url = _BMSRecordsIp+"/getExpectedConsumptionForDay?org="+_org+"&facility="+_facility+"&time="+_time+"&zeroDdTemperature="+_zeroDdTemp;
-		return new Promise(function(resolve, reject){
-			$http.get(_url)
-				.success(function(_data){
-					resolve(_data);
-				})
-				.error(function(_data, _status){
-					reject({data: _data, status: _status})
-				});
-		})
-	}
-	
-	var _findUniqueHistoryIds = function(_org, _facility){
-		var _url = _BMSRecordsIp+"/findUniqueHistoryIds?org="+_org+"&facility="+_facility;
-		
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					_data.hasOwnProperty("_embedded") ? 
-						resolve(_data._embedded.strings) : reject({});
-				})
-				.error(function(_data,_status){
-					reject({data:_data,status:_status});
-				});
-		})
-	}
-	
-	var _findEnergyHistoryIds = function(_org, _facility){
-		var _url = _BMSRecordsIp+"/findEnergyHistoryIds?org="+_org+"&facility="+_facility;
-		
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					resolve(_data)
-				})
-				.error(function(_data,_status){
-					reject({data:_data,status:_status});
-				});
-		})		
-	}
-	
-	var _findNewestRecordByHistoryId = function(_org,_facility, _historyId){
-		var _url = _BMSRecordsIp+"/findNewestRecordByHistoryId?historyId="+_historyId+"&org="+_org+"&facility="+_facility;
-		
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){resolve(_data)})
-				.error(function(_data,_status){reject({data:_data,status:_status})})
-		})
-	}
-	
-	var _groupRecordsDailyForHistoryId = function(_org,_facility,_historyId,startTime,endTime){
-		var _url = _BMSRecordsIp+"/groupRecordsDailyForHistoryId?historyId="+_historyId+"&org="+_org+"&facility="+_facility;
-		if(startTime !== undefined){
-			_url = _url+"&startTime="+startTime;
-		}
-		if(endTime !== undefined){
-			_url = _url+"&endTime="+endTime;
-		}
-		return new Promise(function(resolve,reject){
-			$http.get(_url)
-				.success(function(_data){
-					_data.hasOwnProperty("content") ?
-						resolve(_data.content) : reject({})
-				})
-				.error(function(_data,_status){reject({data:_data,status:_status})})
-		})
-	}
-	 
-	var serviceObject = {
-			findUniqueHistoryIds			:_findUniqueHistoryIds,
-			findEnergyHistoryIds			:_findEnergyHistoryIds,
-			findNewestRecordByHistoryId		:_findNewestRecordByHistoryId,
-			groupRecordsDailyForHistoryId 	:_groupRecordsDailyForHistoryId,
-			getExpectedConsumptionForDay	:_getExpectedConsumptionForDay,
-			findNonEmptyTags				:_findNonEmptyTags
-	}
-	
-	return serviceObject;
-}])*/
 .factory('alarmRecordsAPI', ['$http', function($http){
 	
 	var _alarmsIp = "http://10.239.3.132:8111/db/query";

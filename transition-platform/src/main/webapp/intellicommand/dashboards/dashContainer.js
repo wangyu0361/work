@@ -75,8 +75,8 @@ angular.module('icDash.dashContainer', ['ui.router'])
 	
 	$(window).resize(function() {evaluatePageSize();});
 	$(document).ready(function() {
-		if (sessionStorage.getItem("organization")) $scope.orgImg = sessionStorage.getItem("organization"); else $scope.logOut();
-		if (sessionStorage.getItem("facility")) $scope.pageTitle = sessionStorage.getItem("facility"); else $scope.logOut();
+		if (sessionStorage.getItem("organization")) $scope.orgImg = sessionStorage.getItem("organization"); //else $scope.logOut();
+		if (sessionStorage.getItem("facility")) $scope.pageTitle = sessionStorage.getItem("facility"); //else $scope.logOut();
 		setTimeout(function() {evaluatePageSize();}, 50);
 	});
 	
