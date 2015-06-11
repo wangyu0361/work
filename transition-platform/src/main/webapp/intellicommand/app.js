@@ -40,6 +40,9 @@ angular.module('icDash', ['ui.router',
   'icDash.treemapAsset',
   'icDash.workOrderCycleTime',
   'icDash.workOrderGrid',
+  'icDash.multiAxisChart',
+  'icDash.calendar',
+  'icDash.dateSlider',
 ])
 
 .config(function($stateProvider, $urlRouterProvider) {
