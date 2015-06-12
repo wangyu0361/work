@@ -3,8 +3,8 @@
 angular.module('icDash.fullFacilityDetails', ['ui.router'])
 
 
-.controller('fullFacilityDetailsCtrl', ['$scope', '$http','$location', 'PCIdbService','eventPageService','configService','$controller','$timeout','userPrefService', 'assetService',
-                                        function($scope, $http, $location, PCIdbService,eventPageService,configService,$controller,$timeout, userPrefService, assetService) {
+.controller('fullFacilityDetailsCtrl', ['$scope', '$http','$location', 'PCIdbService','configService','$controller','$timeout','userPrefService', 'assetService',
+                                        function($scope, $http, $location, PCIdbService,configService,$controller,$timeout, userPrefService, assetService) {
 
 	$scope.view = "loaded";
 	$scope.viewType = "organization";

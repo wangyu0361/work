@@ -178,11 +178,11 @@ angular.module('icDash.workOrderGrid', ['ui.router'])
 }])
 
 .controller('workOrderGridCtrl', ['$rootScope','$scope', '$modal', 'workOrderGridService',
-                                  'eventPageService', 'configService', '$controller', 
+                                  'configService', '$controller', 
                                   'facilitySelectorService', 'dateRangeService', 'userPrefService',  
                                   'uiGridConstants',
                                   function($rootScope, $scope, $modal, workOrderGridService, 
-                                		  eventPageService, awesome, $controller, facilitySelectorService,
+                                		  awesome, $controller, facilitySelectorService,
                                 		  dateRangeService, userPrefService, uiGridConstants){
 		
 	/** angela removed/updated this section **

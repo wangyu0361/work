@@ -32,8 +32,8 @@ angular.module('icDash.eventPage', [])
      function($scope, $http, $location, $window, $controller,$timeout, epServ,chartIdService, configService,objectTools,cleaningService,accordionService,BMSRecordsAPI,AssetsAPI, userPrefService,SkySparkAPI) {
 **/
 	 
-.controller('eventPageCtrl',['$scope','$http','$location','$window','$controller','$timeout','eventPageService','chartIdService', 'configService','objectTools','cleaningService','BMSRecordsAPI','AssetsAPI','userPrefService',"SkySparkAPI",
-     function($scope, $http, $location, $window, $controller,$timeout, epServ,chartIdService, configService,objectTools,cleaningService,BMSRecordsAPI,AssetsAPI, userPrefService,SkySparkAPI) {
+.controller('eventPageCtrl',['$scope','$http','$location','$window','$controller','$timeout','chartIdService', 'configService','objectTools','cleaningService','BMSRecordsAPI','AssetsAPI','userPrefService',"SkySparkAPI",
+     function($scope, $http, $location, $window, $controller,$timeout, chartIdService, configService,objectTools,cleaningService,BMSRecordsAPI,AssetsAPI, userPrefService,SkySparkAPI) {
 
 	 
 		/** angela's new section **/

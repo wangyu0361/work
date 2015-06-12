@@ -338,7 +338,7 @@ angular.module('icDash.pciService', ['ui.router'])
 	}
   }])
   
-.factory('eventPageService', [ '$rootScope', function($rootScope){
+/*.factory('eventPageService', [ '$rootScope', function($rootScope){
 	  var workOrderNumber = undefined;
 	  var assetName = undefined;
 	  var organization = undefined;
@@ -416,7 +416,7 @@ angular.module('icDash.pciService', ['ui.router'])
 	  };
 	  
 	  return serviceObject;
-  }])
+  }])*/
  .factory('configService',['$location',function($location){
 	  var _config = []; //[dashboard#][view][row][column]
 	  
