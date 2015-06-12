@@ -1,13 +1,17 @@
 'use strict';
 
-angular.module('myApp.workOrderCycleTime', ['ngRoute', 'ui.grid', 'ui.grid.autoResize',
+/*angular.module('myApp.workOrderCycleTime', ['ngRoute', 'ui.grid', 'ui.grid.autoResize',
                                             'myApp.dashboard', 'myApp.panelComponent', 
                                             'myApp.popout', 'myApp.pciService', 'ui.bootstrap', 
                                             'myApp.ticketImpulse', 
                                             'myApp.dashboardTransitionService', 'myApp.facilitySelector',
-                                            'myApp.calendar', 'myApp.clientService'])
-
-.run(['directiveService', function(directiveService){
+                                            'myApp.calendar', 'myApp.clientService'])*/
+angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.autoResize',
+                                            
+                                            'icDash.pciService', 'ui.bootstrap', 
+                                            'icDash.dashboardTransitionService', 'icDash.facilitySelector',
+                                            'icDash.calendar', 'icDash.clientService'])
+/*.run(['directiveService', function(directiveService){
 	directiveService.addFullComponent({
 		tag: function(){return 'work-order-cycle-time';},
 		configTag: function(){return 'work-order-cycle-time-config'},
@@ -18,7 +22,7 @@ angular.module('myApp.workOrderCycleTime', ['ngRoute', 'ui.grid', 'ui.grid.autoR
 		heading: function(){return 'work-order-cycle-time-name'},
 		paletteImage: function(){return 'clock.png';}
 	});
-}])
+}])*/
 .directive('workOrderCycleTimeGrid', [function(){
 	return{
 		restrict: 'E',
