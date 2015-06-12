@@ -155,13 +155,21 @@ angular.module('icDash.skysparkService', [])
 	}
 	
 	
-	var _getEventsByDate = function(_facility,_createdDateRange,_updatedDateRange,_status){
+	var _getEventsByDate = function(_facility,_createdDateRange,_updatedDateRange,_status){// dates can be a single date object or an array containing [start date object, end date object]
 		var sparkDayFormat = d3.time.format("%Y-%m-%d");
 		var _data = "\"eventFilter(";
 
 		if(_facility !== undefined){_data += "\\\""+_facility+"\\\","}
-		if(_createdDateRange !== undefined){_data += _createdDateRange === null ? null+"," : sparkDayFormat(new Date(_createdDateRange))+"..2999-01-01,";} 
-		if(_updatedDateRange !== undefined){_data += _updatedDateRange === null ? null+"," : sparkDayFormat(new Date(_updatedRateRange))+"..2999-01-01,";}
+		if(_createdDateRange !== undefined){_data += _createdDateRange === null ? 
+				null+"," 
+				: _createdDateRange.hasOwnProperty("length") === true ? 
+						sparkDayFormat(new Date(_createdDateRange[0]))+".."+sparkDayFormat(new Date(_createdDateRange[1])) 
+						: sparkDayFormat(new Date(_createdDateRange))+"..2999-01-01,";} 
+		if(_updatedDateRange !== undefined){_data += _updatedDateRange === null ? 
+				null+"," 
+				: _updatedDateRange.hasOwnProperty("length") === true ? 
+						sparkDayFormat(new Date(_updatedDateRange[0]))+".."+sparkDayFormat(new Date(_updatedDateRange[1])) 
+						: sparkDayFormat(new Date(_updatedDateRange))+"..2999-01-01,";}
 		if(_status !== undefined){_data += _updatedDateRange+")"}
 		else{_data += "null)"}
 		_data+="\"";
