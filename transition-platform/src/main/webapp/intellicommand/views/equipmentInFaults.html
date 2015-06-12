@@ -1,0 +1,134 @@
+   	
+	
+	
+	
+	<div >
+	<center>
+	<h1>
+	Equipments In Faults
+	</h1>
+	</center>
+	<center>
+	<button class="btn btn-default" ng-click="open('lg');queryOrganizations()">Equipment Selection</button>
+	</center>
+	
+	
+	<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="faultyEquipment()">Faulty Equipment</button>
+	<button class="btn btn-primary" ng-click="apply1()">Apply</button>
+	</div>
+	
+	
+	</div>
+	
+	<div ng-repeat="(activeElement, param) in activeInfo "  >
+	
+	<div ng-if='imBoolean || param[4][3] > 0'>
+	<div>	
+		
+		<div ng-switch on="param[3]">
+		<img ng-switch-when="ahus"  alt="param[3]" src="ahu.png"  width="100" height="100" ng-click = "chart('lg',param[1],param[2])">
+		<img ng-switch-when="compressors"  alt="param[3]" src="compressor.png" width="100" height="100" ng-click = "chart('lg',param[1],param[2])">
+		<img ng-switch-when="coolingTowers"  alt="param[3]" src="coolingTower.png" width="100" height="100" ng-click = "chart('lg',param[1],param[2])">
+		<img ng-switch-when="heatExchangers"  alt="param[3]" src="heatExchanger.png" width="100" height="100" ng-click = "chart('lg',param[1],param[2])">
+		<img ng-switch-when="meters"  alt="param[3]" src="meter.png" width="100" height="100"ng-click = "chart('lg',param[1],param[2])">
+		<img ng-switch-when="plants"  alt="param[3]" src="plant.png" width="100" height="100" ng-click = "chart('lg',param[1],param[2])">
+		<img ng-switch-when="pumps"  alt="param[3]" src="pump.png" width="100" height="100" ng-click = "chart('lg',param[1],param[2])">
+		<img ng-switch-when="vavs"  alt="param[3]" src="vav.png" width="100" height="100" ng-click = "chart('lg',param[1],param[2])">
+		
+<button class="btn btn-default" ng-click="chart('lg',param[1],param[2])">Ticket Detail</button>
+<button class="btn btn-default" ng-click="deleteEle(activeElement)">Delete Asset</button>
+		</div>
+		
+		
+		
+	<table style="width:100%" "float:right"  >
+  <tr>
+    <td>Client : {{param[0]}}</td>
+    <td>Station : {{param[1]}}</td> 
+   <td>Asset : {{param[2]}}</td> 
+  </tr>
+  
+  
+  
+  
+  <tr>
+    <td>Asset Type : {{param[3]}}</td>
+    <td> Location : {{param[5]}}</td>
+    <td>Mean Time Between Failures : {{param[4][6]}} days</td>
+   
+  </tr>
+</table>
+		
+
+		
+
+	</div>
+	<div>
+	<table style="width:100%" "float:right" border="1" >
+	<th>
+	Number of Anomalies
+	</th>
+	
+	<th>
+	First Occurrence
+	</th>
+	
+	<th>
+	Last Occurrence
+	</th>
+	
+	<th>
+	Number of Occurrence
+	</th>
+	
+	<th>
+	Waste
+	</th>
+	
+	<th>
+	Potential Saving
+	</th>
+	
+	<tr>
+	<td>
+	{{param[4][0]}}			
+	</td>
+	
+		<td>
+	{{param[4][1]}}
+	</td>
+	
+		<td>
+	{{param[4][2]}}
+	</td>
+	
+		<td>
+	{{param[4][3]}}
+	</td>
+	
+		<td>
+	{{param[4][4]}}
+	</td>
+	
+		<td>
+	{{param[4][5]}}
+	</td>
+	
+	</tr>
+	
+	
+	
+	</table>
+	</div>
+	</div>
+	</div>
+	
+	
+		
+
+
+	
+	
+	
+

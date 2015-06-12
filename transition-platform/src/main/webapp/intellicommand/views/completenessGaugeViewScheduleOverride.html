@@ -1,0 +1,43 @@
+<!--Angela's code; completenessGaugeViewSchedule.html-->
+<div class="modal-header">
+	<img ng-src="/intellicommand/pictures/clientLogos/Pacific Controls.png" class="img-responsive pull-left" style="width=5000px;max-height:100px"/>
+	<img ng-src="/intellicommand/pictures/clientLogos/{{passedData.orgFullName}}.png" class="img-responsive pull-right" style="width=5000px;max-height:100px"/>
+	<span class="text-center"><h1>{{passedData.assetName}} Temporary Overrides</h1><p>{{passedData.orgFullName}} - {{passedData.campusFullName}}</p></span>
+</div>
+
+<div class="modal-body">
+	<div class="row">
+		<div ng-repeat="override in passedData.info" >
+			<div class="col-md-4"  >
+				<h1>Override {{$index + 1}} - <input required id='reason{{$index}}' type='text' ng-model='override.reason' placeholder='Please indicate reason'></h1>
+				<table class="dataTable" width="100%">
+					<tr><td>Start:</td><td><input required id='start{{$index}}' type='datetime-local' ng-model='override.startDate'></td></tr>
+					<tr><td>End:</td><td><input required id='stop{{$index}}' type='datetime-local' ng-model='override.endDate'></td></tr>
+					<tr><td>Actions:</td>
+						<td><input required type='radio' ng-model='override.type' value='off'> unit does not run</br>
+							<input type='radio' ng-model='override.type' value='on'> unit runs full load 24/7</br>
+							<input type='radio' ng-model='override.type' value='modifiedOn'> unit runs with normal schedule, but reduced load after hours</br>
+							<input type='radio' ng-model='override.type' value='altSch'> unit runs on modified schedule
+						</td>
+					</tr>
+					<tr ng-if="override.type == 'altSch'"><td></td><td>
+						On Time: <input id='schOn{{$index}}' ng-required="override.type == 'altSch'" type='time' ng-model='override.schOn'></br>
+						Off Time: <input id='schOff{{$index}}' ng-required="override.type == 'altSch'"type='time' ng-model='override.schOff'></td>
+					</tr>
+				</table>
+				<button class="btn btn-danger" ng-click="cancelOverride($index)"><span class="glyphicon glyphicon-remove"></span> Cancel This Override</button>
+			</div>
+			
+			<div ng-if="$index%3 == 2" class="clearfix" style="padding-bottom:30px"/> <!-- Added to keep sets of 3 on 1 line and keep formatting consistent regardless of options -->
+		</div>
+		
+		<button class="btn btn-success" ng-click="newOverride()"><span class="glyphicon glyphicon-plus"></span> Add Override</button>
+	</div>
+</div>
+
+<div class="modal-footer">
+	<h1 style="color:red" ng-if="passedData.info.length > 1"><i>Note: If any overrides overlap, the last override will be observed</i></h1>
+	<button class="btn btn-primary" ng-click="saveOverride(passedData)"><span class="glyphicon glyphicon-floppy-save"></span> Save Changes</button>
+	<button class="btn btn-primary" ng-click="cancelOverride('all')"><span class="glyphicon glyphicon-remove"></span> Cancel All Overrides</button></a>
+	<button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+</div>

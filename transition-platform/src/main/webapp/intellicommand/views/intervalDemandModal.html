@@ -1,0 +1,85 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title">Configuration</h3>
+	</div>
+	<div class="modal-body">
+		<div class="col-md-3">
+			<ul>
+				<li ng-repeat="(paramName, param) in userParameters | orderBy:'paramName'">
+					<strong>{{paramName}}: </strong>
+					
+					<my-calendar ng-if="isDate(paramName)" name="userParameters[paramName]"></my-calendar>
+					<input ng-if="isntSpecial(param, paramName)" ng-model="userParameters[paramName]"></input>
+					</br>
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-6">
+			<!-- org -->
+			<div class="btn-group" dropdown>
+				<button type="button" ng-click="queryOrganizations()" class="btn btn-primary dropdown-toggle">
+					Organization List<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li ng-repeat="(organization, param) in organizationQuery | orderBy:'organization'">
+						<button class="btn btn-default" ng-click='initOrganization(organization)'>{{organization}}</button>
+					</li>
+				</ul>
+			</div>
+			<!-- organization and meter management -->
+			<hr>
+			<strong>Shown Organizations</strong>
+			<hr>
+			<ul>
+				<li ng-repeat="(organization, meters) in activeOrganizations | orderBy:'paramName'">
+					<strong>{{organization}}</strong>
+					<div class="btn-group" dropdown>
+						<!--  Potential dropdown -->
+						<button type="button" ng-click='debug()' class="btn btn-primary dropdown-toggle">
+							Meter: {{activeOrganizations[organization].meter}}<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="(paramName, param) in activeOrganizations[organization].meterQuery | orderBy:'paramName'">
+								<button class="btn btn-default" ng-click="activeOrganizations[organization].meter = paramName">{{paramName}}</button>
+							</li>
+						</ul>
+						<button class="btn btn-danger" ng-click="deleteOrganization(organization)">Delete!</button>
+						<button class="btn btn-warning" ng-click="soloOrganization(organization)">Solo!</button>
+					</div>
+					<hr>
+				</li>
+			</ul>
+			<hr>
+			<strong>Hidden Organizations</strong>
+			<button class="btn btn-warning" 
+				ng-click="unhideAllOrganizations(organization)"
+				ng-show="countInactiveOrganizations() > 0">Unhide All!
+			</button>
+			<hr>
+			<ul>
+				<li ng-repeat="(organization, meters) in inactiveOrganizations | orderBy:'paramName'">
+					<strong>{{organization}}</strong>
+					<div class="btn-group" dropdown>
+						<!--  Potential dropdown -->
+						<button type="button" ng-click='debug()' class="btn btn-primary dropdown-toggle">
+							Meter: {{inactiveOrganizations[organization].meter}}<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li ng-repeat="(paramName, param) in inactiveOrganizations[organization].meterQuery | orderBy:'paramName'">
+								<button class="btn btn-default" ng-click="inactiveOrganizations[organization].meter = paramName">{{paramName}}</button>
+							</li>
+						</ul>
+						<button class="btn btn-danger" ng-click="deleteOrganization(organization)">Delete!</button>
+					</div>
+					<hr>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">OK</button>
+		<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+		<!-- <button class="btn btn-danger" ng-click="logScope()">console.log($scope)</button> -->
+	</div>
+	<hr>
+</div>

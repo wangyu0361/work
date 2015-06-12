@@ -1,0 +1,26 @@
+<div class="modal-header">
+	<h1>Aged Work Orders Configuration</h1>
+</div>
+
+<div class="modal-body">
+	<div class="row-sm-12 row-md-12 row-lg-12 row-xl-12">
+		<div class="btn-group" dropdown>	
+				<button type="button" class="btn btn-primary dropdown-toggle">
+					Select An Organization<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li ng-repeat="clientName in clientNames"> 
+					<a  ng-click='changeClient(clientName)'>{{clientName}}</a> 
+					</li>
+				</ul>
+				
+		</div>
+		<div class="row-sm-12 row-md-12 row-lg-12 row-xl-12">
+			<br><r>Selected Client: {{client}}</r>
+		</div>
+</div>
+
+<div class="modal-footer">
+	<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary" ng-click="ok()">OK</button>
+</div>

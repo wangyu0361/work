@@ -1,0 +1,23 @@
+<div class="modal-header"><h1>Energy Profile Configuration<h1></div>
+<div class="modal-body">
+<div>Selected time range: {{dateRange}}</div><br>
+	<div class="btn-group" dropdown>	
+			<button type="button" class="btn btn-primary dropdown-toggle">
+				Select a Date Range<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<p style="cursor: pointer" ng-click='setRange("last six weeks")'>Last Six Weeks</p>
+				<p style="cursor: pointer" ng-click='setRange("last four weeks")'>Last Four Weeks</p>
+				<p style="cursor: pointer" ng-click='setRange("last eight weeks")'>Last Eight Weeks</p>
+				<p style="cursor: pointer" ng-click='setRange("previous month")'>Previous Month</p>
+				<p style="cursor: pointer" ng-click='setRange("last 12 months")'>Last Twelve Months</p>
+				<p style="cursor: pointer" ng-click='setRange("last six months")'>Last Six Months</p>
+				<p style="cursor: pointer" ng-click='setRange("last four months")'>Last Four Months</p>
+			</ul>
+	</div>	
+</div>
+
+<div class="modal-footer">
+	<button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary" ng-click="ok()">OK</button>	
+</div>

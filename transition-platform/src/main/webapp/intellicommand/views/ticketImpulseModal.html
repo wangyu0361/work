@@ -1,0 +1,66 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title">Configuration</h3>
+	</div>
+	<div class="modal-body">
+		<div class="col-md-6">
+			<ul>
+				<li ng-repeat="(paramName, param) in userParameters | orderBy:'paramName'">
+					<strong>{{paramName}}:</strong>
+					
+					<button ng-if="isColor(paramName)&&!isArray(param)" class="btn btn-default" style="background-color:{{userParameters[paramName]}}"  
+					colorpicker-position="right" colorpicker="rgba" type="text" ng-model="userParameters[paramName]">Color</button>
+					<my-calendar ng-if="isDate(paramName)" name="userParameters[paramName]"></my-calendar>
+					<ul ng-if="isColor(paramName)&&isArray(param)">
+						<li ng-repeat="(index, element) in param track by index">
+							<button class="btn btn-default" style="background-color:{{userParameters[paramName][index]}}" 
+							colorpicker-position="right" colorpicker="rgba" type="text" ng-model="userParameters[paramName][index]">Color</button>
+						</li>
+						<div class="panel-body">
+							<button class="btn btn-success" ng-click="addColor(param)">Add</button>
+							<button class="btn btn-danger" ng-click="removeColor(param)">Remove</button>
+						</div>
+					</ul>
+					<input ng-if="isntSpecial(param, paramName)" ng-model="userParameters[paramName]"></input>
+					</br>
+				</li>
+			</ul>
+		</div>
+		<div class="col-md-6">
+			<!-- org -->
+			<div class="btn-group" dropdown ng-click="queryAllData()">
+				<button type="button" class="btn btn-primary dropdown-toggle">
+					Organization List<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li ng-repeat="(organization, value) in treatedData | orderBy:'organization'">
+						{{organization}}
+						<ul><li ng-repeat="(facility, value) in treatedData[organization] | orderBy:'facility'">{{facility}}
+							<ul><li ng-repeat="(asset, value) in treatedData[organization][facility] | orderBy:'asset'">
+								<button class="btn btn-default" ng-click='initAsset(organization, facility, asset)'>{{asset}}</button>
+							</li></ul>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<!-- organization management -->
+			<hr>
+			<strong>Organizations</strong>
+			<hr>
+			<ul>
+				<hr>
+				<li ng-repeat="(index, value) in active.assets | orderBy:['organization', 'facility', 'asset']">
+					{{value.organization}}, {{value.facility}}, {{value.asset}}
+					<button class="btn btn-danger" ng-click="deleteActive(value.organization, value.facility, value.asset)">Delete!</button>
+				<hr>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">OK</button>
+		<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+		<!-- <button class="btn btn-danger" ng-click="logScope()">console.log($scope)</button> -->
+	</div>
+	<hr>
+</div>

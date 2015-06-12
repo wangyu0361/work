@@ -1,0 +1,50 @@
+<div class="modal-header">
+	<h1 class="modal-title">Work Order Grid Configuration</h1>
+</div>
+
+<div class="modal-body">
+	<div class="btn-group" dropdown>	
+			<button type="button" class="btn btn-primary dropdown-toggle">
+				Select an Organization<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<li ng-repeat="organizationName in organizationNames">
+					<a  ng-click='setOrganization(organizationName)'>{{organizationName}}</a>
+				</li>
+			</ul>
+	</div>
+	<div class="btn-group" dropdown>	
+			<button type="button" class="btn btn-primary dropdown-toggle">
+				Select a Facility<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<li ng-repeat="facilityName in facilityNames">
+					<a  ng-click='setFacility(facilityName)'>{{facilityName}}</a>
+				</li>
+			</ul>
+	</div>
+	
+	<div class="row-sm-12 row-md-12 row-lg-12 row-xl-12">
+		<br><r>Selected Organization: {{client}}</r><br>
+		    <r>Selected Facility: {{station}}</r>
+	</div>
+	
+	<div class = "row">
+		<div class = "row"> 
+			 <div class = "col-md-3 col-sm-4 col-xs-6 col-lg-2">From: <my-calendar name="startDate"></my-calendar></div>
+		</div><br>
+	     
+		<div class="row"> 
+	  		<div class = "col-md-3 col-sm-4 col-xs-6 col-lg-2">To: <my-calendar name="endDate"></my-calendar></div>
+		 </div><br>		 
+	 </div>
+	 <div class="row"> 
+	  		<div class = "btn btn-default" ng-click="clearSelections()">Clear Selections</div>
+	 </div><br>		 
+	 
+</div>
+
+<div class="modal-footer">
+	<button type="button" class="btn btn-warning" ng-click='cancel()'>Cancel</button>
+	<button type="button" class="btn btn-default" ng-click='ok()'>OK</button>
+</div>

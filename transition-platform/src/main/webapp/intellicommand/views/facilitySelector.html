@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="/intellicommand/dependencies/angular-bootstrap-nav-tree-master/dist/abn_tree.css">
+<div ng-controller="facilitySelectorCtrl">     
+	   <td style="vertical-align:top">
+	   <form>
+tag:
+ <input type="text" name="input" ng-model="filterTag">
+ <button class="btn btn-default pull-right" ng-click="applyFilter()" >Filter</button>
+</form>
+
+
+          <table>
+            <tr>
+              <td style="vertical-align:top">
+                <div style="width:300px;margin-left:0px;background:whitesmoke;border:1px solid lightgray;border-radius:5px;height:100%;overflow: auto;">
+                  <span ng-if="doing_async">...loading...</span>
+                  <abn-tree 
+				  tree-data="my_data" 
+				  tree-control="my_tree" 
+				  icon-leaf = "icon-plus  glyphicon glyphicon-home  fa fa-file"
+				  icon-expand = "icon-plus  glyphicon glyphicon-chevron-right  fa fa-caret-right"
+				  icon-collapse = "icon-plus  glyphicon glyphicon-chevron-down  fa fa-caret-right"
+				  on-select="my_tree_handler(branch)" 
+				  expand-level="1" 
+				  
+				  ></abn-tree>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+</div>

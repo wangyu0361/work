@@ -1,0 +1,43 @@
+<!--Angela's code; completenessGauge.html-->
+
+<div class="container-fluid" ng-switch on="view">
+	<div ng-switch-when="loaded" ng-switch on="category">
+		<div ng-switch-when="summary" id="cg-chart">
+			<div class="row"><center><b>Document Submission</b></center></div>
+			<completeness-gauge-bar-chart on-click="updateDisplay(category, display)" chart-data="chartData"/>
+		</div>
+		
+		<div ng-switch-default> <!-- Since switch does not support multiple conditions, this is the default for now -->
+			<button class="btn btn-default pull-right" ng-click="back()">Back</button>
+			<center>
+				<b>Document Submission</br>{{displayName}}</b>
+				
+				<div ng-repeat="item in assetData">
+					<div ng-repeat="subitem in item.info">
+						<center ng-click="openModal($parent.item.orgFullName, subitem.campusFullName, subitem.subinfo, category, displayName, 'all')"
+							title="View all submitted for {{subitem.campusFullName}}" style="cursor:pointer">
+							<b>{{$parent.item.orgFullName}} - {{subitem.campusFullName}}</b>
+						</center>
+						
+						<table class="dataTable">
+							<tbody style="cursor:pointer">
+								<tr ng-repeat="subinfo in subitem.subinfo" ng-switch on="subinfo[category]"
+									ng-click="openModal($parent.$parent.item.orgFullName, $parent.subitem.campusFullName, subinfo.assetName, category, displayName, subinfo[category])">
+									<td width="30%">{{subinfo.assetName}}</td>
+									<td>
+										<img ng-switch-when="null" ng-src="/intellicommand/pictures/buttons/submit.png" title="Submit Data" class="img-responsive" height="30" width="157"/>
+										<img ng-switch-default ng-src="/intellicommand/pictures/buttons/combined.png" title="View/Download/Update Saved Data" class="img-responsive" height="30" width="157"/>
+									</td>
+								</tr>
+							</tbody>
+						</table></br>
+					</div>
+				</div>
+			</center>
+		</div>
+	</div>
+
+	<div ng-switch-default> <!-- Default view is the loading spinner -->
+		<img ng-src="/intellicommand/ajax-loader2.gif" class="img-responsive"/></br>
+	</div>
+</div>

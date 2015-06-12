@@ -1,0 +1,170 @@
+<!--Angela's code; completenessGaugeViewSchedule.html-->
+<div class="modal-header">
+	<img ng-src="/intellicommand/pictures/clientLogos/Pacific Controls.png" class="img-responsive pull-left" style="width=5000px;max-height:100px"/>
+	<img ng-src="/intellicommand/pictures/clientLogos/{{orgFullName}}.png" class="img-responsive pull-right" style="width=5000px;max-height:100px"/>
+	<span ng-if="viewType !== 'combined'" class="text-center"><h1>{{assetName}} Schedule</h1><p>{{orgFullName}} - {{campusFullName}}</p></span>
+	<span ng-if="viewType == 'combined'" class="text-center"><h1>Summary of Submitted Schedules</h1><p>{{orgFullName}} - {{campusFullName}}</p></span>
+</div>
+
+<div class="modal-body" ng-switch on="view">
+	<div ng-switch-when="loaded">
+		<div ng-switch on="viewType">
+			<div ng-switch-when="single">
+				<div class="row" style="background-color: red" ng-if="scheduleData.temporaryOverrides.length > 0" ng-click="tempOverride(orgFullName, campusFullName, assetName)">
+					<h1 class="text-center" style="color: white"><b><i>TEMPORARY OVERRIDE(S) CURRENTLY BEING OBSERVED! CLICK FOR DETAILS!</i></b></h1>
+				</div>
+				
+				<div class="row">
+					<form name='assetSchedule'>
+						<div class="col-md-4">
+							<h2>Standard Schedule</h2>
+							<table class="dataTable" width="100%">
+								<thead><h1>
+									<tr class="text-center">
+										<td width="20%">Day</td>
+										<td width="20%">Turns On At:</td>
+										<td width="20%">Turns Off At:</td>
+										<td width="20%">Reduced Load After Hours</td>
+										<td width="20%">Does Not Run</td>
+									</tr>
+								</h1></thead>
+								
+								<tbody>
+									<tr class="text-center" ng-repeat="day in scheduleData.standardSch">
+										<td>{{day.day}}</td>
+										<td><input id="standardOn{{$index}}" type="time" ng-model="day.on" ng-disabled="day.runs == false"></td>
+										<td><input id="standardOff{{$index}}" type="time" ng-model="day.off" ng-disabled="day.runs == false"></td>
+										<td><input type="checkbox" ng-checked="day.reducedLoad" ng-model="day.reducedLoad" ng-disabled="day.runs == false"></td>
+										<td><input type="checkbox" ng-checked="!{{day.runs}}" ng-model="day.runs" ng-true-value=false ng-false-value=true></td>
+									</tr>
+								</tbody>
+							</table>
+							<i>*For units running overnight, the "off" time should be 23:59 for the day before, and the "on" time should be 00:00 for the day after</i>
+						</div>
+
+						<div class="col-md-4">
+							<h2>Standard Observed Holidays</h2>
+							<span ng-repeat="day in scheduleData.observedHolidays">
+								<input type="checkbox" ng-model="day.observed" ng-checked="{{day.observed}}"> {{day.day}}</input> </br>
+							</span>
+						</div>
+						
+						<div class="col-md-4">
+							<h2>Additional Observed Holidays</h2>
+							<table class="dataTable">
+								<thead>
+									<tr>
+										<td>Holiday Name</td>
+										<td>Observed</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="day in scheduleData.additionalHolidays" ng-switch on="day.type">
+										<td><input id="additionalDay{{$index}}" type="text" ng-model="day.day"/></td>
+										<td ng-switch-when="exact date">
+											<input id="additionalDate{{$index}}" type="text" placeholder="MM/DD" ng-model="day.date"
+												ng-pattern="/^(1[0-2]|0?[1-9])[-/]([12][0-9]|3[0-1]|0?[1-9])$/"></td>
+											<!--
+											<input id="additionalDate{{$index}}" type="date" ng-model="day.date"/></td>-->
+										<td ng-switch-when="by day">
+											<select id="additionalDayRepeat{{$index}}" ng-model="day.repeat[0]" ng-options="option for option in inputRepeatType"/>
+											<select id="additionalDayName{{$index}}" ng-model='day.repeat[1]' ng-options="option for option in inputRepeatDays"/> of
+											<select id="additionalMonth{{$index}}" ng-model='day.repeat[2]' ng-options="option for option in inputRepeatMonths"/>
+										</td>
+										<td><img ng-src="/intellicommand/pictures/buttons/minus.png" title="Remove Holiday" class="img-responsive" height="24" width="24" ng-click="removeHoliday($index)"/></td>
+									</tr>
+								</tbody>
+							</table>
+							<img ng-src="/intellicommand/pictures/buttons/plus.png" title="Add Holiday" class="img-responsive" height="24" width="24" ng-click="addHoliday(orgFullName, campusFullName, assetName)"/>
+							</br>
+							
+							<h2>Holiday Schedule</h2>
+							<table class="dataTable" width="100%">
+								<thead>
+									<tr class="text-center">
+										<td width="20%"></td>
+										<td width="20%">Turns On At:</td>
+										<td width="20%">Turns Off At:</td>
+										<td width="20%">Reduced Load After Hours</td>
+										<td width="20%">Does Not Run</td>
+									</tr>
+								</thead>
+								
+								<tbody>
+									<tr class="text-center" ng-repeat="day in scheduleData.holidaySch">
+										<td>If holiday falls on a {{day.day}}</td>
+										<td><input id="holidayOn{{$index}}" type="time" ng-model="day.on" ng-disabled="day.runs == false"></td>
+										<td><input id="holidayOff{{$index}}" type="time" ng-model="day.off" ng-disabled="day.runs == false"></td>
+										<td><input type="checkbox" ng-checked="day.reducedLoad" ng-model="day.reducedLoad" ng-disabled="day.runs == false"></td>
+										<td><input type="checkbox" ng-checked="!{{day.runs}}" ng-model="day.runs" ng-true-value=false ng-false-value=true></td>
+									</tr>
+								</tbody>
+							</table>
+							If holiday falls on a Saturday: Holiday is observed on the <select ng-model="scheduleData.weekendStartHoliday" ng-options="option for option in dayOptions"></select></br>
+							If holiday falls on a Sunday: Holiday is observed on the <select ng-model="scheduleData.weekendEndHoliday" ng-options="option for option in dayOptions"></select>
+						</div>
+					</form>
+				</div>
+			</div>
+
+
+			<div ng-switch-default>
+				<div class="row">
+					<div class="col-md-4">
+						<h2>Standard Observed Holidays</h2>
+						<table>
+							<thead>
+								<td><b>Holiday</b></td>
+								<td><b>Assets Observing</b></td>
+							</thead>
+							<tbody>
+								<tr ng-repeat="day in scheduleData.observedHolidays">
+									<td>{{day.day}}</td>
+									<td ng-click="changeAssetsObserving(day.day)">59%</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-md-4">
+						<h2>Additional Observed Holidays</h2>
+						<table class="dataTable">
+							<thead>
+								<tr>
+									<td><b>Holiday Name</b></td>
+									<td><b>Observed</b></td>
+									<td><b>Assets Observing</b></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="day in scheduleData.additionalHolidays" ng-switch on="day.type">
+									<td><input id="additionalDay{{$index}}" type="text" ng-model="day.day"/></td>
+									<td ng-switch-when="exact date"><input id="additionalDate{{$index}}" type="date" ng-model="day.date"/></td>
+									<td ng-switch-when="by day">
+										<select id="additionalDayRepeat{{$index}}" ng-model="day.repeat[0]" ng-options="option for option in inputRepeatType"/>
+										<select id="additionalDayName{{$index}}" ng-model='day.repeat[1]' ng-options="option for option in inputRepeatDays"/> of
+										<select id="additionalMonth{{$index}}" ng-model='day.repeat[2]' ng-options="option for option in inputRepeatMonths"/>
+									</td>
+									<td ng-click="changeAssetsObserving(day.day)">49%</td>
+									<td><img ng-src="/intellicommand/pictures/buttons/minus.png" title="Remove Holiday" class="img-responsive" height="24" width="24" ng-click="removeHoliday($index)"/></td>
+								</tr>
+							</tbody>
+						</table>
+						<img ng-src="/intellicommand/pictures/buttons/plus.png" title="Add Holiday" class="img-responsive" height="24" width="24" ng-click="addHoliday(orgFullName, campusFullName, 'Facility-Wide')"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div ng-switch-default> <!-- Default view is the loading spinner -->
+		<img ng-src="/intellicommand/ajax-loader2.gif" class="img-responsive"/></br>
+	</div>
+</div>
+
+<div class="modal-footer" ng-if="view == 'loaded'">
+	<button class="btn btn-primary" ng-click="save(scheduleData)"><span class="glyphicon glyphicon-floppy-save"></span> Save Changes</button>
+	<button class="btn btn-primary" ng-click="download()"><span class="glyphicon glyphicon-download"></span> Download Data</button></a>
+	<button class="btn btn-primary" ng-if="viewType !== 'combined'" ng-click="upload(orgFullName, campusFullName, assetName, 'Schedule')"><span class="glyphicon glyphicon-upload"></span> Replace with New Upload Data</button>
+	<button class="btn btn-danger" ng-if="scheduleData.temporaryOverrides.length == 0" ng-click="tempOverride(orgFullName, campusFullName, assetName)"><span class="glyphicon glyphicon-alert"></span> Add Temporary Override</button></a>
+	<button class="btn btn-primary" ng-click="close()">Close</button>
+</div>
