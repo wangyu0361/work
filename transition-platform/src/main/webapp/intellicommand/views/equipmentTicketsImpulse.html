@@ -1,0 +1,36 @@
+<style>
+.axis path,
+.axis line {
+	fill: none;
+	stroke: #000;
+	shape-rendering: crispEdges;
+}
+.d3-tip {
+	padding: 12px;
+	background: #bfbfbf;
+	border-radius: 5px;
+	box-shadow: 1px 1px 3px #000;
+	color: black;
+	font-weight: bold;
+	z-index: 5;
+	border: 1px solid black;
+}
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 15px;
+  width: 100%;
+  line-height: 1;
+  color: black;
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+  margin: -2px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+</style>
+<script src='/intellicommand/bower_components/d3-tip/index.js'></script>
+
+<svg></svg>

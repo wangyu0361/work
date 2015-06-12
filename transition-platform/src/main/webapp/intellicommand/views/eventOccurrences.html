@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<div class="container-fluid" style="background-color:white;padding: 0px">
+<div ng-controller="eventOccurrencesCtrl">
+<div class="panel panel-default" >
+<div class= "panel-heading clearfix" >
+<div class="btn-group pull-right" dropdown>
+<button type="button" class="btn btn-default dropdown-toggle">
+	<div>
+		
+	</div>	
+			
+	<span class="caret"></span>
+</button>
+<ul class="dropdown-menu" role="menu">			
+	<li>				
+		<li ng-repeat="timeFrame in timeFrameList">
+		<a class="btn btn-default" ng-click='setDateRange(timeFrame);runQuery()'>{{timeFrame}}</a>
+		</li>			
+	</li>
+</ul>
+
+	</div>
+</div>
+<div>
+<div style="text-align:center;font-size:400%;font-weight:bold;padding:25px"> 
+{{numberOfTickets}}
+</div>
+<div style="text-align:center;font-size:200%;font-weight:bold;padding:25px"> 
+ Tickets Generated at {{activeOrg}}
+ </div>
+
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+

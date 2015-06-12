@@ -1,0 +1,40 @@
+
+	
+	<!-- <div class = "row"> 
+		 <div ng-show="false" class = "col-md-3 col-sm-4 col-xs-6 col-lg-2">From: <my-calendar name="startDate"></my-calendar></div>
+	</div>
+	<br>
+     
+	<div class="row"> 
+  		<div ng-show="false" class = "col-md-3 col-sm-4 col-xs-6 col-lg-2">To: <my-calendar name="endDate"></my-calendar></div>
+	 </div> --> 
+
+<div ng-controller="workOrderCycleTimeCtrl">
+<img ng-if="!hasOrg && !inEditor" ng-src="/intellicommand/ajax-loader2.gif"></img>
+<div ng-if="!hasOrg && inEditor"><h1>Please click the gear icon to select viewing preferences from the configuration menu.</h1></div>
+<div ng-if="noData"><h1>No work orders were found for the most recent request</h1></div>
+<!-- <div ng-if="hasOrg" class="btn btn-default" ng-click="openWorkOrderGrid()"><img src="/intellicommand/smallChart.png"></div> -->
+<!-- <div ng-if="!inDashboard" class="btn btn-default" ng-click="openPageConfiguration()"><img src="/app/config.png"></div> -->
+<div collapse="!drawChartNow">
+	<p>Client: {{organizationName}}</p>
+	<!-- <a style="cursor:pointer" ng-click="resetDates() ; renderChart()">Reset All</a><r>&emsp;&emsp;</r>
+	 <a style="cursor:pointer" ng-if="!makeElastic"  ng-click="previousMonth()">Previous Month</a><r>&emsp;&emsp;</r>
+	<a style="cursor:pointer" ng-if="!makeElastic"  ng-click="nextMonth()">Next Month</a>  -->
+	<br>
+	
+	
+	<div  id="cycle_time_bar_chart_{{chartId}}" ></div>
+	<!-- <div  id="cycle_time_bar_chart_{{chartId}}" ng-click="renderWeekly()"></div> -->
+	<div class =  "col-md-3 col-sm-3 col-xs-3 col-lg-3">
+		<div id="cycle_time_facility_pie_chart_{{facilityChartId}}" ng-click="renderAssetChart()"></div> 
+		<div id="cycle_time_asset_chart_{{assetChartId}}" collapse="!showAsset"></div>
+	</div>
+
+	<!-- <div ng-if="!drawChartNow"><img src="http://localhost:8000/app/pictures/cheese.jpg" width="200" height="200"></div> --> 		
+</div>
+
+<div ng-if="gridView" style="width:100%" ui-grid="gridOptions" ui-grid-auto-resize external-scopes="onRowClick"></div><br>
+</div>
+	
+
+

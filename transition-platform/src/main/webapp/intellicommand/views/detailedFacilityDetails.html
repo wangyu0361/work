@@ -1,0 +1,196 @@
+
+<div class="container-fluid" style="background-color: white">
+
+	<title>My First HTML</title>
+
+	<!-- org -->
+
+
+
+
+	<div>
+
+
+		<div class="jumbotron" style="background-color: #428bca">
+			<center>
+				<h1>Facility Details</h1>
+			</center>
+			<center>
+				<button class="btn btn-default" ng-click="ok()">-</button>
+
+
+
+			</center>
+		</div>
+		<div ng-controller="facilityDetailsCtrl">
+			<div>
+
+
+				<center>
+
+					<b>
+						<div ng-if="!isBlank(displayData.clientName)">
+							{{displayData.clientName}}</div>
+						<div ng-if="!isBlank(displayData.projectName)">
+							{{displayData.projectName}}</div>
+					</b>
+					<div>
+						<center>
+							<div ng-if="!isBlank(displayData.image)">
+								<img ng-src={{displayData.image}}></img>
+							</div>
+							<li ng-if="!isZero(displayData.siteCount)">This organization has a total
+								of {{displayData.siteCount}} sites</li>
+							<li ng-if="!isBlank(displayData.liveDate)">Went live on
+								{{displayData.liveDate}}</li>
+							<div ng-if="!isBlank(displayData.facilityAddress)">
+								<div ng-if="!isBlank(displayData.city)">
+									<div ng-if="!isBlank(displayData.state)">
+										<li>Located at {{displayData.facilityAddress}},
+											{{displayData.city}}, {{displayData.state}}</li>
+									</div>
+									<div ng-if="isBlank(displayData.state)">
+										<li>Located at {{displayData.facilityAddress}},
+											{{displayData.city}}</li>
+									</div>
+								</div>
+								<div ng-if="isBlank(displayData.city)">
+									<li>Located at {{displayData.facilityAddress}}</li>
+								</div>
+							</div>
+							<li ng-if="!isBlank(displayData.buildingType)">{{displayData.buildingType}}</li>
+							<li ng-if="!isBlank(displayData.squareFootage)">Total of
+								{{displayData.squareFootage}} sq ft.</li>
+							<li ng-if="!isZero(displayData.assetCount)">Total key assets
+								monitored: {{displayData.assetCount}}</li>
+					</div>
+			</div>
+			<div ng-if="facilitySelected">
+				<center>
+					<table class="dataTable" border="3">
+						<thead>
+							<tr>
+								<td class="taC" style="width: 21%;">{{displayData.weatherQuery.day1Name}}
+								</td>
+								<td class="taC" style="width: 21%;">{{displayData.weatherQuery.day2Name}}
+								</td>
+								<td class="taC" style="width: 21%;">{{displayData.weatherQuery.day3Name}}
+								</td>
+								<td class="taC" style="width: 21%;">{{displayData.weatherQuery.day4Name}}
+								</td>
+								<td class="taC" style="width: 21%;">{{displayData.weatherQuery.day5Name}}
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="wHover noBorder">
+								<td class="taC">
+									<div>
+										<img src="{{displayData.weatherQuery.day1Image}}" alt="Clear"
+											width="42" height="42" class="condIcon" />
+									</div>
+									<div class="b nobr">
+										<span style="color: #900;">{{displayData.weatherQuery.day1HighTemp}};
+											F</span> <span style="font-weight: normal; color: #999;">|</span> <span
+											style="color: #009;">{{displayData.weatherQuery.day1LowTemp}}
+											; F</span>
+									</div>
+								</td>
+								<td class="taC">
+									<div>
+										<img src="{{displayData.weatherQuery.day2Image}}" alt="Clear"
+											width="42" height="42" class="condIcon" />
+									</div>
+									<div class="b nobr">
+										<span style="color: #900;">{{displayData.weatherQuery.day2HighTemp}}
+											; F</span> <span style="font-weight: normal; color: #999;">|</span>
+										<span style="color: #009;">{{displayData.weatherQuery.day2HighTemp}}
+											; F</span>
+									</div>
+								</td>
+								<td class="taC">
+									<div>
+										<img src="{{displayData.weatherQuery.day3Image}}"
+											alt="Partly Cloudy" width="42" height="42" class="condIcon" />
+									</div>
+									<div class="b nobr">
+										<span style="color: #900;">{{displayData.weatherQuery.day3HighTemp}}
+											; F</span> <span style="font-weight: normal; color: #999;">|</span>
+										<span style="color: #009;">{{displayData.weatherQuery.day3HighTemp}}
+											; F</span>
+									</div>
+								</td>
+								<td class="taC">
+									<div>
+										<img src="{{displayData.weatherQuery.day4Image}}"
+											alt="Chance of Rain" width="42" height="42" class="condIcon" />
+									</div>
+									<div class="b nobr">
+										<span style="color: #900;">{{displayData.weatherQuery.day4HighTemp}}
+											; F</span> <span style="font-weight: normal; color: #999;">|</span>
+										<span style="color: #009;">{{displayData.weatherQuery.day4HighTemp}}
+											; F</span>
+									</div>
+								</td>
+								<td class="taC">
+									<div>
+										<img src="{{displayData.weatherQuery.day5Image}}" alt="Clear"
+											width="42" height="42" class="condIcon" />
+									</div>
+									<div class="b nobr">
+										<span style="color: #900;">{{displayData.weatherQuery.day5HighTemp}}
+											; F</span> <span style="font-weight: normal; color: #999;">|</span>
+										<span style="color: #009;">{{displayData.weatherQuery.day5HighTemp}}
+											; F</span>
+									</div>
+								</td>
+							</tr>
+							<tr class="wHover noBorder">
+								<td class="taC">{{displayData.weatherQuery.day1Desc}}
+									<div
+										ng-if="!isZero(displayData.weatherQuery.day1Rain) && isZero(displayData.weatherQuery.day1Snow)">
+										{{displayData.weatherQuery.day1Rain}}% chance of rain</div>
+									<div ng-if="!isZero(displayData.weatherQuery.day1Snow)">
+										{{displayData.weatherQuery.day1Snow}}% chance of snow</div>
+								</td>
+								<td class="taC">{{displayData.weatherQuery.day2Desc}}
+									<div
+										ng-if="!isZero(displayData.weatherQuery.day2Rain) && isZero(displayData.weatherQuery.day2Snow)">
+										{{displayData.weatherQuery.day2Rain}}% chance of rain</div>
+									<div ng-if="!isZero(displayData.weatherQuery.day2Snow)">
+										{{displayData.weatherQuery.day2Snow}}% chance of snow</div>
+								</td>
+								<td class="taC">{{displayData.weatherQuery.day3Desc}}
+									<div
+										ng-if="!isZero(displayData.weatherQuery.day3Rain) && isZero(displayData.weatherQuery.day3Snow)">
+										{{displayData.weatherQuery.day3Rain}}% chance of rain</div>
+									<div ng-if="!isZero(displayData.weatherQuery.day3Snow)">
+										{{displayData.weatherQuery.day3Snow}}% chance of snow</div>
+								</td>
+								<td class="taC">{{displayData.weatherQuery.day4Desc}}
+									<div
+										ng-if="!isZero(displayData.weatherQuery.day4Rain) &&isZero(displayData.weatherQuery.day4Snow)">
+										{{displayData.weatherQuery.day4Rain}}% chance of rain</div>
+									<div ng-if="!isZero(displayData.weatherQuery.day4Snow)">
+										{{displayData.weatherQuery.day4Snow}}% chance of snow</div>
+								</td>
+								<td class="taC">{{displayData.weatherQuery.day5Desc}}
+									<div
+										ng-if="!isZero(displayData.weatherQuery.day5Rain)&&isZero(displayData.weatherQuery.day5Snow)">
+										{{displayData.weatherQuery.day5Rain}}% chance of rain</div>
+									<div ng-if="!isZero(displayData.weatherQuery.day5Snow)">
+										{{displayData.weatherQuery.day5Snow}}% chance of snow</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</center>
+			</div>
+		</div>
+		
+	</div>
+</div>
+
+
+
+

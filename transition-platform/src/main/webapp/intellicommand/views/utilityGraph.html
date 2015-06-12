@@ -1,0 +1,42 @@
+<button class="btn btn-default" ng-click="utility.doSomething()">Do Something!</button>
+<br>
+<div ng-if="utility.rendered"> 
+			<div dc-chart="barChart" 
+			dc-width="1000" 
+			dc-height="400" 
+			dc-margins="{top: 10, right: 50, bottom: 30, left: 100}"
+			dc-dimension="utility.utilityDimension"
+			dc-group="utility.utilityGroup"
+			dc-elastic-y="true" 
+			dc-center-bar="true" 
+			dc-gap="1" 
+			dc-round="dc.round.floor" 
+			dc-always-use-rounding="true" 
+			dc-x="d3.time.scale().domain([Date(2014,0,1), Date(2014,12,31)])"
+			dc-x-units="d3.time.months"
+			dc-render-horizontal-grid-lines="true" 
+			class="dc-chart">
+			</div>
+</div>
+<br>
+<div ng-if="utility.rendered"> 
+			<div dc-chart="barChart" 
+			dc-width="1000" 
+			dc-height="400" 
+			dc-margins="{top: 10, right: 50, bottom: 30, left: 100}"
+			dc-dimension="utility.utilityDimension"
+			dc-group="utility.utilityGroup"
+			dc-elastic-y="true" 
+			dc-center-bar="true" 
+			dc-gap="1" 
+			dc-round="dc.round.floor" 
+			dc-always-use-rounding="true" 
+			dc-x="d3.time.scale().domain([Date(2014,4,1), Date(2014,12,31)])"
+			dc-x-units="d3.time.months"
+			dc-render-horizontal-grid-lines="true" 
+			class="dc-chart">
+			</div>
+</div>
+		<div ng-if="!utility.rendered"> 
+		<img src="/intellicommand/ajax-loader.gif" width="200" height="200">
+</div>

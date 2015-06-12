@@ -1,0 +1,34 @@
+<!--Angela's code; completenessGaugeEditAssets.html-->
+
+<div class="modal-header">
+	<img ng-src="/intellicommand/pictures/clientLogos/Pacific Controls.png" class="img-responsive pull-left" style="width=5000px;max-height:100px"/>
+	<img ng-src="/intellicommand/pictures/clientLogos/{{passedData.orgFullName}}.png" class="img-responsive pull-right" style="width=5000px;max-height:100px"/>
+	<span ng-if="passedData.type == 'terminalUnit'" class="text-center"><h1>{{passedData.filterKey}} Terminal Units</h1><p>{{passedData.orgFullName}} - {{passedData.campusFullName}}</p></span>
+	<span ng-if="passedData.type == 'holidaySch'" class="text-center"><h1>Holiday Observance: {{passedData.filterKey}}</h1><p>{{passedData.orgFullName}} - {{passedData.campusFullName}}</p></span>
+</div>
+
+<div class="modal-body">
+	<div class="row" style="position: relative">
+		<div class="col-md-5">
+			<h2 ng-if="passedData.type == 'terminalUnit'" class="text-center">{{passedData.campusFullName}} Non-{{passedData.filterKey}} Terminal Units</h2>
+			<h2 ng-if="passedData.type == 'holidaySch'" class="text-center">Assets Not Observing</h2>
+		<select multiple size="30" style="width:100%" ng-init="null" ng-model="leftSelected" ng-options="item.name for item in leftSide"/></div>
+
+		<div align="center" style="padding-top:75px" class="col-md-2">
+			<button class="btn btn-block" ng-click="moveAll('right')" ng-disabled="leftSide.length == '0'"><span class="glyphicon glyphicon-forward" style="font-size:3em"/></br>Move All</button></br>
+			<button class="btn btn-block" ng-click="moveSelected('right')" ng-disabled="leftSelected.length == '0'"><span class="glyphicon glyphicon-arrow-right" style="font-size:3em"/></br>Move Selected</button></br>
+			<button class="btn btn-block" ng-click="moveSelected('left')" ng-disabled="rightSelected.length == '0'"><span class="glyphicon glyphicon-arrow-left" style="font-size:3em"/></br>Move Selected</button></br>
+			<button class="btn btn-block" ng-click="moveAll('left')" ng-disabled="rightSide.length == '0'"><span class="glyphicon glyphicon-backward" style="font-size:3em"/></br>Move All</button>
+		</div>
+		
+		<div class="col-md-5">
+			<h2 ng-if="passedData.type == 'terminalUnit'" class="text-center">{{passedData.campusFullName}} {{passedData.filterKey}} Terminal Units</h2>
+			<h2 ng-if="passedData.type == 'holidaySch'" class="text-center">Assets Observing</h2>
+		<select multiple size="30" style="width:100%" ng-init="null" ng-model="rightSelected" ng-options="item.name for item in rightSide"/></div>
+	</div>
+</div>
+
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="saveClose(passedData)"><span class="glyphicon glyphicon-floppy-save"></span> Save Changes</button>
+	<button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+</div>

@@ -1,0 +1,13 @@
+<div ng-controller='alarmsInterfaceCtrl'>
+
+
+	<div class="custom-csv-link-location">
+		<label>Link to file export:</label>
+		<span class="ui-grid-exporter-csv-link">&nbsp</span>
+	</div>
+	<div  ui-grid="gridOptions" external-scopes="test" ui-grid-exporter ui-grid-selection ui-grid-edit ui-grid-resize-columns ></div><br>
+	
+	<div><b>Selected Event:</b> {{id}}</div><br> 
+	<div>{{description}}</div>
+
+</div>

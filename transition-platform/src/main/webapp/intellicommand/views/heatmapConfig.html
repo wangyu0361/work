@@ -1,0 +1,42 @@
+<div>
+	
+	<br>
+	<div>Select data source:</div>
+	<select class ="form-control action" ng-model="heat.dataSource" ng-options="obj.source as obj.text for obj in sources"></select><br>
+
+	<div>Select event source:</div>
+	<select class ="form-control action" ng-model="heat.eventSource" ng-options="obj.source as obj.text for obj in events"></select>
+	<br>
+	
+	<div>Select domain:</div>
+	<select class ="form-control action" ng-model="heat.heatmapConfig.domain" ng-options="obj.domain as obj.domain for obj in domainOpts"></select>
+	<br>
+	
+	<div>Select sub-domain:</div>
+	<select class ="form-control action" ng-model="heat.heatmapConfig.subDomain" ng-options="obj.domain as obj.domain for obj in subDomainOpts"></select>
+	<br>
+	
+	<div>Select Legend Minimum Color:</div>
+	<button class="btn btn-default ng-valid ng-dirty" ng-attr-style="background-color:{{heat.heatmapConfig.legendColors.min}}" colorpicker-position="right" colorpicker="hex" type="text" ng-model="heat.heatmapConfig.legendColors.min">
+	</button>
+	<br>
+	
+	<div>Select Legend Maximum Color:</div>
+	<button class="btn btn-default ng-valid ng-dirty" ng-attr-style="background-color:{{heat.heatmapConfig.legendColors.max}}" colorpicker-position="right" colorpicker="hex" type="text" ng-model="heat.heatmapConfig.legendColors.max">
+	</button>
+	<br>
+						
+	<div>Select Start Date:</div>
+	<my-calendar name="heat.heatmapConfig.start"></my-calendar>
+	<br>
+	<div>Select End Date:</div>
+	<my-calendar name="heat.heatmapConfig.end"></my-calendar>
+	<br>
+	
+	<div>Show Schedules on Heatmap: <input type ="checkbox" ng-model="heat.showLines" ng-change="heat.scheduleSelect()"> <br/></div>
+	<br>
+	
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">OK</button>
+	</div>
+</div>

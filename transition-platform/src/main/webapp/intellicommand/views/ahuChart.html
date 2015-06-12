@@ -1,0 +1,27 @@
+<div ng-controller=ahuChartCtrl>
+	<div collapse="!(done===true)">	
+		<multi-axis-composite-chart 
+			height=300 
+			charts=subCharts 
+			axis=config.axis
+			start=config.chartStart 
+			end=config.chartEnd 
+			chart-instance=chartInstance2
+			finished=chartFinished
+		></multi-axis-composite-chart>
+		
+		<date-slider-chart 
+			chart=chartInstance2
+			edit-chart=true
+			start-end-dates=true 
+			start-time=config.chartStart 
+			end-time=config.chartEnd
+		></date-slider-chart>
+	</div>
+	<div collapse="!(done===false)">
+		<img src="/intellicommand/ajax-loader2.gif">
+	</div>
+	<div collapse="!(done===null)">
+		<h3>Please select an organization, facility and asset.</h3>
+	</div>
+</div>

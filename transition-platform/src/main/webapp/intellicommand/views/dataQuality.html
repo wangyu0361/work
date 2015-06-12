@@ -1,0 +1,62 @@
+<!-- Angela's code; dataQuality.html -->
+
+<div class="container-fluid" ng-switch on="view">
+	<div ng-switch-when="loaded">
+		<div id="dq-chart">
+			<center><b>Data Quality Compliance Chart</b></center>
+			<dossier-quality-pie-chart chart-data="chartData" on-click="updateDisplay(category)"></dossier-quality-pie-chart>
+		</div>
+	</div>
+	
+<!--	<div ng-switch-when="State" class="col-md-8 col-md-offset-2">
+		<div class="row">
+			<center><b>Data Quality Compliance Chart - Point State</b></center>
+			<button class="btn btn-default pull-right" ng-click="back()">Back</button>
+			
+		</div>
+		
+		<div class="row">
+			<div class="col-md-3"  style="padding:20px; background-color:#F5EBFF" align="center">
+				<img ng-src="/app/pictures/clientLogos/Deutsche Bank.png" class="img-responsive" style="max-height:100px"/>
+				
+				<b style="font-size:1.5em">60 Wall Street</b>
+				
+				<table>
+					<tr><td width="80%">Total Points Included</td><td width="20%">9432</td></tr>
+					<tr><td>Compliant Points</td><td>9084</td></tr>
+					<tr><td>Non-Compliant Points</td><td>348</td></tr>
+					<tr><td>Percent Compliant</td><td>96.3%</td></tr>
+				</table>
+			</div>
+			
+			<div class="col-md-9">
+				<center><h2>Non-Compliant Points</h2><center>
+				<div ui-grid="gridOptions" ui-grid-selection ></div>
+
+				
+				<!--<table ui-grid>
+					<tr ng-repeat="point in state">
+						<td title="Point Name">{{point.pointName}}<td>
+						<td title="Point Asset">{{point.assetName}}<td>
+						<td title="Current State">{{point.pointState}}<td>
+						<td title="Duration in State">{{point.duration}}<td>
+						<td title="Fix">I'm Broken!<td>
+					</tr>
+				</table>
+					->
+			</div>
+		</div>
+	</div>
+-->
+	
+	
+	<div ng-switch-default> <!-- Default view is the loading spinner -->
+		<button class="btn btn-default pull-right" ng-click="back()">Back</button>
+		<h1>{{view}}</h1>
+		Page with more details in progress...
+		<img ng-src="/app/ajax-loader2.gif" class="img-responsive"/>
+		
+	</div>
+</div>
+
+

@@ -1,0 +1,48 @@
+<!--Angela's code; facilitySelectorModal.html-->
+<style>
+	#facilityModalButton:hover {
+		cursor: pointer;
+	}
+	#facilityModalButton:hover #backgroundRect {
+		fill: #d90000;
+	}
+	#facilityModalButton:hover #foregroundText {
+		fill: white;
+	}
+	#facilityModalBackButton {
+		background-color: #bfbfbf;
+		border-radius: 10px;
+		color: black;
+	}
+	#facilityModalBackButton:hover {
+		background-color: #bfbfbf;
+		border: 2px solid #d90000;
+		color: #d90000;
+	}
+</style>
+
+<div id="expandMe">
+	<div ng-show="view == 'icon'">
+		<svg id="facilityModalButton" viewBox="0 0 35 800" height="700px" ng-click="expand()">
+			<rect id="backgroundRect" x="0" y="0" rx="10" ry="10" width="35" height="800" fill="#bfbfbf"/>
+			<text id="foregroundText" style="text-align:center; text-anchor:middle" fill="black" x="-400" y="25" font-size="20" transform="rotate(270)">
+				Click to Change Dashboard Data
+			</text>
+			<!-- x controls vertical alignment -> set to 1/2 the height  -->
+			<!-- y controls horizontal alignment -->
+		</svg>
+	</div>
+	
+	<div ng-show="view == 'full'">
+		<div class="panel panel-default">
+			<div class= "panel-heading clearfix">
+				<div class="pull-right">
+					<button class="btn" id="facilityModalBackButton" ng-click='shrink()' style="float:right"> << </button><br>
+					
+				</div>
+				<div class="pull-left panel-heading">Data Selector</div>
+			</div>
+		</div>
+		<facility-selector></facility-selector>
+	</div>
+</div>

@@ -1,0 +1,95 @@
+<!--Angela's code; completenessGauveViewMechSpecs.html-->
+
+<div class="modal-header">
+	<img ng-src="/intellicommand/pictures/clientLogos/Pacific Controls.png" class="img-responsive pull-left" style="width=5000px;max-height:100px"/>
+	<img ng-src="/intellicommand/pictures/clientLogos/{{orgFullName}}.png" class="img-responsive pull-right" style="width=5000px;max-height:100px"/>
+	<span class="text-center"><h1>{{assetName}} Mechanical Specs</h1><p>{{orgFullName}} - {{campusFullName}}</p></span>
+</div>
+
+<div ng-switch on="view" class="modal-body">
+	<div ng-switch-when="loaded" class="row">
+		<div class="col-md-9">
+			<form>
+				<div class="col-md-6">
+					<h2>Manufacturer Details</h2>
+					<table width="100%">
+						<tr><td>Manufacturer:</td><td><input type="text" size="70" ng-model="mechSpecsData.manufacturer"></td></tr>
+						<tr><td>Model #:</td><td><input type="text" size="70"ng-model="mechSpecsData.modelNum"></td></tr>
+						<tr><td>Serial #:</td><td><input type="text" size="70" ng-model="mechSpecsData.serialNum"></td></tr>
+						<tr><td>Area Served:</td><td><input type="text" size="70"ng-model="mechSpecsData.areaServed"></td></tr>
+						<tr><td>Floor:</td><td><input type="text" size="70"ng-model="mechSpecsData.floorServed"></td></tr>
+						<tr><td>Protocol:</td><td><select ng-model="mechSpecsData.protocol" ng-options="option for option in protocolsList"/>
+							<input ng-if="mechSpecsData.protocol == 'Other'" type="text" size="30" placeholder="Please Specify"></td></tr>
+					</table>
+				</div>
+				<div class="col-md-6">
+					<h2>Physical Specifications</h2>
+					<table>
+						<tr><td>Rated Cooling Capacity:</td><td><input type="number" min="0" max="200" style="width: 4em" ng-model="mechSpecsData.ratedClgCap">
+							<select ng-model="mechSpecsData.ratedClgCapUnits" ng-options="option for option in capacityUnits"/></td></tr>
+						<tr><td>Rated Heating Capacity:</td><td><input type="number" min="0" max="200" style="width: 4em" ng-model="mechSpecsData.ratedHtgCap">
+							<select ng-model="mechSpecsData.ratedHtgCapUnits" ng-options="option for option in capacityUnits"/></td></tr>
+						<tr><td>Cooling Method:</td><td><select ng-model="mechSpecsData.coolType" ng-options="option for option in coolTypes"/></td></tr>
+						<tr><td>Chilled Water Valves:</td><td><input type="number" min="0" max="10" style="width: 4em" ng-model="mechSpecsData.chilledValve"></td></tr>
+						<tr><td>Hot Water Valves:</td><td><input type="number" min="0" max="10" style="width: 4em" ng-model="mechSpecsData.hotValve"></td></tr>
+						<tr><td>Cooling Stages:</td><td><input type="number" min="0" max="10" style="width: 4em" ng-model="mechSpecsData.coolingStages"></td></tr>
+						<tr><td>Heating Stages:</td><td><input type="number" min="0" max="10" style="width: 4em" ng-model="mechSpecsData.heatingStages"></td></tr>
+						<tr><td>Compressors:</td><td><input type="number" min="0" max="10" style="width: 4em" ng-model="mechSpecsData.compressors"></td></tr>
+						<tr><td>Economizer Equipped?</td><td><input type="checkbox" ng-model="mechSpecsData.economizer"></td></tr>
+					</table>
+				</div>
+			
+				<div class="col-md-12">
+					<h2>Associated Fans</h2>
+					<table class="dataTable" >
+						<thead>
+							<tr class="text-center">
+								<td>Name</td>
+								<td>Function</td>
+								<td>Type</td>
+								<td>Make</td>
+								<td>Model #</td>
+								<td>HorsePower</td>
+								<td>CFM</td>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<tr class="text-center" ng-repeat="fan in mechSpecsData.fans">
+								<td><input id="$parent.type{{$index}}.name" type="text" ng-model="fan.name"/></td>
+								<td><select ng-model="fan.type" ng-options="option for option in fanFunctions"/></td>
+								<td><select ng-model="fan.speed" ng-options="option for option in speedOptions"></select></td>
+								<td><input id="$parent.type{{$index}}.make" type="text" ng-model="fan.make"/></td>
+								<td><input id="$parent.type{{$index}}.modelNum" type="text" ng-model="fan.modelNum"/></td>
+								<td><input id="$parent.type{{$index}}.horsePower" type="number" style="width: 6em" ng-model="fan.horsePower"/></td>
+								<td><input id="$parent.type{{$index}}.horsePower" type="number" style="width: 6em" ng-model="fan.ratedCFM"/></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</form>
+		</div>
+		
+		<div class="col-md-3">
+			<h2>Associated Terminal Units<button class="btn btn-primary pull-right" ng-click="editTerminalUnits(orgFullName, campusFullName, assetName)"><span class="glyphicon glyphicon-edit"></span> Edit</button></h2>
+			
+			<!-- Create 3 columns of terminal units -->
+			<i ng-if="myTerminalUnits.length == 0">There are no terminal units currently associated with {{assetName}}</i>
+			
+			<div class="col-md-4"><span ng-repeat="unitName in myTerminalUnits | limitTo: col1">{{unitName}}</br></span></div>
+			<div class="col-md-4"><span ng-repeat="unitName in myTerminalUnits | limitTo: (col1+col2) | limitTo: -col2">{{unitName}}</br></span></div>
+			<div class="col-md-4"><span ng-repeat="unitName in myTerminalUnits | limitTo: (col1+col2+col3) | limitTo: -col3">{{unitName}}</br></span></div>
+		</div>
+	</div>
+	
+	<div ng-switch-default> <!-- Default view is the loading spinner -->
+		<img ng-src="/intellicommand/ajax-loader2.gif" class="img-responsive"/></br>
+	</div>
+</div>
+
+<div class="modal-footer" ng-if="view == 'loaded'">
+	<button class="btn btn-primary" ng-click="save(mechSpecsData)"><span class="glyphicon glyphicon-floppy-save"></span> Save Changes</button>
+	<button class="btn btn-primary" ng-click="download()"><span class="glyphicon glyphicon-download"></span> Download Data</button></a>
+	<button class="btn btn-primary" ng-click="upload(orgFullName, campusFullName, assetName, 'Mechanical Specs')"><span class="glyphicon glyphicon-upload"></span> Replace with New Upload Data</button>
+	<button class="btn btn-primary" ng-click="close()">Close</button>
+</div>

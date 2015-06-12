@@ -1,0 +1,38 @@
+<div ng-controller="treemapAssetConfigCtrl">
+
+	<button class="btn btn-default" ng-click="openSettings()">
+		<img src="intellicommand/config.png">
+	</button>
+</div>
+
+<script type="text/ng-template" id="treemapAssetModal.html">
+<div class="modal-header">
+	<h1 class="modal-title">Treemap Asset Configuration</h1>
+</div>
+<div class="container-fluid" style="background-color:white">
+
+
+<div class="btn-group pull-left" dropdown>
+	<button type="button" class="btn btn-primary dropdown-toggle">
+	<div>
+		Select Timeframe
+	</div>	
+			
+	<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu">			
+		<li>				
+			<li ng-repeat="timeFrame in timeFrameList">
+			<a class="btn btn-default" ng-click='setDateRange(timeFrame)'>{{timeFrame}}</a>
+			</li>
+				
+		</li>
+	</ul>
+</div>
+
+
+</div>
+<div class="modal-footer">
+		<button class="btn btn-primary" ng-click="ok()">OK</button>
+</div>
+</script>

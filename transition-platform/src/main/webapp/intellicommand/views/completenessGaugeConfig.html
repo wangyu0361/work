@@ -1,0 +1,9 @@
+<!--Angela's code; completenessGaugeConfig.html-->
+
+<div></br>
+	<h2>Choose Client(s) and Facility(s) to Display:</h2></br>
+	<select multiple size="20" ng-model="choices" ng-options="f.client + ': ' + f.station for f in facilityList" ng-change="optionSelected()"></select></br></br>
+		
+	<div ng-if="choices == null"><i>Please choose at least 1 client/facility to continue</i></div>
+	<button class="btn btn-primary" ng-if="choices != null" ng-click="ok()">OK</button></br>
+</div>

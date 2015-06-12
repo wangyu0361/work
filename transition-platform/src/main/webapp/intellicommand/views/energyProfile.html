@@ -1,0 +1,31 @@
+
+<div ng-controller="energyProfileCtrl">
+	<img ng-if="!rendered && !badRequest"  src="/intellicommand/ajax-loader2.gif"></img>
+	<div ng-if="badRequest"><h3>No data was found for the most recent request</h3></div>
+	<div ng-show="rendered">{{range}}</div>
+ 	<div collapse="!rendered" id="energy_profile"></div>
+<date-slider-chart ng-show="rendered" chart=energyProfile	edit-chart=true	start-end-dates=false dynamic-dimensions=true></date-slider-chart> 
+</div>
+
+<!-- <button class="btn btn-default" ng-click = 'testGet()'>GET Energy Names</button> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

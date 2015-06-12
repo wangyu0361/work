@@ -1,0 +1,30 @@
+<!-- <div class="modal-header">
+<div class="modal-title">Work Order Summary</div>
+	<div class="btn-group" dropdown>	
+			<button type="button" class="btn btn-primary dropdown-toggle">
+				Select an Organization<span class="caret"></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<li ng-repeat="organizationName in organizationNames">
+					<a  ng-click='organizationView(organizationName)'>{{organizationName}}</a>
+				</li>
+			</ul>
+	</div> 
+	<button ng-if="showCloseButton" type="button" class="btn btn-warning" ng-click='closeWindow()'>Close</button>
+</div>-->
+<!-- <div ng-if="!inDashboard" class="btn btn-default" ng-click="openConfiguration()"><img src="/app/config.png"></div> -->
+<div ng-controller="workOrderSummaryFullCtrl">
+<div ng-if="!hasOrg"><h1>Please select viewing preferences from the properties menu</h1></div>
+<div ng-if="noData"><h1>There are no work orders to display for the most recent request.</h1></div>
+<div ng-if="hasOrg">
+	<div class ="modal-body">
+		<div ng-if="drawChartNow">{{config.startingDate.getMonth()+1}}/{{config.startingDate.getDate()}}/{{config.startingDate.getFullYear()}} to {{config.endingDate.getMonth()+1}}/{{config.endingDate.getDate()}}/{{config.endingDate.getFullYear()}}</div>
+		<div ng-if ="drawChartNow" class = "gridStyle" ui-grid="gridOptions" external-scopes="test" ui-grid-auto-resize></div>
+		<div ng-if="drawChartNowFacility">{{facilityName}}</div>
+		<div ng-if ="drawChartNowFacility" class = "gridStyle" ui-grid="gridOptionsFacility" external-scopes="test" ui-grid-auto-resize></div>
+	</div>
+	<div ng-if="showCloseButton" class="modal-footer">
+		<button type="button" class="btn btn-warning" ng-click='closeWindow()'>Close</button>
+	</div>
+</div>
+</div>

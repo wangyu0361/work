@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<div ng-controller="facilityDetailsCtrl">
+		<div class="container-fluid"
+			style="background-color: lightgreyfloat:left">
+			<div class="panel panel-default">
+				<div class="panel-heading clearfix">
+				<button class="btn btn-default pull-right" ng-click="openDetailed('lg')" >+</button>
+					
+				</div>
+			</div>
+			<div>
+				<center>
+					<b>
+						<div ng-if="!isBlank(displayData.clientName)">
+							{{displayData.clientName}}</div>
+						<div ng-if="!isBlank(displayData.projectName)">
+							{{displayData.projectName}}</div>
+					</b>
+				</center>
+				<div>
+					<center>
+						<li ng-if="!isZero(displayData.siteCount)">This organization
+							has a total of {{displayData.siteCount}} sites</li>
+						<li ng-if="!isBlank(displayData.liveDate)">Went live on
+							{{displayData.liveDate}}</li>
+						<div ng-if="!isBlank(displayData.facilityAddress)">
+							<div ng-if="!isBlank(displayData.city)">
+								<div ng-if="!isBlank(displayData.state)">
+									<li>Located at {{displayData.facilityAddress}},
+										{{displayData.city}}, {{displayData.state}}</li>
+								</div>
+								<div ng-if="isBlank(displayData.state)">
+									<li>Located at {{displayData.facilityAddress}},
+										{{displayData.city}}</li>
+								</div>
+							</div>
+							<div ng-if="isBlank(displayData.city)">
+								<li>Located at {{displayData.facilityAddress}}</li>
+							</div>
+						</div>
+						<li ng-if="!isBlank(displayData.buildingType)">{{displayData.buildingType}}</li>
+						<li ng-if="!isBlank(displayData.squareFootage)">Total of
+							{{displayData.squareFootage}} sq ft.</li>
+						<li ng-if="!isZero(displayData.assetCount)">Total key assets
+							monitored: {{displayData.assetCount}}</li>
+					</center>
+				</div>
+			</div>
+		
+	</div>
+	
+
+
+</div>
+
+
+
+
+</div>
+
