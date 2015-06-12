@@ -51,7 +51,10 @@ angular.module('icDash.heatmap', ['ui.router'])
 		var caller = this;
 		
 		//return $http.post('https://galaxy2021temp.pcsgalaxy.net:9453/db/query',"{\"name\":\"G02NSHVHV7S45Q1_kWh\"}")
-		return $http.get(caller.dataSource)
+		return caller.getSiteTotalConsumption(caller.site, caller.heatmapConfig.start, caller.heatmapConfig.end)
+		
+		/*
+		$http.get(caller.dataSource)
 			.success(function(data){
 				var j = 0;
 				var last = 0;
@@ -123,12 +126,12 @@ angular.module('icDash.heatmap', ['ui.router'])
 							
 						}
 						
-						/*if we have no data for a whole day */
+						//if we have no data for a whole day 
 						if(!historyArray){
 							handleNoDay();
 						}
 						
-						/*if we don't have all the timestamps in a day	*/
+						//if we don't have all the timestamps in a day	//
 						if(historyArray.length < 96){
 							for(var z = 0; z < 96; z++){
 								var time = new Date(loopDate.getTime() + z / 96 * (24 * 60 * 60 * 1000));
@@ -193,6 +196,7 @@ angular.module('icDash.heatmap', ['ui.router'])
 			.error(function(data){
 				throw('there was problem getting data');
 			});
+			*/
 	}
 	
 	//fill the dataset with timestamp:null values up to the last date in calendar config.
@@ -969,10 +973,25 @@ angular.module('icDash.heatmap', ['ui.router'])
  /** angela removed things... **
 .controller('heatmapCtrl', ['$scope', '$location', '$route', 'persistHeatmapService', 'heatmapDataService', 'heatmapConfigService', '$sce', function($scope, $location, $route, persistHeatmapService, heatmapDataService, heatmapConfigService, $sce, directiveService) {
 **/
-.controller('heatmapCtrl', ['$scope', '$location', 'persistHeatmapService', 'heatmapDataService', 'heatmapConfigService', '$sce',
-	function($scope, $location, persistHeatmapService, heatmapDataService, heatmapConfigService, $sce, directiveService) {
+.controller('heatmapCtrl', ['$scope', '$location', 'persistHeatmapService', 'heatmapDataService', 'heatmapConfigService', '$sce', 'configService', '$controller', 'userPrefService', 'SkySparkAPI',
+	function($scope, $location, persistHeatmapService, heatmapDataService, heatmapConfigService, $sce, configService, $controller,userPrefService, SkySparkAPI) {
 
 	var vm = this;
+	
+		var defaultConfig = {
+			"stationName" : "HAUN",
+			"facilityName": "HAUN",
+			"clientName" : "McDonalds",
+			"dateRange" : "last six weeks",
+			"actualColor" : "#FF0000",
+			"expectedColor" : "#0000FF",
+			"savingsColor" : "#008000",
+			"cumColor" : "D3D3D3",
+	}
+	var currentConfig = defaultConfig;
+	angular.extend(vm, userPrefService)
+	angular.extend(vm, SkySparkAPI)
+	
 
 	//inject the zoomHeatmapService into the scope.
 	//angular.extend(vm, zoomHeatmapService);	
@@ -983,10 +1002,19 @@ angular.module('icDash.heatmap', ['ui.router'])
 	//control whether the view needs to be reloaded.
 	vm.rendered = false;
 
+	var superController = $controller('baseWidgetCtrl', {
+		"$scope" : $scope
+	});
+
+	angular.extend(vm, configService, superController);
+	$scope.config = vm.getConfig();
+	
+	console.log("VM with config??????")
+	console.log(vm);
 	vm.url = "";
 
 	//default data source
-	vm.dataSource = 'https://galaxy2021temp.pcsgalaxy.net:9453/db/BMSRecords/groupRecordsDailyForHistoryId?org=Merck&facility=MRL&historyId=/MRL/kWh_MainBreaker1';
+	vm.dataSource = ''//'https://galaxy2021temp.pcsgalaxy.net:9453/db/BMSRecords/groupRecordsDailyForHistoryId?org=Merck&facility=MRL&historyId=/MRL/kWh_MainBreaker1';
 	vm.eventSource = '';
 	
 	// 0 is Sunday
@@ -1006,16 +1034,16 @@ angular.module('icDash.heatmap', ['ui.router'])
 	
 	vm.dataObj = {};
 	vm.assets = "";
+	vm.site = "";
 	
 	vm.heatmapConfig = vm.getDefaultConfig();
-	
+
 	vm.heatmapConfig.onClick =  function(date, value){	
 		vm.setTimestamp(date);
 		
 		$location.url('/zoomHeatmap');			
 		//$route.reload();
 	}
-	
 	//for testing retrieving an individual time cell in the heatmap.
 	vm.grab = function(){
 		var max = 30;
@@ -1082,15 +1110,44 @@ angular.module('icDash.heatmap', ['ui.router'])
 		}
 	}
 	
+	$scope.$on('userPrefsChanged',function(){
+		console.log("ENERGY SPECTRUM PREF CHANGE");
+		console.log("ENERGY SPECTRUM PREF CHANGE");
+		console.log("ENERGY SPECTRUM PREF CHANGE");
+		console.log("ENERGY SPECTRUM PREF CHANGE");
+		console.log("ENERGY SPECTRUM PREF CHANGE");
+		console.log("ENERGY SPECTRUM PREF CHANGE");
+
+		if(vm.getUserPrefs("facility-selector").facilityName != vm.site){
+			vm.site = vm.getUserPrefs("facility-selector").facilityName;
+			vm.getData().then(function (dataddd){
+				var data = {};
+				var tz = dataddd.cols[0].tz
+				
+				angular.forEach(dataddd.rows, function(val, key) {
+					var time = new Date(val.ts.replace(" "+tz,""));
+					var value = val.v0;
+				
+					data[(time.getTime() / 1000)+""] = value;
+				})
+				
+				vm.dataObj = data;
+				console.log(vm.dataObj);
+				vm.fillData()
+				vm.heatmapConfig.data = vm.dataObj;	
+				
+				vm.change();
+			})
+		}
+	});
+	
+	
 	
 	//this happens when the heatmaps load... not only when the select is chosen.
 	$scope.$watch('heat.dataSource', function(){
-		vm.getData().then(function (dataddd){
-			vm.heatmapConfig.data = vm.dataObj;	
-			
-			vm.change();
-				
-				/* HOW TO access .css style sheets, and use d3 interpolation functions for color interpolation
+		//vm.getData()
+				/*
+				HOW TO access .css style sheets, and use d3 interpolation functions for color interpolation
 				var stylez = document.styleSheets;
 				
 				var color = d3.scale.linear()
@@ -1126,7 +1183,6 @@ angular.module('icDash.heatmap', ['ui.router'])
 				
 				*/
 		});
-	});
 	
 	//when we change event sets, load the event data into time cells
 	$scope.$watch('heat.eventSource', function(){
@@ -1145,7 +1201,7 @@ angular.module('icDash.heatmap', ['ui.router'])
 	return {
 		restrict: 'E',
 		controller: 'heatmapCtrl as heat',
-		templateUrl: 'icWidgets/heatmap.html',
+		templateUrl: 'views/energySpectrum.html',
 		link: function(scope, el, atr){
 
 			//there won't be a scope.$parent if this widget is the root scope
