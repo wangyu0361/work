@@ -131,12 +131,12 @@ angular.module('icDash', ['ui.router',
             }, {
               header: "Event Page",
               dirName: "event-page",
-			  controller: "eventPageCtrl"
+			  controller: "eventPageCtrl",
+			  extras: {"Configure" : "work-order-grid"}
             }, {
               header: "Open Tickets by Asset",
               dirName: "equipment-tickets",
 			  controller: "equipmentTicketsCtrl",
-			  //extras: ["Grid View"]
             }];
           }
         },
@@ -152,12 +152,11 @@ angular.module('icDash', ['ui.router',
               header: "Aged Work Orders",
               dirName: "aged-work-orders",
 			  controller: "agedWorkOrdersMainCtrl",
-			  //extras: ["Grid View", "Configure"]
+			  //extras: {"Grid View" : "aged-work-orders-grid"}
             }, {
               header: "Work Order Cycle Time",
               dirName: "work-order-cycle-time",
 			  controller: "workOrderCycleTimeCtrl",
-			  //extras: ["Grid View"]
             }, {
               header: "Algorithms Overview",
               dirName: "algorithms",
