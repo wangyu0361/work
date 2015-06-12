@@ -18,6 +18,9 @@ angular.module('icDash', ['ui.router',
   'icDash.dateRangeService',
   'icDash.mongoService',
   'icDash.pciService',
+  'icDash.skysparkService',
+  'icDash.bmsRecordsAPIService',
+  'icDash.assetAPIService',
   
   // Dashboard layout
   'icDash.dashContainer',
