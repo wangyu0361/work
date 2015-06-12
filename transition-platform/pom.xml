@@ -13,6 +13,17 @@
   <packaging>war</packaging>
   <name>transition-platform</name>
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/webapp/</directory>
+        <excludes>
+          <exclude>node_modules/**/*</exclude>
+          <exclude>/node_modules/**/*</exclude>
+          <exclude>/node_modules/*</exclude>
+          <exclude>/node_modules*</exclude>
+      </excludes>
+	</resource>    
+	</resources>
 	<plugins>
 		<plugin>
 			<groupId>org.springframework.boot</groupId>

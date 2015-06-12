@@ -77,7 +77,7 @@ angular.module('icDash.loginPage', ['ui.router'])
 		/** end area used to switch to skyspark... **/
 		
 		$.ajax({
-			url:'http://10.239.3.132:8111/db/query',
+			url:'https://galaxy2021temp.pcsgalaxy.net:9453/db/query',
 			data: JSON.stringify({"userName":user}),
 			type:'POST',
 			headers: {"Collection": "userPref"},
@@ -85,9 +85,9 @@ angular.module('icDash.loginPage', ['ui.router'])
 			dataType: 'json',
 			success: function(response) {
 				console.log(response.result);
-				sessionStorage.setItem("userName", response.result[0].userName);
+				sessionStorage.setItem("userName", response.result[1].userName);
 				
-				var myPrefs = response.result[0].userPrefs;
+				var myPrefs = response.result[1].userPrefs;
 				
 				// Use the db response to populate sessionStorage for the user
 				$.each(myPrefs,function(key, myValue){

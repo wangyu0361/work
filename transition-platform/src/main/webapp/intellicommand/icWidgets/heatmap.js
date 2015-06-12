@@ -50,7 +50,7 @@ angular.module('icDash.heatmap', ['ui.router'])
 	var _getData = function(){
 		var caller = this;
 		
-		//return $http.post('http://10.239.3.132:8111/db/query',"{\"name\":\"G02NSHVHV7S45Q1_kWh\"}")
+		//return $http.post('https://galaxy2021temp.pcsgalaxy.net:9453/db/query',"{\"name\":\"G02NSHVHV7S45Q1_kWh\"}")
 		return $http.get(caller.dataSource)
 			.success(function(data){
 				var j = 0;
@@ -986,7 +986,7 @@ angular.module('icDash.heatmap', ['ui.router'])
 	vm.url = "";
 
 	//default data source
-	vm.dataSource = 'http://10.239.3.132:8111/db/BMSRecords/groupRecordsDailyForHistoryId?org=Merck&facility=MRL&historyId=/MRL/kWh_MainBreaker1';
+	vm.dataSource = 'https://galaxy2021temp.pcsgalaxy.net:9453/db/BMSRecords/groupRecordsDailyForHistoryId?org=Merck&facility=MRL&historyId=/MRL/kWh_MainBreaker1';
 	vm.eventSource = '';
 	
 	// 0 is Sunday

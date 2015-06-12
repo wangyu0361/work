@@ -59,8 +59,8 @@ angular.module('icDash.stackedColumnWorkOrders', ['ui.router'])
 .factory('stackedColumnWorkOrdersDataService', ['$http', 'stackedColumnWorkOrdersViewControlService', function($http, stackedColumnWorkOrdersViewControlService){
 	var _serviceObject = {};
 	var _getEventData = function(){
-		//var mongoUrl = "http://10.239.3.132:8111/db/query";
-		var mongoUrl = "http://10.239.3.132:8111/db/query";
+		//var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
+		var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
 		/*console.log('in factory');*/
 		
 		var requestString;
