@@ -803,7 +803,6 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 				headers: {'Authorization': 'Basic ZGV2OjEyMzQ1','Accept':'application/json'},
 				url:"https://galaxy2021temp.pcsgalaxy.net:9453/api/galaxy/read?filter=site",
 				data:'{}',
-				withCredentials:'true'
 		};
 		dbService.getData(config).then(function(response){
 			var siteArray = response.data.rows
