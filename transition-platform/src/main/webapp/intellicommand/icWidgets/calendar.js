@@ -1,5 +1,5 @@
 angular.module('icDash.calendar', [])
-.factory('dateRangeService', [ function () {
+/*.factory('dateRangeService', [ function () {
 	var _getRange = function(selection){
 		var date = {
 			'startDate' : '',
@@ -182,16 +182,16 @@ angular.module('icDash.calendar', [])
 		return date;
 	};
 	var _getRangeFromThen = function (selection, inputDate) {
-		/**********************************************************************************
+		*//**********************************************************************************
 		* TODO: write a function to get dateRanges from inputDate, instead of from today. *
 		* Probably make _getRange call _getRangeFromThen(selection, ***new Date()***)     *
-		**********************************************************************************/
+		**********************************************************************************//*
 	};
 	
 	return {
 		getRange : _getRange
 	};
-}])
+}])*/
 .directive('myCalendar', function(){
 	return{
 		restrict: "E",
