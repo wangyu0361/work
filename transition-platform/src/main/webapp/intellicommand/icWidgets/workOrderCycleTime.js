@@ -1,15 +1,17 @@
 'use strict';
 
-angular.module('icDash.workOrderCycleTime', ['ui.router'])
-
-/**angular.module('myApp.workOrderCycleTime', ['ngRoute', 'ui.grid', 'ui.grid.autoResize',
+/*angular.module('myApp.workOrderCycleTime', ['ngRoute', 'ui.grid', 'ui.grid.autoResize',
                                             'myApp.dashboard', 'myApp.panelComponent', 
                                             'myApp.popout', 'myApp.pciService', 'ui.bootstrap', 
                                             'myApp.ticketImpulse', 
                                             'myApp.dashboardTransitionService', 'myApp.facilitySelector',
-                                            'myApp.calendar', 'myApp.clientService'])
-**
-.run(['directiveService', function(directiveService){
+                                            'myApp.calendar', 'myApp.clientService'])*/
+angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.autoResize',
+                                            
+                                            'icDash.pciService', 'ui.bootstrap', 
+                                            'icDash.dashboardTransitionService', 'icDash.facilitySelector',
+                                            'icDash.calendar', 'icDash.clientService'])
+/*.run(['directiveService', function(directiveService){
 	directiveService.addFullComponent({
 		tag: function(){return 'work-order-cycle-time';},
 		configTag: function(){return 'work-order-cycle-time-config'},
@@ -20,26 +22,26 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		heading: function(){return 'work-order-cycle-time-name'},
 		paletteImage: function(){return 'clock.png';}
 	});
-}])**/
+}])*/
 .directive('workOrderCycleTimeGrid', [function(){
 	return{
 		restrict: 'E',
 		controller: 'workOrderCycleTimeGridCtrl',
-		templateUrl: 'icWidgets/gridView.html'
+		templateUrl: 'intellicommand/views/gridView.html'
 	}
 }])
 .directive('workOrderCycleTimeConfig',[function(){
 	  return{
 		  restrict:'E',
 		  controller: 'workOrderCycleTimeModalOpener',
-		  templateUrl: 'icWidgets/algoConfig.html'
+		  templateUrl: '/intellicommand/views/algoConfig.html'
 	  }
 }])
 .directive('workOrderCycleTime', [function(){
 	return {
 		restrict: 'E',
 		controller: 'workOrderCycleTimeCtrl',
-		templateUrl: 'icWidgets/workOrderCycleTime.html',
+		templateUrl: '/intellicommand/views/workOrderCycleTime.html',
 	}
 	
 }])
@@ -52,7 +54,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 .factory('workOrderCycleTimeDataService', ['$http', 'workOrderCycleTimeSharedProperties', function($http, workOrderCycleTimeSharedProperties){
 	
 	var serviceObject = {};
-	var _getWorkOrderData = function(){
+	var _getWorkOrderData = function(configObj){
 		var organization = "";
 		
 		if(workOrderCycleTimeSharedProperties.getStartDate() === undefined || workOrderCycleTimeSharedProperties.getEndDate() === undefined){
@@ -66,8 +68,8 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		if(workOrderCycleTimeSharedProperties.getOrganization() != null){
 			organization = workOrderCycleTimeSharedProperties.getOrganization();
 		}
-		//var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
-		var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
+		//var mongoUrl = "http://10.239.3.132:8111/db/query";
+		/*var mongoUrl = "http://10.239.3.132:8111/db/query";
 		var requestString = "{\"createdTime\" : {\"$gt\" : { \"$date\": \""+someTimeBefore.toJSON()+"\" }, \"$lt\": { \"$date\": \""+today.toJSON()+"\" }}, \"client\" : \""+organization+"\"}";
 		var config = {
 				method: 'POST',
@@ -75,8 +77,35 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 				headers: {'Collection' : 'events'},
 				url: mongoUrl,
 				data: requestString
-		};
-		return $http(config);
+		};*/
+		var endYear = configObj.endingDate.getFullYear();
+		var endMonth = configObj.endingDate.getMonth().toString().length == 2 ? configObj.endingDate.getMonth().toString() : "0"+configObj.endingDate.getMonth().toString();
+		var endDate = configObj.endingDate.getDate().toString().length == 2 ? configObj.endingDate.getDate().toString() : "0"+configObj.endingDate.getDate().toString();
+		var startYear = configObj.startingDate.getFullYear();
+		var startMonth = configObj.startingDate.getMonth().toString().length == 2 ? configObj.startingDate.getMonth().toString() : "0"+configObj.startingDate.getMonth().toString();
+		var startDate = configObj.startingDate.getDate().toString().length == 2 ? configObj.startingDate.getDate().toString() : "0"+configObj.startingDate.getDate().toString();
+		
+		var createdRange =  startYear+"-"+startMonth+"-"+startDate+".."+endYear+"-"+endMonth+"-"+endDate;
+		
+		var _url = 'https://galaxy2021temp.pcsgalaxy.net:9453/api/galaxy/eval?eventFilter("'+
+		configObj.stationName+
+		'" ,'+
+		createdRange+
+		','+
+		'null'+
+		','+ 
+		'null'+
+		')';
+		var _config = {
+				method: "GET",
+				headers:{
+					"Content-Type":"text/zinc;charset=utf-8",
+					"Authorization":"Basic ZGV2OjEyMzQ1",
+					"Accept":"text/csv"
+				},
+				url: _url
+		}
+		return $http.get(_url, _config)
 	}
 	serviceObject = {
 			getWorkOrderData : _getWorkOrderData
@@ -160,7 +189,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 	
 	$scope.openConfiguration = function(){
 		var modalInstance = $modal.open({
-            templateUrl: 'icWidgets/workOrderCycleTimeConfig.html',
+            templateUrl: '/intellicommand/views/workOrderCycleTimeConfig.html',
             controller: 'workOrderCycleTimeConfigCtrl',
 			resolve: {
 				config: function(){
@@ -170,19 +199,19 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
         });
 		modalInstance.result.then(function(config){
 			thisController.setConfig(config);
-			workOrderCycleTimeSharedProperties.setOrganization($scope.config.clientName);
+			workOrderCycleTimeSharedProperties.setOrganization($scope.config.stationName);
 			workOrderCycleTimeSharedProperties.setChartId($scope.config.chartId);
 			workOrderCycleTimeSharedProperties.setStartDate($scope.config.startingDate);
 			workOrderCycleTimeSharedProperties.setEndDate($scope.config.endingDate);
 			workOrderCycleTimeSharedProperties.makeRedraw();
 		}, function(){
-			console.log("Failed to retrieve data from configuration modal");
+		
 		});
 	}
 }])
 
 .controller('workOrderCycleTimeConfigCtrl', ['$scope', '$modalInstance','clientService', 'config', function($scope, $modalInstance, clientService, config){
-	$scope.organization = config.clientName;
+	$scope.organization = config.stationName;
 	$scope.startDate = config.startingDate;
 	$scope.endDate = config.endingDate;
 	$scope.weekly = config.weekly;
@@ -196,7 +225,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 	}
 	$scope.ok = function(){
 		var config = {
-				"clientName": $scope.organization,
+				"stationName": $scope.organization,
 				"startingDate": $scope.startDate,
 				"endingDate": $scope.endDate,
 				"colorHigh" : "#3CB371",
@@ -218,6 +247,19 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 
 .controller('workOrderCycleTimeCtrl', ['$scope', '$modal', 'workOrderCycleTimeDataService', 'workOrderCycleTimeSharedProperties', 'chartIdService', '$controller', 'facilitySelectorService', 'configService', 'dateRangeService','userPrefService',
                                        function($scope, $modal, workOrderCycleTimeDataService, workOrderCycleTimeSharedProperties, chartIdService, $controller, facilitySelectorService, awesome,  dateRangeService, userPrefService){
+	
+	var variableMonthsAgo = function(number){
+		var end = new Date();
+		var start = new Date(end.getFullYear(), end.getMonth()-number, end.getDate());
+		return {"startDate" : start, "endDate" : end};
+	}
+	var variableWeeksAgo = function(number){
+		var days = number * 7;
+		var end = new Date();
+		var start = new Date(end.getFullYear(), end.getMonth(), end.getDate()-days);
+		return {"startDate" : start, "endDate" : end};
+	}
+	$scope.rendering = false;
 	$scope.gridView = false;
 	$scope.hasOrg = false;
 	$scope.chartId = chartIdService.getNewId();
@@ -259,14 +301,14 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 	/** angela's replacement */
 	// Choose settings that this widget cares about
 	var defaultConfig = {
-		"clientName" : undefined,
-		"startingDate" : undefined,
-		"endingDate" : undefined,
-		"dateRange" : "",
-		"colorHigh" : "#3CB371",
-		"colorLow" : "#B22222",
+		"stationName" : "MRL",
+		"startingDate" : "",//variableMonthsAgo(12).startDate,
+		"endingDate" : "",//new Date(),
+		"dateRange" : "last twelve months",
+		//"colorHigh" : "#3CB371",
+		//"colorLow" : "#B22222",
 		"barChartColor" : "#B22222",
-		"weekly" : false,
+		//"weekly" : false,
 		"chartId" :  $scope.chartId,
 		"facilityChartId" : $scope.facilityChartId,
 		"assetChartId" : $scope.assetChartId
@@ -282,7 +324,6 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 	// End choose settings that this widget cares about
 	
 	var refreshConfigs = function() {
-		console.log("WORK ORDER CYCLE TIME updating!");
 		var myPrefs = userPrefService.getUserPrefs("work-order-cycle-time");
 		/* Use default config to determine which preferences should be used in the widget
 			Order of preferences: 
@@ -291,18 +332,45 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 			3) default configurations by widget (defaultConfig)
 		*/
 		for (var key in defaultConfig) {
-			if (myPrefs[key] !== "" && myPrefs[key] !== undefined) {
-				currentConfig[key] = myPrefs[key];
-			} else if ($scope.config[key] !== "" && $scope.config[key] !== undefined) {
-				currentConfig[key] = $scope.config[key];
-			} else {
-				currentConfig[key] = defaultConfig[key];
+			if (myPrefs[key] !== "" && myPrefs[key] !== undefined && myPrefs[key] !== null) {
+				$scope.config[key] = myPrefs[key];
+			} 
+			else {
+				$scope.config[key] = defaultConfig[key];
+			}
+			if(key === "dateRange"){
+				var dates;
+				var range = $scope.config.dateRange;
+				console.log(range);
+				switch(range){
+					case "last twelve months" : {
+						dates = variableMonthsAgo(12);
+						break;
+					}
+					case "last six weeks" : {
+						dates = variableWeeksAgo(6);
+						break;
+					}
+					case "last twelve weeks" : {
+						dates = variableWeeksAgo(12);
+						break;
+					}
+					case "last six months" : {
+						dates = variableMonthsAgo(6);
+						break;
+					}
+				}
+				$scope.config.startingDate = dates.startDate;
+				$scope.config.endingDate = dates.endDate;
 			}
 		}
-		
-		$scope.config = currentConfig;
-		workOrderCycleTimeSharedProperties.setOrganization(currentConfig.clientName);
-		$scope.renderChart();
+		workOrderCycleTimeSharedProperties.setOrganization($scope.config.stationName);
+		if($scope.config.stationName !== undefined && $scope.config.stationName !== "" && $scope.config.stationName !== null){
+			if($scope.config.dateRange !== undefined && $scope.config.dateRange !== "" !== $scope.config.dateRange !== null){
+				$scope.renderChart();
+				$scope.rendering = true;
+			}
+		}
 	}
 	/** end angela's replacement section */
 	
@@ -329,24 +397,13 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		$scope.startDate = $scope.config.startingDate;
 		$scope.endDate = $scope.config.endingDate;
 	}
-	var variableMonthsAgo = function(number){
-		var end = new Date();
-		var start = new Date(end.getFullYear(), end.getMonth()-number, end.getDate());
-		return {"startDate" : start, "endDate" : end};
-	}
-	var variableWeeksAgo = function(number){
-		var days = number * 7;
-		var end = new Date();
-		var start = new Date(end.getFullYear(), end.getMonth(), end.getDate()-days);
-		return {"startDate" : start, "endDate" : end};
-	}
+
 	var getMyColors = function(number){
 		var colorInterpolate = d3.interpolateRgb($scope.config.colorHigh, $scope.config.colorLow);
 		var colorArray = [];
 		for(var i=0;i<number;i++){
 			colorArray.push(colorInterpolate(i/number));
 		}
-		//console.log(colorArray);
 		return colorArray;
 	}
 	$scope.eventData = [];
@@ -356,7 +413,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 	$scope.weeklyView = $scope.config.weekly;
 	$scope.makeElastic = true;
 	
-	workOrderCycleTimeSharedProperties.setOrganization($scope.config.clientName);
+	workOrderCycleTimeSharedProperties.setOrganization($scope.config.stationName);
 	
 	
 	$scope.renderChart = function() { 
@@ -364,7 +421,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		$scope.chartId = $scope.config.chartId;
 		$scope.facilityChartId = $scope.config.facilityChartId;
 		$scope.assetChartId = $scope.config.assetChartId;
-		if($scope.config.clientName === undefined || $scope.config.clientName === ""){return;}
+		if($scope.config.stationName === undefined || $scope.config.stationName === ""){return;}
 		if($scope.config.startingDate === undefined || $scope.config.endingDate === undefined){
 			var today = new Date();
 			$scope.startDate = new Date(new Date(today.getFullYear()-1, today.getMonth(), today.getDate()));
@@ -377,15 +434,17 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		$scope.drawChartNow = false;
 		$scope.showAsset = false;
 		
-		workOrderCycleTimeDataService.getWorkOrderData().success(function(data){
+		workOrderCycleTimeDataService.getWorkOrderData($scope.config).success(function(data){
 			$scope.bounce = true;
-			
-			if(data.result === null){
+			var result = d3.csv.parse(data);
+
+			if(data === "empty"){
 				$scope.hasOrg = true; 
 				$scope.showAsset = false; 
 				$scope.drawChartNow = false; 
 				$scope.invalid = true; 
 				$scope.noData = true;
+				$scope.rendering = false;
 				return;
 			}
 			$scope.noData = false;
@@ -393,17 +452,19 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 			$scope.invalid = false;			
 			
 			$scope.hasOrg = true;
-			angular.forEach(data.result, function(data){
-				var createdTime = new Date(data.createdTime.$date.toString());
+			angular.forEach(result, function(data){
+				var createdTime = new Date(data.createdTime.slice(0,data.createdTime.indexOf(" ")));
 				var closedTime = new Date();
-				if(data.status === "Closed"){
-					closedTime = new Date(data.closedTime.$date.toString());
+				if(data.closureTime){
+					closedTime = new Date(data.closureTime.slice(0,data.closureTime.indexOf(" ")));
 				}
 				data.daysOpen = Math.abs((closedTime - createdTime)/(1000*60*60*24));
+				data.madeTime = createdTime;
+				data.endTime = closedTime;
 			});
-			$scope.cycleData = crossfilter(data.result);
+			$scope.cycleData = crossfilter(result);
 			if(!$scope.bounce || $scope.invalid || $scope.noData){return;}						
-			$scope.organizationName = $scope.config.clientName;
+			$scope.organizationName = $scope.config.stationName;
 			$scope.createAllGroupsAndDimensions();			
 			$scope.barChartDimension = $scope.monthDimension;
 			if(!$scope.weeklyView){
@@ -417,7 +478,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 			}	
 			$scope.organizationName = workOrderCycleTimeSharedProperties.getOrganization();
 			$scope.drawBarChart();
-			$scope.drawFacilityChart();
+			//$scope.drawFacilityChart();
 			$scope.drawAssetChart();
 			$scope.drawChartNow = true;
 		})
@@ -446,7 +507,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 
 	}; // end of render chart function
 	$scope.drawBarChart = function(){
-
+		
 		$scope.barChart = dc.barChart("#cycle_time_bar_chart_"+$scope.chartId);
 		$scope.barChart
 			.width(300)
@@ -456,7 +517,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 			.group($scope.wasteGroup)
 			.valueAccessor(function(p){return p.value.avg;})
 			.margins({top: 10, right: 10, bottom: 75, left: 40})
-			//.yAxisLabel('Average Days To Close Work Orders') not sure why this is still causing errors.
+			//.yAxisLabel('Average Days To Close Work Orders')
 			.elasticY(true)
 			.elasticX(true)
 			.xAxisPadding(20)
@@ -468,7 +529,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 			.xUnits($scope.xAxisUnits)
 			.renderHorizontalGridLines(true)
 			.renderLabel(true)
-			.title(function(p){var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; return "Organization: "+$scope.config.clientName+"\nMonth: "+months[p.key.getMonth()]+"\nYear: "+p.key.getFullYear()+"\nAverage Days To Close Work Orders: "+Math.round(p.value.avg*10)/10;})
+			.title(function(p){var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; return "Station: "+$scope.config.stationName+"\nMonth: "+months[p.key.getMonth()]+"\nYear: "+p.key.getFullYear()+"\nAverage Days To Close Work Orders: "+Math.round(p.value.avg*10)/10;})
 			.renderTitle(true)
 			.brushOn(false)
 			.transitionDuration(250)
@@ -476,7 +537,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 				var ticks = $scope.wasteGroup.all().length;
 				$scope.barChart.xAxis().ticks(ticks);
 			})
-			.on('renderlet', function(chart){
+			.renderlet(function(chart){
 							chart.selectAll("g.x text")
 							.attr('transform', "rotate(-80)")
 							.attr('dx', '-10')
@@ -485,9 +546,10 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 							;
 						})
 		;	
-		$scope.barChart.render();		
+		$scope.barChart.render();	
+		$scope.rendering = false;	
 	}
-	$scope.drawFacilityChart = function(){	
+	/*$scope.drawFacilityChart = function(){	
 		$scope.facilityPieChart = dc.pieChart("#cycle_time_facility_pie_chart_"+$scope.facilityChartId)
 			.width(225)
 			.height(150)
@@ -501,12 +563,12 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 			.innerRadius(10)
 			.minAngleForLabel(1.5)
 			.render();
-	}
-		
+	}*/
+	
 	$scope.drawAssetChart = function(){	
 			$scope.assetPieChart = dc.barChart("#cycle_time_asset_chart_"+$scope.assetChartId)
-				.width(250)
-				.height(250)
+				.width(370)
+				.height(350)
 				.margins({top: 10, right: 10, bottom: 75, left: 40})
 				//.legend(dc.legend().x(1).y(0).itemHeight(10).gap(8))
 				.dimension($scope.assetDimension)
@@ -519,7 +581,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 				.x(d3.scale.ordinal().domain([]))
 				.xUnits(dc.units.ordinal)
 				.title(function(p){return "Asset: "+p.key+"\nAverage Days To Close Work Orders: "+Math.round(p.value.avg*10)/10;})
-				.on('renderlet', function(chart){
+				.renderlet(function(chart){
 					chart.selectAll("g.x text")
 						.attr('transform', "rotate(-80)")
 						.attr('dx', '-10')
@@ -528,26 +590,27 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 					;
 				})	
 				.render();
+			$scope.showAsset = true;
 	}
 	$scope.createAllGroupsAndDimensions = function(){
 		
 		//define all dimensions
 		$scope.monthDimension = $scope.cycleData.dimension(function(d){
-			if(d.closedTime !== undefined){
-				return d3.time.month(new Date(d.closedTime.$date.toString()));
+			if(d.endTime !== undefined){
+				return d3.time.month(d.endTime);
 			}
 		});
 		$scope.organizationDimension = $scope.cycleData.dimension(function(d){
-			return d.client;
+			return d.sitRef;
 		});		
 		$scope.weekDimension = $scope.cycleData.dimension(function(d){
-			if(d.closedTime !== undefined){
-				return d3.time.week(new Date(d.closedTime.$date.toString()))
+			if(d.endTime !== undefined){
+				return d3.time.week(d.endTime);
 			};
 		});
-		$scope.facilityDimension = $scope.cycleData.dimension(function(d){
+		/*$scope.facilityDimension = $scope.cycleData.dimension(function(d){
 			return d.stationName;
-		});
+		});*/
 		$scope.assetDimension = $scope.cycleData.dimension(function(d){
 			return d.asset;
 		});
@@ -647,7 +710,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 				}
 		);
 
-		$scope.facilityWasteGroup = $scope.facilityDimension.group().reduce(
+		/*$scope.facilityWasteGroup = $scope.facilityDimension.group().reduce(
 				function(p,d){
 					p.count += 1;
 					p.sum += d.daysOpen;
@@ -677,7 +740,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 						avg: 0
 					};
 				}
-		);
+		);*/
 		
 		$scope.assetWasteGroup = $scope.assetDimension.group().reduce(
 				function(p,d){
@@ -785,7 +848,6 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 					dataType: "html"
 						
 				}).done(function(data){
-					console.log(data);
 					var newTab = window.open("", "_blank");
 					window.setTimeout(
 							function(){
@@ -805,7 +867,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 						'main':{
 							0:{
 								0: {
-									"clientName" : $scope.config.clientName,
+									"clientName" : $scope.config.,
 									"stationName" : $scope.config.stationName,
 									"endingDate" : end,
 									"startingDate" : start,
@@ -907,7 +969,6 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		else{
 			var dates;
 			var range = $scope.config.dateRange;
-			
 			switch(range){
 				case "last twelve months" : {
 					dates = variableMonthsAgo(12);
@@ -928,10 +989,13 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 			}
 			$scope.startDate = dates.startDate;
 			$scope.endDate = dates.endDate;
+			$scope.config.startingDate = dates.startDate;
+			$scope.config.endingDate = dates.endDate;
 			workOrderCycleTimeSharedProperties.setStartDate(dates.startDate);
 			workOrderCycleTimeSharedProperties.setEndDate(dates.endDate);
-			if($scope.inEditor && $scope.config.clientName !== undefined && $scope.config.clientName !== ""){
-				$scope.showAsset = false;
+			if($scope.config.stationName !== undefined && $scope.config.stationName !== ""){
+				//$scope.showAsset = false;
+				userPrefService.updateUserPrefs($scope.config);
 				$scope.renderWeeklyView = $scope.config.weekly;
 				$scope.hasOrg = true;
 				//workOrderCycleTimeSharedProperties.setOrganization(nu);
@@ -946,7 +1010,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		}
 	});
 	$scope.resetDates = function(){
-		workOrderCycleTimeSharedProperties.setOrganization($scope.config.clientName);
+		workOrderCycleTimeSharedProperties.setOrganization($scope.config.stationName);
 		if($scope.config.startingDate === undefined || $scope.config.endingDate === undefined){
 			$scope.endDate = new Date();
 			$scope.startDate = new Date(new Date($scope.endDate.getFullYear()-1, $scope.endDate.getMonth(), $scope.endDate.getDate()));
@@ -969,7 +1033,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		
 		
 		$scope.drawBarChart();
-		$scope.drawFacilityChart();
+		//$scope.drawFacilityChart();
 		$scope.drawAssetChart();
 		
 	};
@@ -989,7 +1053,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		$scope.barchartDimension = $scope.weeklyDimension;
 		$scope.wasteGroup = $scope.weeklyWasteGroup;
 		$scope.drawBarChart();
-		$scope.drawFacilityChart();
+		//$scope.drawFacilityChart();
 		$scope.drawAssetChart();
 		
 	};
@@ -998,7 +1062,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		$scope.endDate = new Date($scope.endDate.getFullYear(), $scope.endDate.getMonth()-1, $scope.endDate.getDate());
 		$scope.xAxisUnits = d3.time.weeks;
 		$scope.drawBarChart();
-		$scope.drawFacilityChart();
+		//$scope.drawFacilityChart();
 		$scope.drawAssetChart();
 		
 	};
@@ -1007,13 +1071,13 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
 		$scope.endDate = new Date($scope.endDate.getFullYear(), $scope.endDate.getMonth()+1, $scope.endDate.getDate());
 		$scope.xAxisUnits = d3.time.weeks;
 		$scope.drawBarChart();
-		$scope.drawFacilityChart();
+		//$scope.drawFacilityChart();
 		$scope.drawAssetChart();
 		
 	};
 	$scope.openPageConfiguration = function(){
 		var modalInstance = $modal.open({
-            templateUrl: 'icWidgets/workOrderCycleTimeConfig.html',
+            templateUrl: '/intellicommand/views/workOrderCycleTimeConfig.html',
             controller: 'workOrderCycleTimeConfigCtrl',
 			resolve: {
 				config: function(){
@@ -1023,25 +1087,64 @@ angular.module('icDash.workOrderCycleTime', ['ui.router'])
         });
 		modalInstance.result.then(function(config){
 			thisController.setConfig(config);
-			workOrderCycleTimeSharedProperties.setOrganization($scope.config.clientName);
+			workOrderCycleTimeSharedProperties.setOrganization($scope.config.stationName);
 			workOrderCycleTimeSharedProperties.setChartId($scope.config.chartId);
 			workOrderCycleTimeSharedProperties.setStartDate($scope.config.startingDate);
 			workOrderCycleTimeSharedProperties.setEndDate($scope.config.endingDate);
 			workOrderCycleTimeSharedProperties.makeRedraw();
 		}, function(){
-			console.log("Failed to retrieve data from configuration modal");
 		});
 	}
 
 	/** angela new **/
 		$scope.$watch('config', function(){
+			userPrefService.updateUserPrefs($scope.config);
+			if($scope.rendering === true){return;}
 			refreshConfigs();
 		}, true);
-		$scope.$on('userPrefsChanged',function(){
+		/*$scope.$on('userPrefsChanged',function(){
 			refreshConfigs();
-		});
+		});*/
 		/** end angela new **/
 		
-	refreshConfigs();
+	//refreshConfigs();
 	//$scope.renderChart();
 }])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
