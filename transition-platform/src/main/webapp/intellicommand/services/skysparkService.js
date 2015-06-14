@@ -199,7 +199,7 @@ angular.module('icDash.skysparkService', [])
 				},
 				data:"ver:\"2.0\""+"\n"+
 					"expr"+"\n"+
-					"\"read(site and station == \\\""+_site+"\\\")"
+					"\"read(site and dis == \\\""+_site+"\\\")"
 						+".getSiteTotalConsumption("+_start+".."+_end+")\""
 		}
 
@@ -214,6 +214,28 @@ angular.module('icDash.skysparkService', [])
 		})
 	}
 
+	var _getSiteTotalConsumptionHourlyStatSummary = function(_site, _start, _end){
+	
+		var sparkDayFormat = d3.time.format("%Y-%m-%d");
+
+		_start = _start === undefined ? "2000-01-01" : sparkDayFormat(new Date(_start));
+		_end = _end === undefined ? sparkDayFormat(new Date()) : sparkDayFormat(new Date(_end));
+		
+			var _req = {
+				method:"POST",
+				url:_skySparkIp+"eval/",
+				headers:{
+					"Content-Type":"text/zinc;charset=utf-8",
+					"Accept":"text/csv"
+				},
+				data:"ver:\"2.0\""+"\n"+
+					"expr"+"\n"+
+					"\"read(site and dis == \\\""+_site+"\\\")"
+						+".getSiteTotalConsumptionHourlyStatSummary("+_start+".."+_end+")\""
+		}
+
+		return _actuallyRequest(_req);
+	}
 	
 	var _actuallyRequest = function(_req){
 		var start = new Date();
@@ -239,6 +261,7 @@ angular.module('icDash.skysparkService', [])
 		getByEquipAndSiteNamesAndTags:_getByEquipAndSiteNamesAndTags,
 		getEventsByDate:_getEventsByDate,
 		getSiteTotalConsumption: _getSiteTotalConsumption,
+		getSiteTotalConsumptionHourlyStatSummary: _getSiteTotalConsumptionHourlyStatSummary,
 		actuallyRequest:_actuallyRequest,
 		ip:_skySparkIp
 	}

@@ -49,154 +49,9 @@ angular.module('icDash.heatmap', ['ui.router'])
 	//To show up as empty, the timestamp NEEDS to be in the data object as "timestamp":null - UGHHHHHHH ; Phil
 	var _getData = function(){
 		var caller = this;
-		
-		//return $http.post('https://galaxy2021temp.pcsgalaxy.net:9453/db/query',"{\"name\":\"G02NSHVHV7S45Q1_kWh\"}")
+
 		return caller.getSiteTotalConsumption(caller.site, caller.heatmapConfig.start, caller.heatmapConfig.end)
 		
-		/*
-		$http.get(caller.dataSource)
-			.success(function(data){
-				var j = 0;
-				var last = 0;
-				var maxValue = 0;
-				
-				var dateSortedResult = {};
-				var startDate = new Date();
-				var endDate = new Date();
-				
-				caller.clearData();
-				
-				angular.forEach(data.content, function(history, date){
-					var day = new Date(date);
-					var valueArray = [];
-					
-					dateSortedResult[day] = {};
-					
-					angular.forEach(history, function(value, timestamp){
-						//if current value is greater than max, it is the new max.
-						maxValue = value > maxValue ? value : maxValue;
-						
-						valueArray.push({
-							"timestamp": new Date(new Date(timestamp).setSeconds(0)),
-							"value" : +value
-						});
-					});
-					
-					dateSortedResult[day] = valueArray;
-					
-					if(day.getTime() < startDate.getTime()){
-						startDate = day;
-					}
-					if(day.getTime() > endDate.getTime()){
-						endDate = day;
-					}
-				});
-				
-				
-				var loopDate = startDate;
-				var interpolate= [];
-
-				//when there is no day at all, the interpolate operation does not occur for times within that day.
-				//also, loading a new data source will stuff readings into the old data object which will then persist after we switch back, causing it took look like data has been processed for those times.
-				
-				var interpolateFunction = function(options){
-					var rolloverValue = options.rolloverValue || Number.MAX_VALUE;
-					
-					while(loopDate.getTime() < endDate.getTime()){
-						var historyArray = dateSortedResult[loopDate];
-						var i = 0;
-						var handleNoDay = function(){
-							
-							//populate the non-existent date with null values, and allow the loop to repeat and interpolate.
-							dateSortedResult[loopDate] = [];
-							var arrayIndex = 0;
-							var makeDate = new Date(loopDate.getTime());
-							var endDayDate = new Date(loopDate.getTime()+1000*60*60*24);
-							
-							while(makeDate.getTime() < endDayDate){
-								dateSortedResult[loopDate][arrayIndex] = {
-									timestamp : makeDate.getTime()
-								};
-								
-								makeDate = new Date(makeDate.getTime()+1000*60*15)
-								arrayIndex++;
-							}
-							
-							historyArray = dateSortedResult[loopDate];
-							
-						}
-						
-						//if we have no data for a whole day 
-						if(!historyArray){
-							handleNoDay();
-						}
-						
-						//if we don't have all the timestamps in a day	//
-						if(historyArray.length < 96){
-							for(var z = 0; z < 96; z++){
-								var time = new Date(loopDate.getTime() + z / 96 * (24 * 60 * 60 * 1000));
-								
-								if(!historyArray[z] || historyArray[z].timestamp.getTime() != time.getTime()){
-									historyArray.splice(z, 0, {
-										timestamp: time
-									});
-								}
-							}
-						}
-						
-						for(i = 0; i < historyArray.length; i++){
-							
-							var delta = historyArray[i].value && last != 0 ? +historyArray[i].value - last : 0;
-							
-							delta = Math.round(delta);
-							
-							if(delta < 0){
-								delta = rolloverValue + delta;
-							}
-							
-							//delta is 0, add to an array of timestamps to be interpolated.
-							if(delta == 0){
-								interpolate[interpolate.length] = (new Date(historyArray[i].timestamp).getTime() / 1000)+"";
-							}
-							//delta is not 0, but there is an array of timestamps to be interpolated.
-							else if(interpolate.length > 0){
-								var iz = 0;
-								
-								interpolate[interpolate.length] = (new Date(historyArray[i].timestamp).getTime() / 1000)+"";
-								
-								for(iz = 0; iz < interpolate.length; iz++){
-									var date = new Date(interpolate[iz]*1000)
-
-									caller.dataObj[interpolate[iz]] = +((delta / interpolate.length).toFixed(2));
-								}
-								
-								interpolate = [];
-							}
-							//delta is not 0, and no interpolation required.
-							else{
-
-								caller.dataObj[(new Date(historyArray[i].timestamp).getTime() / 1000)+""] = delta;
-							}
-							
-							last = historyArray[i].value ? +(+historyArray[i].value).toFixed(2) : last;
-						};
-						
-						loopDate = new Date(loopDate.getTime()+1000*60*60*24);
-
-					}
-					
-					caller.fillData();
-				}
-				
-				interpolateFunction({
-					rolloverValue : 1000 * Math.ceil(maxValue / 1000)
-				});
-				
-			})
-			.error(function(data){
-				throw('there was problem getting data');
-			});
-			*/
 	}
 	
 	//fill the dataset with timestamp:null values up to the last date in calendar config.
@@ -204,6 +59,8 @@ angular.module('icDash.heatmap', ['ui.router'])
 		var caller = this;
 		
 		var currentTime = caller.heatmapConfig.start.getTime() / 1000;
+		var endTime = caller.heatmapConfig.end.getTime() / 1000
+		
 		var subDomainDelta = 9999999999999;
 		
 		if(caller.heatmapConfig.subDomain.indexOf('min') >= 0){
@@ -220,8 +77,9 @@ angular.module('icDash.heatmap', ['ui.router'])
 			subDomainDelta = 60*60*24*30;
 		}
 		
-		while(currentTime <= caller.calEnd()){
-			if(!caller.dataObj.hasOwnProperty(currentTime+"")){
+		//while(currentTime <= caller.calEnd()){
+		while(currentTime <= endTime){
+			if(!caller.dataObj.hasOwnProperty(currentTime+"") || caller.dataObj[currentTime+""] === undefined ){
 				caller.dataObj[currentTime+""] = null;
 			}
 			
@@ -233,33 +91,16 @@ angular.module('icDash.heatmap', ['ui.router'])
 	}
 	
 	var _getMax = function(){
-		var max = 0;
+		var caller = this;
 		
-		for(var timestamp in this.dataObj){
-			if(this.dataObj.hasOwnProperty(timestamp)){
-				if(this.dataObj[timestamp] > max){
-					max = this.dataObj[timestamp];
-				}
-			}
-		}
-		
-		//4 fifteen minute timestamps in the hour... just get a decent number....
-		return max*4;
+		return caller.max
 	}
 	
 	var _getMin = function(){
-		var min = 999999999999999;
+		var caller = this;
 		
-		for(var timestamp in this.dataObj){
-			if(this.dataObj.hasOwnProperty(timestamp)){
-				if(this.dataObj[timestamp] < min && this.dataObj[timestamp] > 0 & this.dataObj[timestamp] != null){
-					min = this.dataObj[timestamp];
-				}
-			}
-		}
+		return caller.min
 		
-		//4 fifteen minute timestamps in the hour... just get a decent number....
-		return min*4;
 	}
 	
 	var _dataAsArray = function(){
@@ -363,9 +204,9 @@ angular.module('icDash.heatmap', ['ui.router'])
 			else */
 			return '';
 		};
-		//start = new Date(new Date(1388675960000-6*24*3600*1000).setHours(0));
-		dfault.start = new Date('2-1-15');
-		dfault.end = new Date('3-1-15');
+		dfault.start = new Date(new Date(new Date().getTime()-21*24*3600*1000).toDateString());
+		//dfault.start = new Date('2-1-15');
+		dfault.end = new Date(new Date(new Date().getTime()+1*24*3600*1000).toDateString());
 		dfault.range= dfault.rangeCalc();
 
 		dfault.domainLabelFormat= function(date) {//format of each domain label. "x axis" labels
@@ -393,22 +234,6 @@ angular.module('icDash.heatmap', ['ui.router'])
 
 		return new _defaultConfig();
 	}
-	
-	/*  Not necessary - gets data on page load regardless? Because of our $watch on data source?
-	var _init = function(){
-		//caller is the controller which is currently invoking this function
-		var caller = this;
-		caller.setUrl('http://10.239.3.132:8080/dailyhistory/544876bf2e905908b6e5f595');
-		
-		caller.getData().then(function (dataddd){
-		
-		caller.heatmapConfig.data = caller.dataObj;
-
-		//after setting heatmap config, unhide the component.
-		caller.rendered = true;
-	});
-	};
-	*/
 	
 	var _calEnd = function(){
 		var caller = this;
@@ -978,7 +803,7 @@ angular.module('icDash.heatmap', ['ui.router'])
 
 	var vm = this;
 	
-		var defaultConfig = {
+	var defaultConfig = {
 			"stationName" : "HAUN",
 			"facilityName": "HAUN",
 			"clientName" : "McDonalds",
@@ -1009,10 +834,9 @@ angular.module('icDash.heatmap', ['ui.router'])
 	angular.extend(vm, configService, superController);
 	$scope.config = vm.getConfig();
 	
-	console.log("VM with config??????")
-	console.log(vm);
 	vm.url = "";
 
+	
 	//default data source
 	vm.dataSource = ''//'https://galaxy2021temp.pcsgalaxy.net:9453/db/BMSRecords/groupRecordsDailyForHistoryId?org=Merck&facility=MRL&historyId=/MRL/kWh_MainBreaker1';
 	vm.eventSource = '';
@@ -1034,7 +858,7 @@ angular.module('icDash.heatmap', ['ui.router'])
 	
 	vm.dataObj = {};
 	vm.assets = "";
-	vm.site = "";
+	vm.site = vm.getUserPrefs("event-page").stationName === undefined ? "MRL" : vm.getUserPrefs("event-page").stationName
 	
 	vm.heatmapConfig = vm.getDefaultConfig();
 
@@ -1064,23 +888,24 @@ angular.module('icDash.heatmap', ['ui.router'])
 	
 	//for testing multiple controllers inheriting the same service singleton
 	vm.change = function(){
-		//var max = 30;
-		//var min = 10;
-		//vm.heatmapConfig.range = Math.floor(Math.random()*(max-min+1)+min);
-
-		var mean = Math.round(jStat.mean(vm.dataAsArray())*4);
-		var std = Math.round(jStat.stdev(vm.dataAsArray())*4);
+		var mean = vm.mean;
+		var std = vm.std;
 		
-		if(mean - Math.round(mean - .5 * std) <= 6){
-			vm.heatmapConfig.legend =  [mean -6, mean -5, mean -4, mean -3, mean -2, mean -1, mean, mean +1, mean+2, mean+3, mean+4, mean+5] 
-		}
-		else{
-			vm.heatmapConfig.legend = [
-				Math.round(mean - .5 * std), Math.round(mean - .4*std), Math.round(mean - .3*std), Math.round(mean - .2*std), Math.round(mean - .1*std),  Math.round(mean),
-				Math.round(mean + .1*std), Math.round(mean + .2*std), Math.round(mean + .3*std), Math.round(mean + .4*std), Math.round(mean + .5*std), Math.round(mean + .6*std) 
+		vm.heatmapConfig.legend = [
+				Math.round(mean - .5 * std), 
+				Math.round(mean - .4*std), 
+				Math.round(mean - .3*std), 
+				Math.round(mean - .2*std), 
+				Math.round(mean - .1*std),  
+				Math.round(mean),
+				Math.round(mean + .1*std), 
+				Math.round(mean + .2*std), 
+				Math.round(mean + .3*std), 
+				Math.round(mean + .4*std), 
+				Math.round(mean + .5*std), 
+				Math.round(mean + .6*std) 
 			];
-		}
-		
+
 		vm.rendered = false;
 		
 		//In one second, reload the heatmap component with the changed configuration.
@@ -1111,78 +936,13 @@ angular.module('icDash.heatmap', ['ui.router'])
 	}
 	
 	$scope.$on('userPrefsChanged',function(){
-		console.log("ENERGY SPECTRUM PREF CHANGE");
-		console.log("ENERGY SPECTRUM PREF CHANGE");
-		console.log("ENERGY SPECTRUM PREF CHANGE");
-		console.log("ENERGY SPECTRUM PREF CHANGE");
-		console.log("ENERGY SPECTRUM PREF CHANGE");
-		console.log("ENERGY SPECTRUM PREF CHANGE");
 
-		if(vm.getUserPrefs("facility-selector").facilityName != vm.site){
-			vm.site = vm.getUserPrefs("facility-selector").facilityName;
-			vm.getData().then(function (dataddd){
-				var data = {};
-				var tz = dataddd.cols[0].tz
-				
-				angular.forEach(dataddd.rows, function(val, key) {
-					var time = new Date(val.ts.replace(" "+tz,""));
-					var value = val.v0;
-				
-					data[(time.getTime() / 1000)+""] = value;
-				})
-				
-				vm.dataObj = data;
-				console.log(vm.dataObj);
-				vm.fillData()
-				vm.heatmapConfig.data = vm.dataObj;	
-				
-				vm.change();
-			})
+		if(vm.getUserPrefs("event-page").stationName != vm.site){
+			vm.site = vm.getUserPrefs("event-page").stationName;
+			vm.getData().then(vm.handleData)
 		}
 	});
 	
-	
-	
-	//this happens when the heatmaps load... not only when the select is chosen.
-	$scope.$watch('heat.dataSource', function(){
-		//vm.getData()
-				/*
-				HOW TO access .css style sheets, and use d3 interpolation functions for color interpolation
-				var stylez = document.styleSheets;
-				
-				var color = d3.scale.linear()
-					.domain([vm.heatmapConfig.legend[0], 
-						vm.heatmapConfig.legend[vm.heatmapConfig.legend.length-1]])
-					.range(['#00FFFF', '#6600CC'])
-					.clamp(true);
-					
-				color.interpolate(d3.interpolateHcl);
-				
-				for(var i = 0; i < stylez.length; i++){
-					
-					try{
-						if(stylez[i].href.indexOf('cal-heatmap.css') >= 0){
-							var rulez = stylez[i].cssRules;
-							
-							for(var j = 0; j < rulez.length; j++){
-								if(rulez[j].selectorText.indexOf('.q') == 0){
-									var legendIndex = +rulez[j].selectorText.substring(2);
-									var legendDelta = vm.heatmapConfig.legend[vm.heatmapConfig.legend.length-1] 
-										- vm.heatmapConfig.legend[0];
-									
-									rulez[j].style.fill = color(vm.heatmapConfig.legend[0]+legendIndex*legendDelta);
-									
-								}
-							}
-						}
-					}
-					catch(err){
-						//error if href is null
-					}
-				}
-				
-				*/
-		});
 	
 	//when we change event sets, load the event data into time cells
 	$scope.$watch('heat.eventSource', function(){
@@ -1195,6 +955,34 @@ angular.module('icDash.heatmap', ['ui.router'])
 		vm.change();		
 	}, true);
 	
+	vm.handleData = function (dataddd){
+		var data = {};
+		var tz = dataddd.cols[0].tz
+		
+		angular.forEach(dataddd.rows, function(val, key) {
+			var time = new Date(val.ts.replace(" "+tz,""));
+			var value = val.v0 === undefined ? null : val.v0 ;
+		
+			data[(time.getTime() / 1000)+""] = value;
+		})
+		
+		vm.dataObj = data;
+		vm.fillData()
+		vm.heatmapConfig.data = vm.dataObj;	
+		
+		vm.getSiteTotalConsumptionHourlyStatSummary(vm.site, vm.heatmapConfig.start, vm.heatmapConfig.end)
+			.then(function (r){
+				vm.min = parseFloat(r[0].min)
+				vm.max = parseFloat(r[0].max)
+				vm.mean = parseFloat(r[0].mean)
+				vm.std = parseFloat(r[0].std)
+				
+				vm.change();
+			})
+		
+	}
+	
+	vm.getData().then(vm.handleData);
 }])
 
 .directive('energySpectrum', [function() {

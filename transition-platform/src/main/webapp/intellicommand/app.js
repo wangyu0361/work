@@ -83,15 +83,14 @@ angular.module('icDash', ['ui.router',
       url: 'energy',
       views: {
         '': {
-          //templateUrl: 'dashboards/twoColumn.html',
-		  templateUrl: 'dashboards/oneColumn.html',
+          templateUrl: 'dashboards/twoColumn.html',
           controller: function($scope) {
             $scope.widgets = [{
-          /*     header: "Energy Profile",
+             header: "Energy Profile",
               dirName: "energy-profile",
 			  controller: "energyProfileCtrl"
            }, {
-       */          header: "Energy Spectrum",
+             header: "Energy Spectrum",
               dirName: "energy-spectrum",
 			  //controller: "heatmapCtrl as heat"
         }];
