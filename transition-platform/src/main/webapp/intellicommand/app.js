@@ -46,6 +46,8 @@ angular.module('icDash', ['ui.router',
   'icDash.multiAxisChart',
   'icDash.calendar',
   'icDash.dateSlider',
+  'icDash.ahuChart',
+  'icDash.dataTable',
 ])
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -169,7 +171,14 @@ angular.module('icDash', ['ui.router',
         },
       },
     })
-
+.state("ahuChart",{
+    	url:'/equipChart',
+    	views:{
+    		'':{
+    			templateUrl:'views/ahuChart.html'
+    		}
+    	}
+    })
   .state('login', {
     url: '/login',
     views: {
