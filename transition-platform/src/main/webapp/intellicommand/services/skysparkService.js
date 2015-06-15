@@ -162,18 +162,18 @@ angular.module('icDash.skysparkService', [])
 		if(_facility !== undefined){_data += "\\\""+_facility+"\\\","}
 		if(_createdDateRange !== undefined){_data += _createdDateRange === null ? 
 				null+"," 
-				: _createdDateRange.hasOwnProperty("length") === true ? 
-						sparkDayFormat(new Date(_createdDateRange[0]))+".."+sparkDayFormat(new Date(_createdDateRange[1])) 
+				: typeof(_createdDateRange) === "object" && _createdDateRange.hasOwnProperty("length") === true ? 
+						sparkDayFormat(new Date(_createdDateRange[0]))+".."+sparkDayFormat(new Date(_createdDateRange[1]))+"," 
 						: sparkDayFormat(new Date(_createdDateRange))+"..2999-01-01,";} 
 		if(_updatedDateRange !== undefined){_data += _updatedDateRange === null ? 
 				null+"," 
-				: _updatedDateRange.hasOwnProperty("length") === true ? 
-						sparkDayFormat(new Date(_updatedDateRange[0]))+".."+sparkDayFormat(new Date(_updatedDateRange[1])) 
+				: typeof(_updatedDateRange) === "object" && _updatedDateRange.hasOwnProperty("length") === true ? 
+						sparkDayFormat(new Date(_updatedDateRange[0]))+".."+sparkDayFormat(new Date(_updatedDateRange[1]))+"," 
 						: sparkDayFormat(new Date(_updatedDateRange))+"..2999-01-01,";}
 		if(_status !== undefined){_data += _updatedDateRange+")"}
 		else{_data += "null)"}
 		_data+="\"";
-		
+		console.log(_data);
 		var _req = {
 				method:"POST",
 				url:_skySparkIp+"eval/",
