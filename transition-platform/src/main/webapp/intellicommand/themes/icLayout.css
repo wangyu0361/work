@@ -21,7 +21,7 @@ h2 {
   background-color: #bfbfbf;
 }
 /* red color */
-.ic-header a:hover,.ic-footer a:hover, a.active {
+.ic-header a:hover,.ic-footer a:hover, a.active, .ic-body-panel-button:hover {
   background: #d90000;
 }
 
@@ -37,16 +37,13 @@ h2 {
 .ic-sidebar {position:fixed;padding-top: 6px}
 
 /* Body specific */
-
-@media ( min-width : 992px) {
-	.modal-xl {
-		width: 80%;
-	}
-}
 .ic-modal-header {
 	border-bottom: 2px solid black;
-	font-size: 1.8em;
+	font-size: 1.4em;
 	color:white;
+}
+.ic-modal-window .modal-dialog {
+	width: 80%;
 }
 
 .ic-body-panel-header {
@@ -62,6 +59,9 @@ h2 {
 	color: black;
 	border-radius:5px;
 	border: 1px solid black;
+}
+.ic-body-panel-button:hover {
+	color:white;
 }
 .ic-body-panel-body {
   padding: 10px;

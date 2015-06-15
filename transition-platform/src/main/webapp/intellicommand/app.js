@@ -47,6 +47,8 @@ angular.module('icDash', ['ui.router',
   'icDash.calendar',
   'icDash.dateSlider',
   'icDash.skysparkChart',
+  'icDash.ahuChart',
+  'icDash.dataTable',
 ])
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -131,12 +133,12 @@ angular.module('icDash', ['ui.router',
             }, {
               header: "Event Page",
               dirName: "event-page",
-			  controller: "eventPageCtrl"
+			  controller: "eventPageCtrl",
+			  extras: {"Configure" : "work-order-grid"}
             }, {
               header: "Open Tickets by Asset",
               dirName: "equipment-tickets",
 			  controller: "equipmentTicketsCtrl",
-			  //extras: ["Grid View"]
             }];
           }
         },
@@ -152,12 +154,11 @@ angular.module('icDash', ['ui.router',
               header: "Aged Work Orders",
               dirName: "aged-work-orders",
 			  controller: "agedWorkOrdersMainCtrl",
-			  //extras: ["Grid View", "Configure"]
+			  //extras: {"Grid View" : "aged-work-orders-grid"}
             }, {
               header: "Work Order Cycle Time",
               dirName: "work-order-cycle-time",
 			  controller: "workOrderCycleTimeCtrl",
-			  //extras: ["Grid View"]
             }, {
               header: "Algorithms Overview",
               dirName: "algorithms",
@@ -188,6 +189,14 @@ angular.module('icDash', ['ui.router',
       },
     })
 	
+.state("ahuChart",{
+    	url:'/equipChart',
+    	views:{
+    		'':{
+    			templateUrl:'views/ahuChart.html'
+    		}
+    	}
+    })
   .state('login', {
     url: '/login',
     views: {
