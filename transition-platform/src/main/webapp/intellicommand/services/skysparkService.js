@@ -182,6 +182,60 @@ angular.module('icDash.skysparkService', [])
 		return _actuallyRequest(_req);
 	}
 	
+	var _getSiteTotalConsumption = function(_site, _start, _end){
+	
+		var sparkDayFormat = d3.time.format("%Y-%m-%d");
+
+		_start = _start === undefined ? "2000-01-01" : sparkDayFormat(new Date(_start));
+		_end = _end === undefined ? sparkDayFormat(new Date()) : sparkDayFormat(new Date(_end));
+		
+			var _req = {
+				method:"POST",
+				url:_skySparkIp+"eval/",
+				headers:{
+					"Content-Type":"text/zinc;charset=utf-8",
+					"Authorization":"Basic ZGV2OjEyMzQ1",
+					"Accept":"application/json"
+				},
+				data:"ver:\"2.0\""+"\n"+
+					"expr"+"\n"+
+					"\"read(site and dis == \\\""+_site+"\\\")"
+						+".getSiteTotalConsumption("+_start+".."+_end+")\""
+		}
+
+		return new Promise(function(resolve, reject){
+			$http(_req)
+				.success( function(data){
+					resolve(data)
+				})
+				.error(function(data){
+					reject(data)
+				})
+		})
+	}
+
+	var _getSiteTotalConsumptionHourlyStatSummary = function(_site, _start, _end){
+	
+		var sparkDayFormat = d3.time.format("%Y-%m-%d");
+
+		_start = _start === undefined ? "2000-01-01" : sparkDayFormat(new Date(_start));
+		_end = _end === undefined ? sparkDayFormat(new Date()) : sparkDayFormat(new Date(_end));
+		
+			var _req = {
+				method:"POST",
+				url:_skySparkIp+"eval/",
+				headers:{
+					"Content-Type":"text/zinc;charset=utf-8",
+					"Accept":"text/csv"
+				},
+				data:"ver:\"2.0\""+"\n"+
+					"expr"+"\n"+
+					"\"read(site and dis == \\\""+_site+"\\\")"
+						+".getSiteTotalConsumptionHourlyStatSummary("+_start+".."+_end+")\""
+		}
+
+		return _actuallyRequest(_req);
+	}
 	
 	var _actuallyRequest = function(_req){
 		var start = new Date();
@@ -196,7 +250,7 @@ angular.module('icDash.skysparkService', [])
 			;
 		})
 	}
-	
+		
 	var serviceObject = {
 		getEquipOnStation:_getEquipOnStation,
 		readFromId:_readFromId,
@@ -206,6 +260,8 @@ angular.module('icDash.skysparkService', [])
 		getHistoryForId:_getHistoryForId, // leave start/end undefined for all history for the ids, id can be a single string or an array of strings
 		getByEquipAndSiteNamesAndTags:_getByEquipAndSiteNamesAndTags,
 		getEventsByDate:_getEventsByDate,
+		getSiteTotalConsumption: _getSiteTotalConsumption,
+		getSiteTotalConsumptionHourlyStatSummary: _getSiteTotalConsumptionHourlyStatSummary,
 		actuallyRequest:_actuallyRequest,
 		ip:_skySparkIp
 	}
