@@ -9,7 +9,7 @@ angular.module('icDash.skysparkChart', [])
 .directive('skysparkChart', ['$http', function($http){
 	  var makeGraph = function(element){
 		$http({
-			url:"http://localhost/api/demo/ext/intellicommand/equipPoints?root=skysparkGrid",
+			url:"http://localhost/api/demo/ext/intellicommand/equipPoints?root=skysparkChart",
 			headers:{"Authorization":"Basic c3U6UENJZGV2b3BzKjEyMzQ1Njc4"}, 
 			method: "POST",
 			contentType: "text/zinc",
@@ -26,7 +26,7 @@ angular.module('icDash.skysparkChart', [])
 		}).then( function(r){ 
 			console.log(r);
 			element.empty();
-			element.append("<div id='skysparkChart'' style='height:1000px; width:100%; position:relative'></div>")
+			element.append("<div id='skysparkChart' style='height:1000px; width:100%; position:relative'></div>")
 			element.append(r.data)
 		});
 	  }
