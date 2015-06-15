@@ -12,7 +12,6 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 }])**/
 .factory('facilitySelectorService', ['$rootScope', 'userPrefService', function($rootScope, userPrefService){
 
-	console.log($rootScope);
 	var _facilityNames;
 	var _assetType;
 	var _point;
@@ -23,7 +22,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 
 	var _setOrganization = function(organization,broadcast){
 		_organization = organization;	
-		console.log("organization set to "+organization);
+		//console.log("organization set to "+organization);
 		if(broadcast===true){userPrefService.updateUserPrefs({"organization": organization});}		
 	}
 
@@ -33,7 +32,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 
 	var _setBuilding = function(building,broadcast){
 		_building = building;	
-		console.log("building set to "+building);
+		//console.log("building set to "+building);
 		if(broadcast===true){userPrefService.updateUserPrefs({"facility": building});}		
 	}
 
@@ -73,7 +72,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 
 	var _setFacilityNames = function(facilityNames,broadcast){
 		_facilityNames = facilityNames;
-		console.log("facilitynames set to "+facilityNames);
+		//console.log("facilitynames set to "+facilityNames);
 		if(broadcast===true){userPrefService.updateUserPrefs({"facility": facilityNames});}
 	}
 
@@ -83,7 +82,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 
 	var _setFacility = function(facility,broadcast){
 		_facility = facility;
-		console.log("facility set to "+facility);
+		//console.log("facility set to "+facility);
 		/*** we need this to eventually set the actual facility name not station name..... */
 		if(broadcast===true){userPrefService.updateUserPrefs({"station": facility});}
 	}
@@ -157,7 +156,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 	// End choose settings that this widget cares about
 
 	var refreshConfigs = function() {
-		console.log("FACILITY SELECTOR updating. New settings:");
+		//console.log("FACILITY SELECTOR updating. New settings:");
 
 		var myPrefs = userPrefService.getUserPrefs("facility-selector");
 
@@ -175,7 +174,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 			} else {
 				currentConfig[key] = defaultConfig[key];
 			}
-			console.log(key, currentConfig[key]);
+			//console.log(key, currentConfig[key]);
 		}
 		pullData2();
 
@@ -202,7 +201,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 
 	//this is the select function that is run every time a thing is clicked. it broadcasts the thing that is clicked and sets all the parents and grandparents and soforth to the service.
 	var genericSelectFunction = function(branch){
-		//console.log(branch);
+		console.log(branch);
 		//switchExpand(branch);
 
 		var ser = facilitySelectorService;
@@ -245,7 +244,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 			}
 		}
 		//TODO: Testing
-		console.log(building);
+		//console.log(building);
 		querySkySpark(branch,building.siteRef,null);
 		break;
 		case 'asset': ser.setAsset(branch.label,true); 
@@ -268,7 +267,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 			}
 		}
 		//TODO: Testing
-		console.log(building);
+		//console.log(building);
 
 		querySkySpark(branch,branch.siteRef,branch.equipRef);
 		break;
@@ -623,7 +622,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 
 	var querySkySparkEquip= function(branch,siteRef){
 		var thisId = siteRef
-		console.log(siteRef);
+		//console.log(siteRef);
 		config = {
 				method:'POST',
 				headers: {'Authorization': 'Basic ZGV2OjEyMzQ1','Accept':'application/json','Content-Type':'text/zinc'},
@@ -632,7 +631,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 
 		};
 		dbService.getData(config).then(function(response){
-			console.log(response);
+			//console.log(response);
 			//create totalhierarchy object for the response
 			var thisArray = [];
 			for(var a=0;a<response.data.rows.length;a++){
@@ -646,7 +645,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 				thisArray.push(newCopy(thisObject));
 
 			}
-			console.log(thisArray);
+			//console.log(thisArray);
 
 			branch.children = newCopy(thisArray);
 
@@ -681,7 +680,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 
 	var querySkySparkPoint= function(branch,siteRef,equipRef){
 		equipRef = equipRef.substring(0,equipRef.indexOf(" "));
-		console.log(siteRef);
+		//console.log(siteRef);
 		var assetType = convertAssetTypeNaming(branch.type);
 		if(assetType!==null){
 
@@ -703,7 +702,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 			};
 		}
 		dbService.getData(config).then(function(response){
-			console.log(response);
+			//console.log(response);
 			//create totalhierarchy object for the response
 			var thisArray = [];
 			for(var a=0;a<response.data.rows.length;a++){
@@ -711,14 +710,14 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 				var thisObject = {};
 				var thisData = response.data.rows[a];
 				thisObject.label = thisData.navName;
-				thisObject.type = "asset";
+				thisObject.type = "point";
 				thisObject.siteRef = siteRef;
 
 				thisObject.equipRef = equipRef
 				thisArray.push(newCopy(thisObject));
 
 			}
-			console.log(thisArray);
+			//console.log(thisArray);
 
 			branch.children = newCopy(thisArray);
 
@@ -809,7 +808,7 @@ angular.module('icDash.facilitySelector', ['ui.router', 'angularBootstrapNavTree
 			var totalHierarchy = [];
 			//organization level
 			for(var a=0;a<siteArray.length;a++){
-console.log(thisOrganizations);
+//console.log(thisOrganizations);
 				thisOrg = siteArray[a].organization;
 				if(thisOrganizations.indexOf(thisOrg)!==-1){
 					var hierarchy = checkTotalHierarchy(thisOrg,totalHierarchy)
@@ -831,7 +830,7 @@ console.log(thisOrganizations);
 				thisOrg = siteArray[a].organization;
 				thisStation = cleaningService.campusFullName(siteArray[a].station);
 				thisBuilding = siteArray[a].dis;
-				console.log(thisStation);
+				//console.log(thisStation);
 				if(thisStation===undefined){
 					thisStation="Unlabeled/General Station";
 				}
@@ -895,7 +894,7 @@ console.log(thisOrganizations);
 										stationLevel.children.push(newCopy(thisObject));
 									}
 									for(var e=0;e<stationLevel.children.length;e++){
-										console.log(stationLevel.children[e]);
+										//console.log(stationLevel.children[e]);
 										var buildingLevel = stationLevel.children[e];
 										if(buildingLevel.children===undefined){
 											buildingLevel.children = [];
@@ -912,7 +911,7 @@ console.log(thisOrganizations);
 											}
 										}
 									}
-									console.log(thisObject.label);
+									//console.log(thisObject.label);
 									break breakpoint;
 								}
 							}
@@ -941,7 +940,7 @@ console.log(thisOrganizations);
 
 
 			for(var a=0;a<response.data.result.length;a++){
-				console.log(response.data.result[a]);
+				//console.log(response.data.result[a]);
 				for(var b=0;b<thisOrganizations.length;b++){
 					if(response.data.result[a].label===thisOrganizations[b]){
 
