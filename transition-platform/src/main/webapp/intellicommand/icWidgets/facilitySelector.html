@@ -26,7 +26,7 @@
 			name="input" placeholder="filter by..." ng-model="filterTag">
 		<div class="col-md-3" style="text-align: right">
 			<input type="submit" class="ic-body-panel-button" value="Apply"
-				ng-click="applyFilter()">
+				ng-click="debug()">
 		</div>
 	</form>
 
@@ -40,7 +40,8 @@
 					<span ng-if="doing_async">...loading...</span>
 
 					<abn-tree tree-data="my_data" tree-control="my_tree"
-						icon-leaf="icon-plus  glyphicon glyphicon-home  fa fa-file"
+						
+						icon-leaf="icon-plus  glyphicon glyphicon-chevron-right  fa fa-caret-right"
 						icon-expand="icon-plus  glyphicon glyphicon-chevron-right  fa fa-caret-right"
 						icon-collapse="icon-plus  glyphicon glyphicon-chevron-down  fa fa-caret-right"
 						on-select="my_tree_handler(branch)" expand-level="1"></abn-tree>
