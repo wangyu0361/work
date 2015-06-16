@@ -4,7 +4,7 @@
 //TODO: make treemap fit within the panel
 //I stopped at line 290
 
-angular.module('icDash.treemapAsset', ['ui.router'])
+angular.module('icDash.treemapAsset', ['ui.router','icDash.skysparkService'])
 
 /**angular.module('myApp.treemapAsset', ['ngRoute','ui.bootstrap','myApp.pciService','myApp.facilitySelector','myApp.dashboard','colorpicker.module','myApp.panelComponent', 'myApp.calendar'])
 .run(['directiveService', function(directiveService){
@@ -27,14 +27,14 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 .controller('treemapAssetCtrl', ['$scope','$rootScope', '$modal', '$location', '$route','$timeout','PCIdbService','$window','configService', '$controller','noReloadUrl','facilitySelectorService', 'userPrefService',
                                  function($scope,$rootScope, $modal, $location, $route,$timeout,dbService,$window,configService,$controller,noReloadUrl,facilitySelectorService, userPrefService) {
 
-**/
-.controller('treemapAssetCtrl', ['$scope','$rootScope', '$modal', '$location', '$timeout','PCIdbService','$window','configService', '$controller','userPrefService',
-                                 function($scope,$rootScope, $modal, $location, $timeout,dbService,$window,configService,$controller, userPrefService) {
+ **/
+.controller('treemapAssetCtrl', ['$scope','$rootScope', '$modal', '$location', '$timeout','PCIdbService','$window','configService', '$controller','userPrefService','SkySparkAPI',
+                                 function($scope,$rootScope, $modal, $location, $timeout,dbService,$window,configService,$controller, userPrefService,SkySparkAPI) {
 
 
 	$scope = $scope.$new();
-	
-	
+
+
 	/** angela removed/updated this section **
 	var thisController = this;
 
@@ -80,7 +80,7 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 			"facilityName" : "MRL",
 	}
 	var currentConfig = defaultConfig;
-	
+
 	var thisController = this;
 	var superController = $controller('baseWidgetCtrl', {
 		"$scope" : $scope
@@ -89,18 +89,23 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 	angular.extend(thisController, configService, superController);
 	$scope.config = thisController.getConfig();
 	// End choose settings that this widget cares about
-	
+
+	//makes a new copy of an object instead of a pointer
+	var newCopy = function(arg){
+		return JSON.parse(JSON.stringify(arg));
+	}
+
 	var refreshConfigs = function() {
 		console.log("TREEMAP ASSET updating!");
-		
+
 		var myPrefs = userPrefService.getUserPrefs("treemap-asset");
-		
+
 		/* Use default config to determine which preferences should be used in the widget
 			Order of preferences: 
 			1) User preferences (myPrefs)
 			2) XUI configurations ($scope.config)
 			3) default configurations by widget (defaultConfig)
-		*/
+		 */
 		for (var key in defaultConfig) {
 			if (myPrefs[key] !== "" && myPrefs[key] !== undefined) {
 				currentConfig[key] = myPrefs[key];
@@ -124,7 +129,7 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 			data:"{}"
 	};
 	dbService.getData(config).then(function(response){
-
+		console.log(response);
 
 
 		if($scope.treemapConfig.startDate===undefined || $scope.treemapConfig.endDate===undefined){
@@ -144,6 +149,40 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 
 	});
 
+
+//appropriated from skysparkService to suit specific needs
+	var getEventsByDate = function(facility,createdDateRange,status){// dates can be a single date object or an array containing [start date object, end date object]
+		var skySparkIp = "https://galaxy2021temp.pcsgalaxy.net:9453/api/galaxy/";
+		var sparkDayFormat = d3.time.format("%Y-%m-%d");
+		var data = "\"treemapData(";
+
+		if(facility !== undefined){data += "\\\""+facility+"\\\","}
+		if(createdDateRange !== undefined){data += createdDateRange === null ? 
+				null+"," 
+				: createdDateRange.hasOwnProperty("length") === true ? 
+						sparkDayFormat(new Date(createdDateRange[0]))+".."+sparkDayFormat(new Date(createdDateRange[1]))+"," 
+						: sparkDayFormat(new Date(createdDateRange))+"..2999-01-01,";} 
+
+		data += "null)";
+		data+="\"";
+
+		var req = {
+				method:"POST",
+				url:skySparkIp+"eval/",
+				headers:{
+					"Content-Type":"text/zinc;charset=utf-8",
+					"Authorization":"Basic ZGV2OjEyMzQ1",
+					"Accept":"text/csv"
+				},
+				data:"ver:\"2.0\""+"\n"+
+				"expr"+"\n"+
+				data
+		}
+		console.log(req.data);
+		return SkySparkAPI.actuallyRequest(req);
+	}
+
+
 	var generateUID = function(widgetName){
 		var time = new Date().getUTCMilliseconds();
 		var rngesus = Math.floor((Math.random() * 1000) + 1);
@@ -159,6 +198,7 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 	};
 
 	var getAssetList = function(assetType){
+		
 		var categories2 = [];
 		var assetCount = 0;
 		for(var thisObject in $scope.responseData.data.result){
@@ -198,20 +238,18 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 				}
 			}
 		}
-
+		
 		return categories2;
 	};
 
 	$scope.refresh = function(){
-		if($scope.isDashboarded()){
-			$scope.change($scope.panelWidth-60,$scope.panelHeight-50);
-		}
-		else{
+		
 			$scope.change($scope.truePanelWidth,$scope.truePanelHeight);
-		}
+		
 	}
 
 	var processData = function(){
+		console.log("starting process data");
 		var categories = [];
 
 
@@ -227,6 +265,7 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 
 
 			for(var checking in categories){
+				//console.log(categories);
 				if((categories[checking])[0]===thisAssetType){
 					alreadyThere=true;
 				}
@@ -242,21 +281,23 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 			}
 			else{
 
-				for(var a in categories){
-
-					if((categories[a])[0]===thisAssetType){
-						(categories[a])[1]=getAssetList(thisAssetType);
-
-					}
-				}
+				
 			}
 
+			
 
+		}
+		for(var a in categories){
 
+			if((categories[a])[0]===thisAssetType){
+				(categories[a])[1]=getAssetList(thisAssetType);
+
+			}
 		}
 		//console.log(categories);
 		$scope.categories = categories;
-
+		console.log("ending process data");
+		console.log(categories);
 		return categories;
 	}
 
@@ -275,6 +316,7 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 	}
 
 	var constructObject = function(){
+		console.log("starting constructobject");
 		var categories = processData();
 
 		var objectStringHead = '{"name": "Work Order Value","children": [';
@@ -292,8 +334,10 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 			if(c<categories.length-1){objectStringBody = objectStringBody+',';}
 		}
 
-
+console.log(objectStringHead+objectStringBody+objectStringTail);
+try{
 		$scope.testingTreemap = JSON.parse(objectStringHead+objectStringBody+objectStringTail);
+}catch(e){}
 
 		$scope.treemapObject = {
 
@@ -308,6 +352,7 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 				             {'name': 'Meters', 'size': 5,'color':1}
 				             ]
 		}
+		console.log("ending construct object");
 	}						 
 
 
@@ -356,12 +401,14 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 	var color = function(count){
 
 		//calculate difference in range, assuming you get a minimum number and a maximum number
+		$scope.rangeLow = 0;
+		$scope.rangeHigh = 2000;
 		var range = $scope.rangeHigh-$scope.rangeLow;
 
 		var colorLow;
 		var colorHigh;
-		colorLow = $scope.treemapConfig.colorLow;
-		colorHigh = $scope.treemapConfig.colorHigh;
+		colorLow = "#0145ba";
+		colorHigh = "#690000";
 
 		/*var lowRed = parseRGBA(colorLow,"red");
 	var highRed = parseRGBA(colorHigh,"red");
@@ -415,20 +462,20 @@ angular.module('icDash.treemapAsset', ['ui.router'])
 //	MC: The following line declares 5 variables. The 4th one creates an alias for a number formatting function. The 5th one has no value.
 //	MC: Strange that he's hardcoded the width and height in here since they also appear in the CSS.
 	var wholeTreemap = function(width,height){
-
+		console.log("starting wholeTreemap");
 
 		var svgArray = d3.selectAll("svg");
 		for(var a=0;a<svgArray.length;a++){
 			console.log(svgArray[a]);
 			for(var b=0;b<svgArray[a].length;b++){
-console.log(svgArray[a][b].attributes);
-try{
-				if(svgArray[a][b].attributes[2].nodeValue===$scope.thisUID){
+				console.log(svgArray[a][b].attributes);
+				try{
+					if(svgArray[a][b].attributes[2].nodeValue===$scope.thisUID){
 
 
-					svgArray[a][b].remove();
-				}
-}catch(error){}
+						svgArray[a][b].remove();
+					}
+				}catch(error){}
 			}
 
 		}
@@ -440,22 +487,18 @@ try{
 		$scope.treeHeight = height;
 		if($scope.treeWidth===undefined || $scope.treeWidth===0){$scope.treeWidth = 1500;}
 		if($scope.treeHeight===undefined || $scope.treeHeight===0){$scope.treeHeight = 300;}
-
+		console.log($scope);
 		var margin = {top: 50, right: 0, bottom: 0, left: 0},
-		width = $scope.treeWidth,
-		height = $scope.treeHeight - margin.top - margin.bottom,
+		/*width = $scope.treeWidth,
+		height = $scope.treeHeight - margin.top - margin.bottom,*/
+		width = 560,
+		height = 250,
 		formatNumber = d3.format(",.1f"),		// MC: I want one decimal place. See https://github.com/mbostock/d3/wiki/Formatting#d3_format
 		transitioning;
 
-		window.onresize = function (){
-			//console.log(window.innerWidth+":::"+window.innerHeight);
-			//$scope.change($scope.windowWidth,$scope.windowHeight-200);
-			//$scope.treeHeight = window.innerHeight;
-			//$scope.treeWidth = window.innerWidth;
 
-			//margin.width = $scope.treeWidth,
-			//height = $scope.treeHeight - margin.top - margin.bottom;
-		}
+
+	
 
 
 //		MC: Here he creates the X and Y scales, which are 1:1 and linear, ie. no scaling applied.
@@ -524,14 +567,16 @@ try{
 //		d3.json("budget_amount.json", function(root) {		// Loads the JSON into memory as an object. The name 'root' is simply a reminder that the object is a hierarchical.
 
 		$scope.drawChart = function(){
+			console.log("starting drawchart");
 			constructObject();
 			var root = $scope.testingTreemap;
+			console.log(root);
 
 			initialize(root);
 			accumulate(root);
 			layout(root);
 			display(root);
-
+			console.log("ending drawchart");
 			//$scope.$apply();
 		}
 
@@ -713,6 +758,7 @@ try{
 		}
 
 		function rect(rect) {
+			console.log(rect);
 			rect.attr("x", function(d) { return x(d.x); })
 			.attr("y", function(d) { return y(d.y); })
 			.attr("width", function(d) { return x(d.x + d.dx) - x(d.x); })
@@ -726,6 +772,7 @@ try{
 		function name(d) {
 			return d.parent ? name(d.parent) + " / " + d.name : d.name;		// MC: Recursive. If there is no parent just return the name attribute of this node, otherwise return the name of the parent node followed by '/' and the name attribute of this node
 		}
+		console.log("ending wholetreemap");
 	}
 	$scope.changeView=function(view){
 
@@ -929,11 +976,13 @@ try{
 	});
 
 	$scope.runQuery = function () {
-
+console.log("starting runquery");
 		if($scope.colorSelect!==undefined && $scope.colorLow!==undefined){
 			$scope.colorSelect[0] = $scope.colorLow;
 			$scope.colorSelect[1] = $scope.colorHigh;
 		}
+		$scope.startDate=new Date(0);
+		$scope.endDate = new Date();
 
 		// console.log($scope.startDate+":::"+$scope.endDate);
 		if($scope.startDate!==undefined && $scope.endDate!==undefined){
@@ -952,7 +1001,7 @@ try{
 			var realEndDate = thisEndDate.getDate();
 			var realEndMonth =  thisEndDate.getMonth()+1;
 
-console.log($scope.treemapConfig.facilityName);
+			//console.log($scope.treemapConfig.facilityName);
 			var orgQuery = '"stationName":"'+$scope.treemapConfig.facilityName+'"';
 			if($scope.treemapConfig.facilityName===(""||undefined)){
 				orgQuery="";
@@ -962,6 +1011,11 @@ console.log($scope.treemapConfig.facilityName);
 			if($scope.treemapConfig.activeClient===(""||undefined)){
 				clientQuery="";
 			}
+
+			//hardcode stuff for testing
+			//orgQuery = '"stationName":"JACK"';
+			//clientQuery = '"stationName":"Deutsche Bank"';
+
 			var dateQuery = '"createdTime": {"$gt" : { "$date": "'+realStartYear+'-'+realStartMonth+'-'+realStartDate+'T04:00:00.000Z" }, "$lt": { "$date": "'+realEndYear+'-'+realEndMonth+'-'+realEndDate+'T04:00:00.000Z" }}';
 			var bodyString = '{'+dateQuery+','+orgQuery+'}';
 
@@ -973,14 +1027,60 @@ console.log($scope.treemapConfig.facilityName);
 					data:bodyString
 			}
 
+			var dateRangeArray = [];
+			dateRangeArray.push($scope.startDate);
+			dateRangeArray.push($scope.endDate);
 
-			dbService.getData(config).then(function(response){
+
+			var assetTypeOptions = ["ahu","vav","chiller","meter","coolingTower","pumps"];
+
+
+			getEventsByDate($scope.treemapConfig.facilityName,dateRangeArray,null).then(function(response){
+				//console.log(response);
+				$scope.responseData={};
+				$scope.responseData.data = {};
+				$scope.responseData.data.result = [];
+				
+				for(var thisIndex in response){
+					var thisObject = {};
+					var rawString = response[thisIndex].val;
+					
+					var rawArray = rawString.split("::");
+					var assetType = rawArray[0];
+					var potentialSaving = rawArray[1];
+					var asset = rawArray[2];
+					thisObject.assetType = assetType;
+					if(potentialSaving=="null"){
+					thisObject.potentialSaving = 0;	
+					}
+					else
+						{
+					thisObject.potentialSaving = potentialSaving.substring(0,potentialSaving.length-1);
+						}
+					if(asset=="null"){
+						thisObject.asset = "Unlabeled Asset";	
+						}
+						else
+							{
+						thisObject.asset = asset;
+							}
+					
+					//console.log(thisObject);
+					$scope.responseData.data.result.push(newCopy(thisObject));
+				}
+				
+				$scope.change($scope.panelWidth-60,$scope.panelHeight-60);
+			})
+
+
+			/*dbService.getData(config).then(function(response){
+				console.log(response);
 				if($scope.truePanelWidth===undefined){
 					$scope.truePanelWidth = $scope.panelWidth-70;}
 				if($scope.truePanelHeight===undefined){
 					$scope.truePanelHeight = $scope.panelHeight-30;}
 				$scope.responseData = response;
-				if($scope.responseData.data.result===null){/*alert("No data found for this time frame.");*/}
+				if($scope.responseData.data.result===null){alert("No data found for this time frame.");}
 				else if($scope.responseData.data.result===undefined){alert("Connection to database lost. Please try again later.");}
 				else{
 					//console.log($scope.panelHeight);
@@ -996,7 +1096,7 @@ console.log($scope.treemapConfig.facilityName);
 					}
 				}
 
-			});
+			});*/
 
 		}
 		if($scope.rangeLow===undefined){
@@ -1014,8 +1114,10 @@ console.log($scope.treemapConfig.facilityName);
 			$scope.treemapConfig.colorLow=$scope.testColor1;
 			$scope.treemapConfig.colorHigh=$scope.testColor5;
 		}
-
+		console.log("ending runquery");
 	};
+
+
 
 	$scope.openConfig = function(size) {
 
@@ -1120,7 +1222,7 @@ console.log($scope.treemapConfig.facilityName);
 					if($scope.retries>100){
 						return;
 					}
-					retryFunction(newValue,oldValue);
+					//retryFunction(newValue,oldValue);
 				},200)
 			}
 			//console.log(newValue.panelWidth+":n::o:"+oldValue.panelWidth);
