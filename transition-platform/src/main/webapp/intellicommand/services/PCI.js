@@ -648,8 +648,6 @@ angular.module('icDash.pciService', ['ui.router'])
 		if(typeof(Promise) === "undefined"){	
 			console.log("promise undefined");
 			_addScript('bower_components/bluebird/js/browser/bluebird.min.js');
-		}else{
-			console.log("promise defined")
 		}
 	}()
 	
