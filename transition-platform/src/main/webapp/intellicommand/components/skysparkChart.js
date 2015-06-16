@@ -7,7 +7,12 @@ angular.module('icDash.skysparkChart', [])
 }])
 
 .directive('skysparkChart', ['$http', function($http){
-	  var makeGraph = function(element){
+	  var makeGraph = function(element, expr){
+		expr = expr || "\"read( (navName == \\\""+sessionStorage.asset+"\\\""+
+					" or dis == \\\""+sessionStorage.asset+"\\\")"+
+					" and (siteRef->dis == \\\""+sessionStorage.station+"\\\""+
+					" or siteRef->station == \\\""+sessionStorage.station+"\\\")).toPoints.hisRead(thisWeek)\"";
+		
 		$http({
 			url:"http://localhost/api/demo/ext/intellicommand/equipPoints?root=skysparkChart",
 			headers:{"Authorization":"Basic c3U6UENJZGV2b3BzKjEyMzQ1Njc4"}, 
@@ -15,9 +20,7 @@ angular.module('icDash.skysparkChart', [])
 			contentType: "text/zinc",
 			data: "ver:\"2.0\""+"\n"+
 				"expr"+"\n"+
-				"\"read(navName == \\\""+sessionStorage.asset+"\\\""+
-					" and (siteRef->dis == \\\""+sessionStorage.station+"\\\""+
-					" or siteRef->station == \\\""+sessionStorage.station+"\\\")).toPoints.hisRead(thisWeek)\"",
+				expr,
 			complete: function(r){
 				var g = $("#skysparkChart");
 				g.empty();
@@ -39,7 +42,7 @@ angular.module('icDash.skysparkChart', [])
 				scope.$watch(function(){
 					return scope.sky.getUserPrefs("event-page").assetName
 				}, function(){
-					makeGraph(element)
+					makeGraph(element, scope.expr)
 				})
 			}
 	  }

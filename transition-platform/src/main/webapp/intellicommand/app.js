@@ -47,6 +47,7 @@ angular.module('icDash', ['ui.router',
   'icDash.calendar',
   'icDash.dateSlider',
   'icDash.skysparkChart',
+  'icDash.skysparkWoGrid',
   'icDash.ahuChart',
   'icDash.dataTable',
 ])
@@ -181,6 +182,22 @@ angular.module('icDash', ['ui.router',
             $scope.widgets = [{
               header: "Skyspark Points By Asset",
               dirName: "skyspark-chart",
+			  //controller: "skysparkWoGridCtrl'",
+			  //extras: ["Grid View", "Configure"]
+            }];
+          }
+        },
+      },
+    })
+	.state('dashes.wo4', {
+      url: 'workOrder4',
+      views: {
+        '': {
+          templateUrl: 'dashboards/oneColumn.html',
+          controller: function($scope) {
+            $scope.widgets = [{
+              header: "Skyspark Work Orders By Site",
+              dirName: "skyspark-wo-grid",
 			  //controller: "skysparkWoGridCtrl'",
 			  //extras: ["Grid View", "Configure"]
             }];
