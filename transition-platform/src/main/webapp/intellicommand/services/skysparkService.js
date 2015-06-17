@@ -250,6 +250,7 @@ angular.module('icDash.skysparkService', [])
 		return new Promise(function(resolve,reject){
 			$http(_req)
 				.success(function(data,status,something,config){
+					console.log(config);
 					var info = d3.csv.parse(data);
 					if(info === undefined || info === null || info.length === 0){reject(info);}
 					else{resolve(info);}
@@ -258,6 +259,30 @@ angular.module('icDash.skysparkService', [])
 			;
 		})
 	}
+	
+	var jsonSkySparkRequest = function(url,query,method){
+		
+			console.log("queryDb is called");
+			var configLine = "ver:\"2.0\"";
+			var keyLine = "filter,limit";
+			var valueLine = "\""+query+"\",100";//TODO can change entry limit to be a configurable amount if needed here.
+			var queryString = configLine+"\n"+keyLine+"\n"+valueLine;
+			var config = {
+				method:method,
+				headers: {"Authorization": "Basic ZGV2OjEyMzQ1","Content-Type":"text/zinc","Accept":"application/json"},
+				url:url,
+				data: queryString
+			};
+			
+			var promise = $http(config);
+			return promise.then(function(response) {
+				console.log(response);
+				return response.data.rows;
+			}, function() {
+			});
+		
+	
+    };
 		
 	var serviceObject = {
 		getEquipOnStation:_getEquipOnStation,
@@ -271,6 +296,7 @@ angular.module('icDash.skysparkService', [])
 		getSiteTotalConsumption: _getSiteTotalConsumption,
 		getSiteTotalConsumptionHourlyStatSummary: _getSiteTotalConsumptionHourlyStatSummary,
 		actuallyRequest:_actuallyRequest,
+		jsonSkySparkRequest:jsonSkySparkRequest,
 		ip:_skySparkIp
 	}
 	

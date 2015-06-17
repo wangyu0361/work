@@ -218,6 +218,33 @@ angular.module('icDash.pciService', ['ui.router'])
 	};
 	return servObj;
 }])
+//------------------------------------------------------------------ WILL BE REMOVED AND THINGS USED (ASSETSERVICE) WILL BE CONVERTED TO USE SKYSPARKAPI WHEN TIME ALLOWS.
+.factory('skySparkService', ['$http', function($http) {
+    return {
+		queryDb: function(query){
+			console.log("queryDb is called");
+			var configLine = "ver:\"2.0\"";
+			var keyLine = "filter,limit";
+			var valueLine = "\""+query+"\",100";//TODO can change entry limit to be a configurable amount if needed here.
+			var queryString = configLine+"\n"+keyLine+"\n"+valueLine;
+			var config = {
+				method:'POST',
+				headers: {"Authorization": "Basic ZGV2OjEyMzQ1","Content-Type":"text/zinc","Accept":"application/json"},
+				url:"https://galaxy2021temp.pcsgalaxy.net:9453/api/galaxy/read",
+				data: queryString
+			};
+			
+			var promise = $http(config);
+			return promise.then(function(response) {
+				console.log(response);
+				return response.data.rows;
+			}, function() {
+			});
+		},
+	
+    };
+}])
+//------------------------------------------------------------------
 .factory('objectTools',[function(){
 	var _isEqual = function(obj1,obj2){
 		 if(obj1 === undefined || obj2 === undefined || obj1 === null || obj2 === null){

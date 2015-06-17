@@ -55,8 +55,10 @@ angular.module('icDash.fullFacilityDetails', ['ui.router'])
 	}
 	
 	var getAllFacilityDets = function(org, facility) {
-		if (facility == "Merck Research Lab") facility = "Merck Research Laboratory  Boston"; // here until asset service gets updated to match skyspark!...
+	//	if (facility == "Merck Research Lab") facility = "Merck Research Laboratory  Boston"; // here until asset service gets updated to match skyspark!...
 		var facilityPromise = assetService.getFacilities(org, facility);
+		//$scope.skySparkImage = assetService.getImages(org,facility);
+		console.log($scope);
 		facilityPromise.then(function(facilityList) {
 			$scope.facilities = facilityList;
 			if ($scope.viewType == "facility") {

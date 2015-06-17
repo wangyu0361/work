@@ -59,7 +59,7 @@ function($scope, $q, $controller, $window, assetService, configService, userPref
 		var assetPromise = assetService.getAsset(stationName, assetName);
 		assetPromise.then(function(asset) {
 			$scope.asset = asset;
-			if ($scope.asset.type == undefined) $scope.asset.type = "AHU";
+//			if ($scope.asset.type == undefined) $scope.asset.type = "AHU";
 		}, function() {
 			$scope.view = "failed";
 		});
