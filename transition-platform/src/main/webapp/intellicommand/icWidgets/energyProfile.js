@@ -207,7 +207,7 @@ angular.module('icDash.energyProfile', ['ui.router'])
 					_makeRequest();
 				}
 				else{
-					console.log('energy data', _energyData);
+					//console.log('energy data', _energyData);
 					_sumTimestampsDaily(_energyData, config);
 				}
 			});
@@ -313,7 +313,7 @@ angular.module('icDash.energyProfile', ['ui.router'])
 		allMeterConsumption.sort(function(a,b){
 			return a.date - b.date;
 		})
-		console.log(allMeterConsumption);
+		//console.log(allMeterConsumption);
 		/*_setHighDate(allMeterConsumption[0].date);
 		_setLowDate(allMeterConsumption[allMeterConsumption.length-1].date);*/
 		
