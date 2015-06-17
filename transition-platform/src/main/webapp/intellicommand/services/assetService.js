@@ -218,6 +218,8 @@ angular.module('icDash.assetService', ['ui.router', 'icDash.cleaningService','ic
 						});
 					});
 					console.log(x);
+					console.log(Date(x.updatedTime));
+					if(x.woValue===undefined){x.woValue=0;}
                     return { 
                     	
 						pciEventId: x.woRef.substring(0,x.woRef.indexOf(" ")), // ex: DEU-12345
@@ -228,14 +230,19 @@ angular.module('icDash.assetService', ['ui.router', 'icDash.cleaningService','ic
 						stationName: cleaningService.campusName(stationName), // ex: WLST
 						orgName: parseOutStationCode(x.woRef), // ex: DEU
 						waste: 7.59, // ex: 7.59//TODO: events in skyspark do not currently have waste
-						potentialSaving: woValue, // ex: 726.54 TODO: events in skyspark do not currently have waste
-						updatedTime: Date(x.mod), // ex: [Fri Jan 02 22:06:19 EST 2015,Sun Jan 04 22:06:19 EST 2015]
+						potentialSaving: x.woValue, // ex: 726.54 TODO: events in skyspark do not currently have waste
+						updatedTime: [Date(x.updatedTime)], // ex: [Fri Jan 02 22:06:19 EST 2015,Sun Jan 04 22:06:19 EST 2015]
 		            };
                 });
 				return newResults;
             }, function() {
 				//console.log('fail to query event data from database');
             });
-        }
+        },
+	    
+	    getImages: function(organizationName,facilityName){
+	    	
+	    }
+	    
     };
 }]);
