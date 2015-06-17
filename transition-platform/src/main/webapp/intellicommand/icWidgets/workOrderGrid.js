@@ -466,9 +466,9 @@ angular.module('icDash.workOrderGrid', ['ui.router'])
 			columnDefs: [
 				             //{field: 'exportEvent', displayName: '', enableFiltering: false, enableSorting: false, enableCellEdit: false, visible: false, width: '8%', cellTemplate: '<button ng-click="getExternalScopes().sendEvent(row.entity)">Send Event</button>'},
 				             //{field: 'updateEvent', displayName: '', enableFiltering: false, enableSorting: false, enableCellEdit: false, visible: false, width: '8%', cellTemplate: '<button ng-click="getExternalScopes().updateEvent(row.entity)">Update Event</button>'},
-				             {field: 'client', displayName: 'Client', visible: false, minWidth: '40', enableCellEdit: false, width: '12.5%'},
+				             //{field: 'client', displayName: 'Client', visible: false, minWidth: '40', enableCellEdit: false, width: '12.5%'},
 				             //{field: 'organization', displayName: 'Organization', visible: false, minWidth: '40', enableCellEdit: false, width: '12.5%'},
-				             {field: 'facility', displayName: 'Facility', visible: true, minWidth: '40', enableCellEdit: false, width: '12.5%'},
+				             //{field: 'facility', displayName: 'Facility', visible: true, minWidth: '40', enableCellEdit: false, width: '12.5%'},
 				             {field: 'station', displayName: 'Station', visible: true, minWidth: '40', enableCellEdit: false, width: '12.5%'},
 				             {field: 'asset', displayName: 'Asset', visible: true, minWidth: '40', enableCellEdit: false, width: '12.5%'},
 				             {field: 'anomaly', displayName: 'Anomaly', visible: true, minWidth: '40', enableCellEdit: false, width: '12.5%'},
@@ -501,12 +501,12 @@ angular.module('icDash.workOrderGrid', ['ui.router'])
 			}
 			$scope.gridApi.grid.refresh();
 		}*/
-		$scope.$on('organizationSetFacilitySelector', function(){
+		/*$scope.$on('organizationSetFacilitySelector', function(){
 			$scope.config.clientName = facilitySelectorService.getOrganization();
 			$scope.config.stationName = undefined;
 			$scope.config.assetName = undefined;
 			$scope.requestData();		
-		});
+		});*/
 		$scope.$on('facilitySetFacilitySelector', function(){
 			$scope.config.stationName = facilitySelectorService.getFacility();
 			$scope.config.assetName = undefined;
@@ -556,7 +556,7 @@ angular.module('icDash.workOrderGrid', ['ui.router'])
 		$scope.$watch('config.stationName', function(){
 			if(!$scope.noWatches && $scope.config.stationName !== undefined && $scope.config.stationName !== ""){
 				$scope.rendered = false;
-				userPrefService.updateUserPrefs($scope.config);
+				//userPrefService.updateUserPrefs($scope.config);
 				$scope.requestData();
 			}
 		}, true)
@@ -576,7 +576,7 @@ angular.module('icDash.workOrderGrid', ['ui.router'])
 			if(!$scope.noWatches && $scope.config.dateRange !== undefined && $scope.config.dateRange !== ""){
 				if($scope.config.stationName !== undefined && $scope.config.stationName !== "" && $scope.config.stationName !== null){
 					$scope.rendered = false;
-					userPrefService.updateUserPrefs($scope.config);
+					//userPrefService.updateUserPrefs($scope.config);
 					$scope.requestData();
 				}
 				
