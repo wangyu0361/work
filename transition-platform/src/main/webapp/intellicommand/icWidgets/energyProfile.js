@@ -171,10 +171,14 @@ angular.module('icDash.energyProfile', ['ui.router'])
 					.then(function(response){
 						var meterPoints = d3.csv.parse(response.data);
 						var meterNames = [];
+						var totalized;
 						for(var i=0;i<meterPoints.length;i++){
 							if(meterPoints[i].energy !== ""){
+								//here is where you'd want to look for the hisTotalized tag.  Mark the data such that the timestamps are handled appropriately 
+								
+								totalized = meterPoints[i].hisTotalized !== "" ? true : false;
 								var id = meterPoints[i].id.slice(0, meterPoints[i].id.indexOf(" "));
-								meterNames.push(id);
+								meterNames.push({"id": id, "totalized" : totalized});
 							}
 						}
 						if(meterNames.length !== 0){
@@ -196,13 +200,14 @@ angular.module('icDash.energyProfile', ['ui.router'])
 		_setHighDate(dates.endDate);
 		_setLowDate(dates.startDate);
 		var _makeRequest = function(){
-			records.groupRecordsDailyForHistoryId(_meterNames[_count], dates.startDate.getTime(), dates.endDate.getTime()).then(function(data){
-				_energyData.push(data);
+			records.groupRecordsDailyForHistoryId(_meterNames[_count].id, dates.startDate.getTime(), dates.endDate.getTime()).then(function(data){
+				_energyData.push({"data" : data, "totalized" : _meterNames[_count].totalized});
 				_count += 1;
 				if(_count < _length){
 					_makeRequest();
 				}
 				else{
+					console.log('energy data', _energyData);
 					_sumTimestampsDaily(_energyData, config);
 				}
 			});
@@ -261,34 +266,54 @@ angular.module('icDash.energyProfile', ['ui.router'])
 		})
 	};
 	var _sumTimestampsDaily = function(energyData, config){
+		
 		var length = energyData.length;
 		var allMeterConsumption = [];
+		
 		for(var i=0;i<length;i++){
-			var data = energyData[i];
-			for(var key in data){
-				if(key.toString() === "name"){continue;}
-				var dailyTotal = 0;
-				var differenceArray = [];
-				var dailyHis = data[key];
-				for(var key in dailyHis){
-					//dailyHis[key];
-					if(dailyHis[key] === 0){
-						continue;
+			var data = energyData[i].data;
+			if(!energyData[i].totalized){
+				for(var key in data){
+					if(key.toString() === "name"){continue;}
+					var dailyTotal = 0;
+					var differenceArray = [];
+					var dailyHis = data[key];
+					for(var key in dailyHis){
+						//dailyHis[key];
+						if(dailyHis[key] === 0){
+							continue;
+						}
+						differenceArray.push(dailyHis[key]);
 					}
-					differenceArray.push(dailyHis[key]);
-				}
-				if(differenceArray.length < 2){continue;}
-				dailyTotal = parseFloat(differenceArray[differenceArray.length -1]) - parseFloat(differenceArray[0]);
-				if(dailyTotal < 0){continue;}
-				var date = new Date(key);
-				var keyDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
-				allMeterConsumption.push({"date" : keyDate, "actual" : dailyTotal, "name" : data.name});
+					if(differenceArray.length < 2){continue;}
+					dailyTotal = parseFloat(differenceArray[differenceArray.length -1]) - parseFloat(differenceArray[0]);
+					if(dailyTotal < 0){continue;}
+					var date = new Date(key);
+					var keyDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+					allMeterConsumption.push({"date" : keyDate, "actual" : dailyTotal, "name" : data.name});
+				}//end inner for
 			}
-		}
+			else{
+				for(var key in data){
+					if(key.toString() === "name"){continue;}
+					var dailyTotal = 0;
+					var dailyHis = data[key];
+					for(var key in dailyHis){
+						if(dailyHis[key] > 0 && dailyHis[key] < 1000){
+							dailyTotal  += parseFloat(dailyHis[key]);
+						}
+					}
+					var date = new Date(key);
+					var keyDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+					allMeterConsumption.push({"date" : keyDate, "actual" : dailyTotal, "name" : data.name});
+				}
+			}
+		}//end outer for
+		
 		allMeterConsumption.sort(function(a,b){
 			return a.date - b.date;
 		})
-
+		console.log(allMeterConsumption);
 		/*_setHighDate(allMeterConsumption[0].date);
 		_setLowDate(allMeterConsumption[allMeterConsumption.length-1].date);*/
 		
