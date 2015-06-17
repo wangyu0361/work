@@ -16,7 +16,6 @@
 <!-- <div ng-if="hasOrg" class="btn btn-default" ng-click="openWorkOrderGrid()"><img src="/intellicommand/smallChart.png"></div> -->
 <!-- <div ng-if="!inDashboard" class="btn btn-default" ng-click="openPageConfiguration()"><img src="/app/config.png"></div> -->
 <div collapse="!drawChartNow">
-	<p>Station: {{organizationName}}</p>
 	<!-- <a style="cursor:pointer" ng-click="resetDates() ; renderChart()">Reset All</a><r>&emsp;&emsp;</r>
 	 <a style="cursor:pointer" ng-if="!makeElastic"  ng-click="previousMonth()">Previous Month</a><r>&emsp;&emsp;</r>
 	<a style="cursor:pointer" ng-if="!makeElastic"  ng-click="nextMonth()">Next Month</a>  -->
@@ -33,7 +32,7 @@
 	<!-- <div ng-if="!drawChartNow"><img src="http://localhost:8000/app/pictures/cheese.jpg" width="200" height="200"></div> --> 		
 </div>
 
-<div ng-if="gridView" style="width:100%" ui-grid="gridOptions" ui-grid-auto-resize external-scopes="onRowClick"></div><br>
+<!-- <div ng-if="gridView" style="width:100%" ui-grid="gridOptions" ui-grid-auto-resize external-scopes="onRowClick"></div><br> -->
 </div>
 	
 

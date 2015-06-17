@@ -152,6 +152,7 @@ angular.module('icDash.energyProfile', ['ui.router'])
 	}
 	//TODO Modify the function in sky spark to return all of the sites energy points if the siteMEter tag is not on any meters.
 	var _queryMeterNames = function(configOb){
+		//console.log('queryMeterNames', configOb);
 		if(_goAway === true){return;}
 		_goAway = true;
 		_setMeterNames([]);
@@ -165,6 +166,7 @@ angular.module('icDash.energyProfile', ['ui.router'])
 				url: 'https://galaxy2021temp.pcsgalaxy.net:9453/api/galaxy/eval?getSiteMeter("'+
 					configOb.stationName+'")'
 		}
+		//console.log(_config.url);
 		$http.get(_config.url,_config)
 					.then(function(response){
 						var meterPoints = d3.csv.parse(response.data);
@@ -190,6 +192,9 @@ angular.module('icDash.energyProfile', ['ui.router'])
 		var _length = _meterNames.length;
 		var _count = 0;
 		var dates = _setDateRange(config.dateRange);
+		//console.log('factory, dates: ',dates);
+		_setHighDate(dates.endDate);
+		_setLowDate(dates.startDate);
 		var _makeRequest = function(){
 			records.groupRecordsDailyForHistoryId(_meterNames[_count], dates.startDate.getTime(), dates.endDate.getTime()).then(function(data){
 				_energyData.push(data);
@@ -274,6 +279,7 @@ angular.module('icDash.energyProfile', ['ui.router'])
 				}
 				if(differenceArray.length < 2){continue;}
 				dailyTotal = parseFloat(differenceArray[differenceArray.length -1]) - parseFloat(differenceArray[0]);
+				if(dailyTotal < 0){continue;}
 				var date = new Date(key);
 				var keyDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
 				allMeterConsumption.push({"date" : keyDate, "actual" : dailyTotal, "name" : data.name});
@@ -283,8 +289,8 @@ angular.module('icDash.energyProfile', ['ui.router'])
 			return a.date - b.date;
 		})
 
-		_setHighDate(allMeterConsumption[0].date);
-		_setLowDate(allMeterConsumption[allMeterConsumption.length-1].date);
+		/*_setHighDate(allMeterConsumption[0].date);
+		_setLowDate(allMeterConsumption[allMeterConsumption.length-1].date);*/
 		
 		var crossMeters = crossfilter(allMeterConsumption);
 		var meterDimension = crossMeters.dimension(function(d){
@@ -326,6 +332,7 @@ angular.module('icDash.energyProfile', ['ui.router'])
 	$scope.id = idService.getNewId();
 	$scope.rendered = false;
 	$scope.editorDone = false;
+	$scope.badRequest = false;
 	
 	/** angela replacing this *
 	var thisController = this;
@@ -357,7 +364,7 @@ angular.module('icDash.energyProfile', ['ui.router'])
 	// Choose settings that this widget cares about
 	var defaultConfig = {
 			"stationName" : "HAUN",
-			"clientName" : "McDonalds",
+			//"clientName" : "McDonalds",
 			"dateRange" : "last six weeks",
 			"actualColor" : "#FF0000",
 			"expectedColor" : "#0000FF",
@@ -376,34 +383,23 @@ angular.module('icDash.energyProfile', ['ui.router'])
 	// End choose settings that this widget cares about
 	
 	var refreshConfigs = function() {
-		//console.log("ENERGY PROFILE updating!");
+		//console.log('refresh configs');
 		
 		var myPrefs = userPrefService.getUserPrefs("energy-profile");
-		/* Use default config to determine which preferences should be used in the widget
-			Order of preferences: 
-			1) User preferences (myPrefs)
-			2) XUI configurations ($scope.config)
-			3) default configurations by widget (defaultConfig)
-		*/
 		for (var key in defaultConfig) {
 			
 			if (myPrefs[key] !== "" && myPrefs[key] !== undefined && myPrefs[key] !== null) {
-				currentConfig[key] = myPrefs[key];
-			} else if ($scope.config[key] !== "" && $scope.config[key] !== undefined) {
-				currentConfig[key] = $scope.config[key];
+				$scope.config[key] = myPrefs[key];
 			} else {
-				currentConfig[key] = defaultConfig[key];
+				$scope.config[key] = defaultConfig[key];
 			}
 		}
-		//one of these likely isn't needed, but whatever
-		thisController.setConfig(currentConfig);
-		$scope.config = currentConfig;
-		thisController.setConfig($scope.config);
-		$scope.config = thisController.getConfig();
-		if($scope.config.stationName === "" || $scope.config.clientName === "" || $scope.editorDone){return;}
 		
-		$scope.editorDone = true;
+		$scope.config.actualColor = "#FF0000";
 		
+		if($scope.config.stationName === "" || $scope.config.clientName === ""){return;}
+		
+		//$scope.badRequest = false;
 		energyProfileDataService.queryMeterNames($scope.config);
 		
 	}
@@ -524,6 +520,8 @@ angular.module('icDash.energyProfile', ['ui.router'])
 
 		var end = cumulativeDimension.top(1)[0].key;
 		var start = cumulativeDimension.bottom(1)[0].key;
+		/*var end = energyProfileDataService.getHighDate();
+		var start = energyProfileDataService.getLowDate();*/
 		
 		$scope.range = (start.getMonth()+ 1)+"/"+(start.getDate())+"/"+(start.getFullYear())+" to "+(end.getMonth()+ 1)+"/"+(end.getDate())+"/"+(end.getFullYear())
 		var actualGroup = actualDimension.group().reduceSum(function(d){
@@ -647,8 +645,8 @@ angular.module('icDash.energyProfile', ['ui.router'])
 		
 		$scope.energyProfile
 			.height(400)
-			.width(575)
-			.legend(dc.legend().x(400).y(0))
+			.width(690)
+			.legend(dc.legend().x(500).y(0))
 			.margins({top: 80, left: 65, right: 80, bottom: 75})
 			.x(d3.time.scale().domain([start, end]))
 			.xUnits(xUnits)
@@ -691,7 +689,8 @@ angular.module('icDash.energyProfile', ['ui.router'])
 			.yAxisLabel("Consumption")
 			.rightYAxisLabel("Savings/Waste")
 			.compose([cumulativeChart, savingsChart, actualChart, expectedChart]) 
-			.on('renderlet', function(chart){
+			.renderlet(function(chart){
+			//.on('renderlet', function(chart){
 					chart.selectAll("g.x text")
 						.attr('transform', "rotate(-80)")
 						.attr('dx', '-10')
@@ -701,6 +700,7 @@ angular.module('icDash.energyProfile', ['ui.router'])
 			 })
 			.render();
 		$scope.rendered = true;
+		$scope.badRequest = false;
 		energyProfileDataService.setGoAway(false);
 	}
 	/** this will all become obsolete ** this all worked better...
@@ -816,9 +816,23 @@ angular.module('icDash.energyProfile', ['ui.router'])
 	});*/
 
 	$scope.$on('userPrefsChanged',function(){
-		if($scope.editorDone === false){
+		var changedConfig = userPrefService.getUserPrefs('energy-profile');
+		var refresh = false;
+		for(var key in changedConfig){
+			if($scope.config[key] !== changedConfig[key]){
+				if(key === "stationName"){
+					//console.log(key, 'changed, should request');
+					refresh = true;
+				}
+			}
+		}
+		if(refresh){
+			energyProfileDataService.setGoAway(false);
+			$scope.rendered = false;
+			$scope.badRequest = false;
 			refreshConfigs();
 		}
+		
 	});
 	/** end angela new **/
 

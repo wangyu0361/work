@@ -7,7 +7,6 @@
                                             'myApp.dashboardTransitionService', 'myApp.facilitySelector',
                                             'myApp.calendar', 'myApp.clientService'])*/
 angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.autoResize',
-                                            
                                             'icDash.pciService', 'ui.bootstrap', 
                                             'icDash.dashboardTransitionService', 'icDash.facilitySelector',
                                             'icDash.calendar', 'icDash.clientService'])
@@ -105,6 +104,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 				},
 				url: _url
 		}
+		//console.log("WOCT URL", _url);
 		return $http.get(_url, _config)
 	}
 	serviceObject = {
@@ -341,7 +341,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 			if(key === "dateRange"){
 				var dates;
 				var range = $scope.config.dateRange;
-				console.log(range);
+				//console.log(range);
 				switch(range){
 					case "last twelve months" : {
 						dates = variableMonthsAgo(12);
@@ -358,6 +358,9 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 					case "last six months" : {
 						dates = variableMonthsAgo(6);
 						break;
+					}
+					default : {
+						dates = variableMonthsAgo(12);
 					}
 				}
 				$scope.config.startingDate = dates.startDate;
@@ -507,47 +510,51 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 
 	}; // end of render chart function
 	$scope.drawBarChart = function(){
-		
-		$scope.barChart = dc.barChart("#cycle_time_bar_chart_"+$scope.chartId);
-		$scope.barChart
-			.width(300)
-			.height(430)
-			.dimension($scope.barChartDimension)
-			.colors([$scope.config.barChartColor])
-			.group($scope.wasteGroup)
-			.valueAccessor(function(p){return p.value.avg;})
-			.margins({top: 10, right: 10, bottom: 75, left: 40})
-			//.yAxisLabel('Average Days To Close Work Orders')
-			.elasticY(true)
-			.elasticX(true)
-			.xAxisPadding(20)
+		try{
+			$scope.barChart = dc.barChart("#cycle_time_bar_chart_"+$scope.chartId);
+			$scope.barChart
+				.width(300)
+				.height(430)
+				.dimension($scope.barChartDimension)
+				.colors([$scope.config.barChartColor])
+				.group($scope.wasteGroup)
+				.valueAccessor(function(p){return p.value.avg;})
+				.margins({top: 10, right: 10, bottom: 75, left: 40})
+				.elasticY(true)
+				.elasticX(false)
+				.xAxisPadding(20)
+				.centerBar(true)
+				.barPadding(0.15)
+				.yAxisPadding('5%')
+				.x(d3.time.scale().domain([$scope.startDate, $scope.endDate]))
+				.xUnits($scope.xAxisUnits)
+				.renderHorizontalGridLines(true)
+				.renderLabel(true)
+				.title(function(p){var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; return "Station: "+$scope.config.stationName+"\nMonth: "+months[p.key.getMonth()]+"\nYear: "+p.key.getFullYear()+"\nAverage Days To Close Work Orders: "+Math.round(p.value.avg*10)/10;})
+				.renderTitle(true)
+				.brushOn(false)
+				.transitionDuration(250)
+				.on('preRender', function(){
+					//var ticks = $scope.wasteGroup.all().length >= 6 ? 12 : 12;
+					$scope.barChart.xAxis().ticks($scope.ticks);
+				})
+				.renderlet(function(chart){
+								chart.selectAll("g.x text")
+								.attr('transform', "rotate(-80)")
+								.attr('dx', '-10')
+								.attr('dy', '-5')
+								.style("text-anchor", "end")
+								;
+							})
+				//.yAxisLabel('Average Days To Close Work Orders')
+			;	
+			$scope.barChart.render();
+			//$scope.barChart.yAxisLabel('Average Butts to Butt Butts');
+			//$scope.barChart.render();
 			
-			.centerBar(true)
-			.barPadding(0.15)
-			.yAxisPadding('5%')
-			.x(d3.time.scale().domain([$scope.startDate, $scope.endDate]))
-			.xUnits($scope.xAxisUnits)
-			.renderHorizontalGridLines(true)
-			.renderLabel(true)
-			.title(function(p){var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]; return "Station: "+$scope.config.stationName+"\nMonth: "+months[p.key.getMonth()]+"\nYear: "+p.key.getFullYear()+"\nAverage Days To Close Work Orders: "+Math.round(p.value.avg*10)/10;})
-			.renderTitle(true)
-			.brushOn(false)
-			.transitionDuration(250)
-			.on('preRender', function(){
-				var ticks = $scope.wasteGroup.all().length;
-				$scope.barChart.xAxis().ticks(ticks);
-			})
-			.renderlet(function(chart){
-							chart.selectAll("g.x text")
-							.attr('transform', "rotate(-80)")
-							.attr('dx', '-10')
-							.attr('dy', '-5')
-							.style("text-anchor", "end")
-							;
-						})
-		;	
-		$scope.barChart.render();	
-		$scope.rendering = false;	
+			$scope.rendering = false;	
+		}catch(e){}
+		
 	}
 	/*$scope.drawFacilityChart = function(){	
 		$scope.facilityPieChart = dc.pieChart("#cycle_time_facility_pie_chart_"+$scope.facilityChartId)
@@ -566,10 +573,12 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 	}*/
 	
 	$scope.drawAssetChart = function(){	
+		try{
 			$scope.assetPieChart = dc.barChart("#cycle_time_asset_chart_"+$scope.assetChartId)
-				.width(370)
-				.height(350)
+				.width(375)
+				.height(430)
 				.margins({top: 10, right: 10, bottom: 75, left: 40})
+				
 				//.legend(dc.legend().x(1).y(0).itemHeight(10).gap(8))
 				.dimension($scope.assetDimension)
 				.group($scope.assetWasteGroup)
@@ -577,9 +586,11 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 				.elasticY(true)
 				.barPadding(0.05)
 				.yAxisPadding('5%')
+				//.yAxisLabel('Average Days To Close Work Orders by Asset')
 				.valueAccessor(function(p){return p.value.avg;})
 				.x(d3.scale.ordinal().domain([]))
 				.xUnits(dc.units.ordinal)
+				.renderHorizontalGridLines(true)
 				.title(function(p){return "Asset: "+p.key+"\nAverage Days To Close Work Orders: "+Math.round(p.value.avg*10)/10;})
 				.renderlet(function(chart){
 					chart.selectAll("g.x text")
@@ -591,6 +602,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 				})	
 				.render();
 			$scope.showAsset = true;
+	}catch(e){}
 	}
 	$scope.createAllGroupsAndDimensions = function(){
 		
@@ -601,18 +613,19 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 			}
 		});
 		$scope.organizationDimension = $scope.cycleData.dimension(function(d){
-			return d.sitRef;
+			//console.log(d.siteRef);
+			return d.siteRef;
 		});		
 		$scope.weekDimension = $scope.cycleData.dimension(function(d){
 			if(d.endTime !== undefined){
 				return d3.time.week(d.endTime);
 			};
 		});
-		/*$scope.facilityDimension = $scope.cycleData.dimension(function(d){
+		$scope.facilityDimension = $scope.cycleData.dimension(function(d){
 			return d.stationName;
-		});*/
+		});
 		$scope.assetDimension = $scope.cycleData.dimension(function(d){
-			return d.asset;
+			return d.asset === "" ? "Not Available" : d.asset;
 		});
 		$scope.monthlyWasteGroup = $scope.monthDimension.group().reduce(
 				function(p,d){
@@ -710,7 +723,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 				}
 		);
 
-		/*$scope.facilityWasteGroup = $scope.facilityDimension.group().reduce(
+		$scope.facilityWasteGroup = $scope.facilityDimension.group().reduce(
 				function(p,d){
 					p.count += 1;
 					p.sum += d.daysOpen;
@@ -740,7 +753,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 						avg: 0
 					};
 				}
-		);*/
+		);
 		
 		$scope.assetWasteGroup = $scope.assetDimension.group().reduce(
 				function(p,d){
@@ -811,7 +824,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 		}
 	};
 	//TODO investigate Passing the closing date...will have to do an $or query.
-	$scope.onRowClick = {
+/*	$scope.onRowClick = {
 			openTicketingDashboard : function(row){
 				var month = row.Month;
 				var year = row.Year;
@@ -837,7 +850,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 						"ctl_equipmenttickets1":{"tag":"","desc":"","dataBinder":"","dataField":"","autoTips":true,"className":"","disableClickEffect":false,"disableHoverEffect":false,"disableTips":false,"disabled":false,"defaultFocus":false,"hoverPop":"","hoverPopType":"outer","dock":"center","dockIgnore":false,"dockOrder":1,"showEffects":"","hideEffects":"","dockFloat":false,"dockMinW":0,"dockMinH":0,"tips":"","rotate":0,"left":0,"top":505,"width":600,"height":200,"right":"auto","bottom":"auto","renderer":null,"zIndex":1,"tabindex":1,"position":"static","visibility":"","display":"","selectable":false,"parentAlias":"canvas","classKey":"xui.UI.EquipmentTickets"}
 					}
 				);
-				/*$.ajax({
+				$.ajax({
 					url: "/xui",
 					type: "post",
 					data: dashString,
@@ -853,9 +866,9 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 							function(){
 								newTab.document.write(data);
 							}, 100);
-				});*/
+				});
 				
-		/*		dashTransition.newTab('#/dashboard', {
+				dashTransition.newTab('#/dashboard', {
 					'dashboard':{
 						'only':{
 							0: {
@@ -907,9 +920,9 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 							}
 						}
 					}
-				})*/
+				})
 			}
-	};
+	};*/
 	$scope.$on('renderWorkOrderCycleTimeChart', function(){
 		$scope.showAsset = false;
 		$scope.hasOrg = true;
@@ -972,19 +985,27 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 			switch(range){
 				case "last twelve months" : {
 					dates = variableMonthsAgo(12);
+					$scope.ticks = 12;
 					break;
 				}
 				case "last six weeks" : {
 					dates = variableWeeksAgo(6);
+					$scope.ticks = 6;
 					break;
 				}
 				case "last twelve weeks" : {
 					dates = variableWeeksAgo(12);
+					$scope.ticks = 12;
 					break;
 				}
 				case "last six months" : {
 					dates = variableMonthsAgo(6);
+					$scope.ticks = 6;
 					break;
+				}
+				default : {
+					dates = variableMonthsAgo(12);
+					$scope.ticks = 12;
 				}
 			}
 			$scope.startDate = dates.startDate;
@@ -995,7 +1016,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 			workOrderCycleTimeSharedProperties.setEndDate(dates.endDate);
 			if($scope.config.stationName !== undefined && $scope.config.stationName !== ""){
 				//$scope.showAsset = false;
-				userPrefService.updateUserPrefs($scope.config);
+				//userPrefService.updateUserPrefs($scope.config);
 				$scope.renderWeeklyView = $scope.config.weekly;
 				$scope.hasOrg = true;
 				//workOrderCycleTimeSharedProperties.setOrganization(nu);
@@ -1009,7 +1030,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 			$scope.openWorkOrderGrid();
 		}
 	});
-	$scope.resetDates = function(){
+/*	$scope.resetDates = function(){
 		workOrderCycleTimeSharedProperties.setOrganization($scope.config.stationName);
 		if($scope.config.startingDate === undefined || $scope.config.endingDate === undefined){
 			$scope.endDate = new Date();
@@ -1036,7 +1057,7 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 		//$scope.drawFacilityChart();
 		$scope.drawAssetChart();
 		
-	};
+	};*/
 	$scope.renderAssetChart = function(){
 		$scope.showAsset = !$scope.showAsset;
 	};
@@ -1098,13 +1119,24 @@ angular.module('icDash.workOrderCycleTime', ['ui.router', 'ui.grid', 'ui.grid.au
 
 	/** angela new **/
 		$scope.$watch('config', function(){
-			userPrefService.updateUserPrefs($scope.config);
+			//userPrefService.updateUserPrefs($scope.config);
 			if($scope.rendering === true){return;}
 			refreshConfigs();
 		}, true);
-		/*$scope.$on('userPrefsChanged',function(){
-			refreshConfigs();
-		});*/
+		$scope.$on('userPrefsChanged',function(){
+			var changedConfig = userPrefService.getUserPrefs('work-order-cycle-time');
+			var refresh = false;
+			for(var key in changedConfig){
+				if($scope.config[key] !== changedConfig[key]){
+					if(key === "stationName"){
+						refresh = true;
+					}
+				}
+			}
+			if(refresh){
+				refreshConfigs();
+			}
+		});
 		/** end angela new **/
 		
 	//refreshConfigs();

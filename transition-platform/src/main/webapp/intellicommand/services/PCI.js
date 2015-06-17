@@ -26,13 +26,13 @@ angular.module('icDash.pciService', ['ui.router'])
 					//dateRange: sessionStorage.getItem("dateRange"),
 				},
 				"energy-profile": {
-					stationName: sessionStorage.getItem("station"),
-					clientName: sessionStorage.getItem("organization"),
+					stationName: sessionStorage.getItem("facility"),
+					//clientName: sessionStorage.getItem("organization"),
 					actualColor: sessionStorage.getItem("colors.actualKWH"),
 					expectedColor: sessionStorage.getItem("colors.expectedKWH"),
 					savingsColor: sessionStorage.getItem("colors.weeklyKWH"),
 					cumColor: sessionStorage.getItem("colors.cumulativeKWH"),
-					dateRange: "last four weeks",
+					//dateRange: "last four weeks",
 					//dateRange: sessionStorage.getItem("dateRange"),
 				},
 				"equipment": {
@@ -82,7 +82,8 @@ angular.module('icDash.pciService', ['ui.router'])
 					//dateRange: sessionStorage.getItem("dateRange"),
 				},
 				"work-order-cycle-time": {
-					clientName: sessionStorage.getItem("organization"),
+					//clientName: sessionStorage.getItem("organization"),
+					stationName: sessionStorage.getItem("station"),
 					colorHigh: sessionStorage.getItem("colors.colorHigh"),
 					colorLow: sessionStorage.getItem("colors.colorLow"),
 					barChartColor: sessionStorage.getItem("colors.ticketOpen"),

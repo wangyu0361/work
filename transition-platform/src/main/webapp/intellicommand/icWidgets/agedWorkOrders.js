@@ -29,21 +29,21 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 	  return{
 		  restrict: 'E',
 			controller: 'agedWorkOrdersMainCtrl',
-			templateUrl: 'icWidgets/agedWorkOrders.html',
+			templateUrl: '/intellicommand/views/agedWorkOrders.html',
 	  }
 }])
 .directive('agedWorkOrdersConfig',[function(){
 	  return{
 		  restrict:'E',
 		  controller: 'agedWorkOrdersModalOpener',
-		  templateUrl: 'icWidgets/algoConfig.html'
+		  templateUrl: '/intellicommand/views/algoConfig.html'
 	  }
 }])
 .directive('agedWorkOrdersGrid', [function(){
 	return{
 		restrict: 'E',
 		controller: 'agedWorkOrdersGridCtrl',
-		templateUrl: 'icWidgets/gridView.html'
+		templateUrl: '/intellicommand/views/gridView.html'
 	}
 }])
 .directive('agedWorkName', [function(){
@@ -64,6 +64,7 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 	var _clientGroup;
 	var _chartId;
 	var _success;
+	
 	
 	var _getSuccess = function(){
 		return _success;
@@ -98,13 +99,121 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 	var _getStationGroup = function(){
 		return _stationGroup;
 	};
-	var _getClientData = function(configObj){
-		if(configObj.clientName !== "" && configObj.clientName != undefined){
-			_clientName = configObj.clientName;
+	
+	var _calcDateRange = function(configObj){
+		if(configObj.dateRange !== undefined && configObj.dateRange !== "" && configObj.dateRange !== "null"){
+			
+			var range = configObj.dateRange;
+			var dates;
+			switch(range){
+				case "last month":{
+					dates = _previousMonth();
+					break;
+				}
+				case "last six weeks":{
+					dates = _variableWeeksAgo(6);
+					break;
+				}
+				case "last eight weeks":{
+					dates = _variableWeeksAgo(8);
+					break;
+				}
+				case "last twelve weeks":{
+					dates = _variableWeeksAgo(12);
+					break;
+				}
+				case "last six months": {
+					dates = _variableMonthsAgo(6);
+					break;
+				}
+				default : {
+					dates = _variableMonthsAgo(6)
+				}
+				
+			}
+			if(dates !== undefined){
+				return dates;
+			}
 		}
-		var requestString;
-		var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
-		//var mongoUrl = "https://galaxy2021temp.pcsgalaxy.net:9453/db/query";
+		else{
+			var dates = _variableMonthsAgo(6);
+			return dates;
+		}
+	}
+	
+	var _variableMonthsAgo = function(number){
+		var end = new Date();
+		var start = new Date(end.getFullYear(), end.getMonth()-number, end.getDate());
+		return {"startDate" : start, "endDate" : end};
+	};
+	var _variableWeeksAgo = function(number){
+		var days = number * 7;
+		var end = new Date();
+		var start = new Date(end.getFullYear(), end.getMonth(), end.getDate()-days);
+		return {"startDate" : start, "endDate" : end};
+	};
+	var _variableDaysAgo = function(number){
+		var end = new Date();
+		var start = new Date(end.getFullYear(), end.getMonth(), end.getDate()-number);
+		return {"startDate" : start, "endDate" : end};
+	};
+	var _currentMonth = function(){
+		var end = new Date();
+		var start = new Date(end.getFullYear(), end.getMonth(), 1);
+		return {"startDate" : start, "endDate" : end};
+	};
+	var _previousMonth = function(){
+		var today = new Date();
+		var end = new Date(today.getFullYear(), today.getMonth(), 0);
+		var start = new Date(end.getFullYear(), end.getMonth(), 1);
+		return {"startDate" : start, "endDate" : end};
+	};
+	var _previousSixMonths = function(){
+		var today = new Date();
+		var end = new Date(today.getFullYear(), today.getMonth(), 1);
+		var start = new Date(end.getFullYear(), end.getMonth()-6, 1);
+		return {"startDate" : start, "endDate" : end};
+	};
+	var _lastYear = function(){
+		var end = new Date();
+		var start = new Date(end.getFullYear()-1, end.getMonth(), end.getDate());
+		return {"startDate" : start, "endDate" : end};
+	};
+	var _lastFullCalendarYear = function(){
+		var today = new Date();
+		var end = new Date(today.getFullYear(), 0, 1);
+		var start = new Date(end.getFullYear()-1, 0, 1);
+		return {"startDate" : start, "endDate" : end};
+	};
+	var _lifetime = function(){
+		var start = new Date(2005, 1, 1);
+		var end = new Date();
+		return {"startDate" : start, "endDate" : end};
+	}
+	
+	var _getClientData = function(configObj){
+		
+		if(configObj.stationName !== "" && configObj.stationName != undefined){
+			_clientName = configObj.stationName;
+		}
+		//console.log(configObj);
+		
+		var dates = _calcDateRange(configObj);
+		
+		configObj.endingDate = dates.endDate;
+		configObj.startingDate = dates.startDate;
+		
+		var endYear = configObj.endingDate.getFullYear();
+		var endMonth = configObj.endingDate.getMonth().toString().length == 2 ? configObj.endingDate.getMonth().toString() : "0"+configObj.endingDate.getMonth().toString();
+		var endDate = configObj.endingDate.getDate().toString().length == 2 ? configObj.endingDate.getDate().toString() : "0"+configObj.endingDate.getDate().toString();
+		var startYear = configObj.startingDate.getFullYear();
+		var startMonth = configObj.startingDate.getMonth().toString().length == 2 ? configObj.startingDate.getMonth().toString() : "0"+configObj.startingDate.getMonth().toString();
+		var startDate = configObj.startingDate.getDate().toString().length == 2 ? configObj.startingDate.getDate().toString() : "0"+configObj.startingDate.getDate().toString();
+		
+		var createdRange =  startYear+"-"+startMonth+"-"+startDate+".."+endYear+"-"+endMonth+"-"+endDate;
+		/*var requestString;
+		var mongoUrl = "http://10.239.3.132:8111/db/query";
+		//var mongoUrl = "http://10.239.3.132:8111/db/query";
 		
 		var client = configObj.clientName;
 		requestString = "{\"status\" : \"Open\", \"client\" : \""+client+"\"}"
@@ -114,18 +223,45 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 				headers: {'Collection' : 'events'},
 				url: mongoUrl,
 				data: requestString
-		};
-		return $http(config)
+		};*/
+		var _url = 'https://galaxy2021temp.pcsgalaxy.net:9453/api/galaxy/eval?eventFilter("'+
+		configObj.stationName+
+		'" ,'+
+		createdRange+
+		','+
+		'null'+
+		','+ 
+		'true'+
+		')';
+		var _config = {
+				method: "GET",
+				headers:{
+					"Content-Type":"text/zinc;charset=utf-8",
+					"Authorization":"Basic ZGV2OjEyMzQ1",
+					"Accept":"text/csv"
+				},
+				url: _url
+		}
+		
+		//console.log(_url);
+		
+		return $http.get(_url, _config)
 			.success(function(response){
-				if(response.result === null){
+				//console.log(response);
+				var workOrders = d3.csv.parse(response)
+				
+				//console.log(workOrders);
+				
+				if(workOrders === null || workOrders === []){
 					_success = false;
 					return;
 				}else{
 					_success = true;
 				}
 				var today = new Date();
-				angular.forEach(response.result, function(data){
-					var createdTime = new Date(data.createdTime);
+				angular.forEach(workOrders, function(data){
+					var createdTime = new Date(data.createdTime.slice(0,data.createdTime.indexOf(" "))); //slice this, then try changing data.createdTime or adding an additional field such "real date" or something 
+					
 					var daysOpen = (today - createdTime)/(1000*60*60*24);
 					if(daysOpen < 30){
 						data.age = "Less Than 30 Days";
@@ -140,7 +276,8 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 						data.age = "More Than 90 Days";
 					}
 				});
-				_clientCrossFilterData = crossfilter(response.result);
+				_clientCrossFilterData = crossfilter(workOrders); 
+		
 				_clientDimension = _clientCrossFilterData.dimension(function(d){
 					return d.age;
 				});
@@ -182,29 +319,21 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 		angular.extend(thisController, awesome, superController);
 		$scope.config = thisController.getConfig();
 		agedWorkOrdersDataService.setChartId($scope.config.chartId);
-		if($scope.config.clientName !== undefined){
+		if($scope.config.stationName !== undefined){
 			$rootScope.$broadcast('gridView');
 		}
 	};
 }])
 
-/*** angela removed dashTransition sections! *
 .controller('agedWorkOrdersMainCtrl', ['$scope', 'agedWorkOrdersDataService', 'chartIdService', '$modal', 
-                                       'configService', 'dashTransition', '$controller', 'facilitySelectorService', 'userPrefService',
+                                       'configService', '$controller', 'facilitySelectorService', 'userPrefService',
                                        function($scope, agedWorkOrdersDataService, chartIdService, $modal, 
-                                    		   	awesome, dashTransition, $controller, facilitySelectorService, userPrefService){
-	***/
-	
-.controller('agedWorkOrdersMainCtrl', ['$scope', 'agedWorkOrdersDataService', 'chartIdService', '$modal', 
-                                       'configService', '$controller', 'userPrefService',
-                                       function($scope, agedWorkOrdersDataService, chartIdService, $modal, 
-                                    		   	awesome, $controller, userPrefService){
-												
+                                    		   	awesome, $controller, facilitySelectorService, userPrefService){
 	$scope.collapseClientChart = true;
 	$scope.gridView = false;
 	$scope.noData = false;
-	
-	/** angela is replacing all of this stuff **
+	$scope.rendering = false;
+
 	var thisController = this;
 	var superController = $controller('baseWidgetCtrl', {
 		"$scope" : $scope
@@ -213,31 +342,31 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 	angular.extend(thisController, awesome, superController);
 	$scope.config = thisController.getConfig();
 	
-	var defaultConfig = {
-			"clientName" : "",
+	/*var defaultConfig = {
+			//"clientName" : "",
 			"stationName" : "",
-			"chartId" : "",
+			//"chartId" : "",
 			"chartColor" : "#B22222",
 			"colorHigh" : "#3CB371",
 			"colorLow" : "#000000"
-	}
-    for(var key in defaultConfig){
+	}*/
+	/*var myPrefs = userPrefService.getUserPrefs("aged-work-orders");
+    for(var key in myPrefs){
 		 if($scope.config.hasOwnProperty(key) === false){
-	  			$scope.config[key] = defaultConfig[key];
+	  			$scope.config[key] = myPrefs[key];
 	  		}
-	}
+	}*/
+   
 	/** end area angela replaced **/
 	
 	
-	/** angela's replacement */
+	// angela's replacement is causing loss of two way binding.  
+
 	// Choose settings that this widget cares about
 	var defaultConfig = {
-		"clientName" : "",
 		"stationName" : "",
 		"chartId" : "",
 		"chartColor" : "#B22222",
-		"colorHigh" : "#3CB371",
-		"colorLow" : "#000000"
 	};
 	var currentConfig = defaultConfig;
 	
@@ -250,27 +379,29 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 	// End choose settings that this widget cares about
 	
 	var refreshConfigs = function() {
-		console.log("AGED WORK ORDERS updating!");
+		//console.log("AGED WORK ORDERS updating!");
 		var myPrefs = userPrefService.getUserPrefs("aged-work-orders");
 		/* Use default config to determine which preferences should be used in the widget
 			Order of preferences: 
 			1) User preferences (myPrefs)
 			2) XUI configurations ($scope.config)
-			3) default configurations by widget (defaultConfig)
-		*/
+			3) default configurations by widget (defaultConfig)*/
+		
 		for (var key in defaultConfig) {
 			if (myPrefs[key] !== "" && myPrefs[key] !== undefined) {
-				currentConfig[key] = myPrefs[key];
-			} else if ($scope.config[key] !== "" && $scope.config[key] !== undefined) {
-				currentConfig[key] = $scope.config[key];
-			} else {
-				currentConfig[key] = defaultConfig[key];
+				$scope.config[key] = myPrefs[key];
+			}  else {
+				$scope.config[key] = defaultConfig[key];
 			}
 		}
 		
-		if (currentConfig.clientName !== "" && currentConfig.clientName !== undefined) $scope.hasOrg = true;
-		$scope.config = currentConfig;
-		drawCharts();
+		if ($scope.config.stationName !== "" && $scope.config.stationName !== undefined){ 
+			if($scope.rendering){return;}
+			
+			$scope.rendering = true;
+			$scope.collapseClientChart = true;
+			drawCharts();
+		}
 	}
 	/** end angela's replacement section */
 	
@@ -288,7 +419,7 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 	if($scope.config.chartId === undefined || $scope.config.chartId === ""){
 		$scope.config.chartId = chartIdService.getNewId();
 	}
-	if($scope.config.clientName === undefined || $scope.config.clientName === ""){
+	if($scope.config.stationName === undefined || $scope.config.stationName === ""){
 		$scope.hasOrg = false;
 	}
 	else{
@@ -309,21 +440,21 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 		if(clientDimension === undefined){return;}
 		var clientGroup = agedWorkOrdersDataService.getClientGroup();
 		
-		var stationDimension = agedWorkOrdersDataService.getStationDimension();
+		/*var stationDimension = agedWorkOrdersDataService.getStationDimension();
 		var stationGroup = agedWorkOrdersDataService.getStationGroup();
 		var numberStations = stationGroup.all().length;
 		
-		var colorArray = getMyColors(numberStations);
+		var colorArray = getMyColors(numberStations);*/
 		
 		var clientBarChart = dc.barChart("#client_barChart_"+$scope.config.chartId)
 		
-			.height(400)
-			.width(300)
-			.margins({top: 30, right: 10, bottom: 120, left: 75})
+			.height(480)
+			.width(600)
+			.margins({top: 30, right: 10, bottom: 150, left: 40})
 			.dimension(clientDimension)
 			.group(clientGroup)
-			.colors([$scope.config.chartColor])
-			//.yAxisLabel('Number Of Work Open Orders by Age') 
+			.colors([$scope.config.barChartColor])
+			.yAxisLabel('Number Of Open Work Orders by Age') 
 			.elasticX(false)
 			.elasticY(true)
 			.barPadding(0.15)
@@ -335,26 +466,27 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 			.renderHorizontalGridLines(true)
 			.brushOn(false)
 			.transitionDuration(300)
-			.title(function(d){return "Organization: "+$scope.client+"\nNumber of Open Work Orders: "+d.value+"\nAmount of Time Open: "+d.key})
-			.on("renderlet", function(chart){
+			.title(function(d){return "Station: "+$scope.client+"\nNumber of Open Work Orders: "+d.value+"\nAmount of Time Open: "+d.key})
+			.renderlet(function(chart){
 				chart.selectAll("rect")
 					.on("click", function(d){
-						console.log();
+						//console.log();
 					});
 			})
-			.on("renderlet", function(chart){
+			.on("postRender",function(chart){
 				chart.selectAll("g.x text")
-					.attr('transform', "rotate(-60)")
+					.attr('transform', "rotate(-80)")
 					.attr('dx', '-10')
 					.attr('dy', '-5')
 					.style("text-anchor", "end")
 				;
 			})
 			.render();
-			
+		$scope.rendering = false;
 		$scope.collapseClientChart = false;
+		//$scope.rendering = false;
 		//console.log('here', colorArray);
-		var stationPieChart = dc.pieChart("#station_pieChart_"+$scope.config.chartId)
+	/*	var stationPieChart = dc.pieChart("#station_pieChart_"+$scope.config.chartId)
 			
 			.width(200)
 			.height(200)
@@ -364,13 +496,13 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 			.radius(60)
 			.innerRadius(10)
 			.title(function(d){return "Click to filter bar chart by events at "+d.key+"\nTotal Open Work Orders at "+d.key+": "+d.value;})
-			.on("renderlet", function(chart){
+			.renderlet(function(chart){
 				chart.selectAll('g.pie-slice') //yeah, this actually works :-)
 				.on('mouseup', function(d){
 					$scope.config.stationName = d.data.key;
 				});
 			})
-			.render();
+			.render();*/
 	};
 	var drawCharts = function(){
 		agedWorkOrdersDataService.getClientData($scope.config).then(function(){
@@ -389,7 +521,7 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 	$scope.openPageConfiguration = function(){
 		if(angular.element(document.getElementById("editorHere")).hasClass('xui-css-dockparent')){return;}
 		var modalInstance = $modal.open({
-			templateUrl: 'icWidgets/agedWorkOrdersConfig.html',
+			templateUrl: '/intellicommand/views/agedWorkOrdersConfig.html',
 			controller: 'agedWorkOrdersConfigCtrl',
 			resolve: {
 				config: function(){
@@ -415,28 +547,59 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 		}
 	});
 	
-	/** this will become obsolete *
-	$scope.$on('organizationSetFacilitySelector', function(){
+	$scope.$on('userPrefsChanged', function(){
+		//console.log('aged work orders chaged');
+		$scope.rendering = false;
+		refreshConfigs();
+	});
+	/*$scope.$on('organizationSetFacilitySelector', function(){
 		if($scope.config.clientName === facilitySelectorService.getOrganization()){return;}
 		else{
 				$scope.gridView = false;
 				$scope.hasOrg = true;
 				$scope.config.clientName = facilitySelectorService.getOrganization();			
 		}
-	});
-	/** end area becoming obsolete */
+	});*/
+	
 	
 	$scope.$on('gridView', function(){
-		if($scope.config.chartId === agedWorkOrdersDataService.getChartId()){
+		/*if($scope.config.chartId === agedWorkOrdersDataService.getChartId()){
 			$scope.openWorkOrderGrid();
-		}
+		}*/
+		$scope.openWorkOrderGrid();
 	});
-	
-	/** this area will become obsolete *
-	$scope.$watch('config', function(nuObj, oldObj){
+	var defineWatches = function(){
+		/*$scope.$watch('config.stationName', function(){
+			if($scope.config.stationName !== undefined && $scope.config.stationName !== "" && $scope.config.stationName !== "null"){
+				if($scope.config.dateRange !== undefined && $scope.config.dateRange !== "" && $scope.config.dateRange !== "null")
+				$scope.gridView = false;
+				$scope.hasOrg = true;
+				userPrefService.updateUserPrefs($scope.config);
+				drawCharts();
+			}
+		}, true);
+		$scope.$watch('config.chartColor', function(){
+			if($scope.config.chartColor !== undefined && $scope.config.chartColor !== "" && $scope.config.chartColor !== "null"  && $scope.inEditor){
+				userPrefService.updateUserPrefs($scope.config);
+				chartRender();
+			}
+		},true);
+		$scope.$watch('config.dateRange', function(){
+			if($scope.config.dateRange !== undefined && $scope.config.dateRange !== "" && $scope.config.dateRange !== "null"){
+				if($scope.config.stationName !== undefined && $scope.config.stationName !== "" && $scope.config.stationName !== "null"){
+					$scope.gridView = false;
+					$scope.hasOrg = true;
+					userPrefService.updateUserPrefs($scope.config);
+					drawCharts();
+				}
+			}
+		}, true);*/
 		
-		var nu = nuObj.clientName;
-		var old = oldObj.clientName;
+	}
+	/*$scope.$watch('config', function(nuObj, oldObj){
+		
+		var nu = nuObj.stationName;
+		var old = oldObj.stationName;
 		
 		if(nuObj.colorHigh !== undefined && nuObj.colorHigh !== ""){
 			//console.log('colorHigh', nuObj.colorHigh);
@@ -457,19 +620,19 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 			}
 		}
 		if(nu === old){return;}
+		userPrefService.updateUserPrefs($scope.config);
 		
-		
-		if(nuObj.clientName !== undefined && nuObj.clientName !== ""){
+		if(nuObj.stationName !== undefined && nuObj.stationName !== ""){
 				$scope.gridView = false;
 				$scope.hasOrg = true;
 				drawCharts();
 		}		
-	}, true)
+	}, true)*/
 	/** end area becoming obsolete */
-/*	$scope.onRowClick = {
+	/*$scope.onRowClick = {
 			showMessage: function(row){
 				dashTransition.newTab("#/workOrderGrid", {
-					"clientName" : $scope.config.clientName,
+					//"clientName" : $scope.config.clientName,
 					"stationName" : $scope.config.stationName,
 					"endingDate" : undefined,
 					"startingDate" : undefined,
@@ -478,7 +641,7 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 					}
 				)
 			},
-			openTicketingDashboard : function(row){
+			openTicketingDashboard : function(row){*/
 				
 				
 				/*var dashString = JSON.stringify(
@@ -504,11 +667,65 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 							function(){
 								newTab.document.write(data);
 							}, 100);
-				});
-			}
+				});*/
+/*				
+ * 					
+ * 					dashTransition.newTab('#/dashboard', {
+					'dashboard':{
+						'only':{
+							0: {
+								0: {
+									'body':[['work-order-grid', 'empty-panel','empty-panel'], ['event-page','empty-panel','empty-panel'],['equipment-tickets','equipment-in-faults','empty-panel']]
+								}
+							}
+						},
+						'main':{
+							0:{
+								0: {
+									"clientName" : $scope.config.clientName,
+									"stationName" : $scope.config.stationName,
+									"endingDate" : undefined,
+									"startingDate" : undefined,
+									"assetName" : undefined,
+									"status" : "Open"									
+								},
+								1:{
+									
+								},
+								2:{
+									
+								}
+							},
+							
+							1:{
+								0: {
+									
+								},
+								1:{
+									
+								},
+								2:{
+									
+								}
+							},
+							2:{
+								0:{
+									
+								},
+								1:{
+									
+								},
+								2:{
+									
+								}
+							}
+						}
+					}
+				})*/
+/*			}
 	
-	};
-*/	
+	};*/
+	
 	$scope.openWorkOrderGrid = function(){
 		if($scope.gridView === true){
 			$scope.gridView = false;
@@ -564,9 +781,12 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 		};
 		$scope.gridView = true;					
 	};
-	if($scope.hasOrg){
+	/*if($scope.hasOrg){
 		drawCharts();
-	}
+	}*/
+	//defineWatches();
+	//drawCharts();
+	
 	
 	refreshConfigs();
 }])
@@ -610,7 +830,7 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 	
 	$scope.openConfiguration = function(){
 		var modalInstance = $modal.open({
-            templateUrl: 'icWidgets/agedWorkOrdersConfig.html',
+            templateUrl: '/intellicommand/views/agedWorkOrdersConfig.html',
             controller: 'agedWorkOrdersConfigCtrl',
 			resolve: {
 				config: function(){
@@ -625,3 +845,20 @@ angular.module('icDash.agedWorkOrders', ['ui.router'])
 		})
 	};
 }])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
