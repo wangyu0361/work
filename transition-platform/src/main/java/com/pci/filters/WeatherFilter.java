@@ -34,13 +34,13 @@ import org.apache.commons.io.IOUtils;
 /**
  * Servlet Filter implementation class SkysparkFilter
  */
-@WebFilter({"/proj/*", "/auth/*", "/host/*", "/pod/*", "/api/*", "/util/*", "/branding/*","/doc/*"})
-public class SkysparkFilter implements Filter {
+@WebFilter({"/data/*"})
+public class WeatherFilter implements Filter {
 
 	/**
 	 * Default constructor. 
 	 */
-	public SkysparkFilter() {
+	public WeatherFilter() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -71,9 +71,8 @@ public class SkysparkFilter implements Filter {
 		
 		String query = httpRequest.getQueryString() == null ? "" : "?"+httpRequest.getQueryString();
 		
-		URL url = new URL(skysparkUrl+httpRequest.getServletPath()+query);
+		URL url = new URL(weatherUrl+httpRequest.getServletPath()+query);
 		HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-		conn.setRequestProperty("Authorization", "Basic "+credentials);
 
 		Enumeration<String> requestHeaders = httpRequest.getHeaderNames();
 		
@@ -164,7 +163,5 @@ public class SkysparkFilter implements Filter {
 		// TODO Auto-generated method stub
 	}
 
-	private final String skysparkUrl = "http://10.239.3.165";
-	private final String credentials = "c3U6UENJZGV2b3BzKjEyMzQ1Njc4";
-	private final String skysparkContextPath = "/skyspark";
+	private final String weatherUrl = "http://api.openweathermap.org";
 }

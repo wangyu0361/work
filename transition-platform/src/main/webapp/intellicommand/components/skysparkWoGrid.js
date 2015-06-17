@@ -4,18 +4,35 @@ angular.module('icDash.skysparkWoGrid', [])
 	var vm = this;
 	
 	vm.validate = function(id, site, equip){
-		id = "@"+id;
-		site = "@"+site;
-		equip = "@"+equip;
+		if(id.indexOf(" ") >=0) id = id.substring(0,id.indexOf(" "))
+		if(site.indexOf(" ") >=0) site = site.substring(site.lastIndexOf(" ")+1)
+		if(equip.indexOf(" ") >=0) equip = equip.substring(0, equip.indexOf(" "))
 		
 		$scope.expr = "\"readLink("+equip+").toPoints.hisRead(thisWeek)"
 			+"\""
 		
-		console.log("I want to validate "+id)
 		$modal.open({
 			template: '<skyspark-chart></skyspark-chart>',
 			windowClass: 'ic-modal-window',
 			scope: $scope,
+		});
+	}
+	
+	vm.equipment = function(id, site, equip){
+		if(equip.indexOf(" ") >=0) equip = equip.substring(equip.lastIndexOf(" ")+1)
+		if(id.indexOf(" ") >=0) id = id.substring(0,id.indexOf(" "))
+
+		vm.updateUserPrefs({asset:equip});
+		
+		$modal.open({
+			templateUrl: 'dashboards/panelModal.html',
+			controller: 'panelModalCtrl',
+			windowClass: 'ic-modal-window',
+			resolve: {
+				title: function() {return "Equipment Tickets for "+id;},
+				content: function() {return "<equipment-tickets></equipment-tickets>";},
+				extras: function() {return {};},
+			}
 		});
 	}
 	
@@ -30,10 +47,7 @@ angular.module('icDash.skysparkWoGrid', [])
 			contentType: "text/zinc",
 			data: "ver:\"2.0\""+"\n"+
 				"expr"+"\n"+
-				"\"readAll(workOrder"+
-					" and (siteRef->dis == \\\""+sessionStorage.station+"\\\""+
-					" or siteRef->station == \\\""+sessionStorage.station+"\\\"))"+
-					".unique([\\\"woRef\\\"])"+
+				"\"findSortedWorkOrders(\\\""+sessionStorage.station+"\\\")"+
 					"\"",
 			complete: function(r){
 				var g = $("#skysparkWoGrid");
@@ -43,7 +57,7 @@ angular.module('icDash.skysparkWoGrid', [])
 		}).then( function(r){ 
 			console.log(r);
 			element.empty();
-			element.append("<div id='skysparkWoGrid' style='height:1000px; width:100%; position:relative; overflow:auto'></div>")
+			element.append("<div id='skysparkWoGrid' style='height:1250px; width:100%; position:relative; overflow:auto'></div>")
 			element.append(r.data)
 		});
 	  }
