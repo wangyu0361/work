@@ -208,7 +208,7 @@ angular.module('icDash.eventPage', [])
 				//saved += +_item.potentialSaving;
 				//wasted += +_item.waste;
 				
-				var _itemCreatedDate = new Date(_item.createdTime);
+				var _itemCreatedDate = new Date(_item.createdTime.substring(0,_item.createdTime.indexOf(" ")));
 				
 				if(anomaly == null){
 					anomaly = _item.signature;
