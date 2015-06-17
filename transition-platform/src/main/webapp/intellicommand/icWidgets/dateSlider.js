@@ -134,7 +134,8 @@ angular.module('icDash.dateSlider', [])
            })
            
            timeChart.on("postRender",function(charts,filter){
-               timeChart.svg().select("g.axis.y").node().remove();
+        	   var yAxisNode = timeChart.svg().select("g.axis.y").node() 
+               yAxisNode.parentNode.removeChild(yAxisNode);
                
                if(lastBrush !== null){
                    timeChart.brush().extent([$scope.startTime,$scope.endTime]);
