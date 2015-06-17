@@ -40,7 +40,7 @@ angular.module('icDash.eventPage', [])
 			// Choose settings that this widget cares about
 	    var ssDateFormat = d3.time.format("%Y-%m-%d");
 
-	    var defaultStart = ssDateFormat(new Date(+new Date() - 2*2678400000));
+	    var defaultStart = ssDateFormat(new Date(+new Date() - 3*2678400000));
 	    var defaultEnd = ssDateFormat(new Date());
 	    var dataStart = +(new Date(defaultStart));
 	    var dataEnd = +(new Date(defaultEnd));
@@ -149,6 +149,7 @@ angular.module('icDash.eventPage', [])
 		 
 		 function launchError(errorText){
 			 $scope.errorCode = errorText;
+			 console.log(errorText);
 			 $scope.doMyGraphing = null;
 		 }
 		 
@@ -160,7 +161,7 @@ angular.module('icDash.eventPage', [])
 					 getInfoFromTickets();
 				 },
 				 function(error){ 
-					 $scope.doMyGraphing = null;
+					 launchError("No tickets were found, "+$scope.config.stationName+" - "+$scope.config.chartStart+" - "+error);
 				 }
 			 )
 		 }
@@ -296,7 +297,7 @@ angular.module('icDash.eventPage', [])
 						addAPIPointsToArray(dbAsset.points[i],dbAsset.points.length);
 					}
 				},
-				function(error){console.log("can't get point asset data",error);$scope.doMyGraphing = null;}
+				function(error){launchError("can't get point asset data "+error+" currentConfig.stationName,currentConfig.assetName");}
 			 )
 		 }
 		 
@@ -344,7 +345,7 @@ angular.module('icDash.eventPage', [])
 		 }
 		 
 		 function createSubCharts(_array){		 // graph the points
-			 if(_array.length === 0 && activeTix.length === 0){$scope.doMyGraphing = null;}
+			 if(_array.length === 0 && activeTix.length === 0){launchError("nothing in _array or activeTix "+activeTix.length+" "+_array.length);}
 			 var _ndx = crossfilter(_array);
 			 var _ndxTix = crossfilter(activeTix);			 
 			 monthDim = _ndx.dimension(function(d){return d3.time.month(new Date(d.timestamp));});

@@ -46,6 +46,10 @@ angular.module('icDash', ['ui.router',
   'icDash.multiAxisChart',
   'icDash.calendar',
   'icDash.dateSlider',
+  'icDash.skysparkChart',
+  'icDash.skysparkWoGrid',
+  'icDash.ahuChart',
+  'icDash.dataTable',
 ])
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -169,7 +173,47 @@ angular.module('icDash', ['ui.router',
         },
       },
     })
-
+    .state('dashes.wo3', {
+      url: 'workOrder3',
+      views: {
+        '': {
+          templateUrl: 'dashboards/oneColumn.html',
+          controller: function($scope) {
+            $scope.widgets = [{
+              header: "Skyspark Points By Asset",
+              dirName: "skyspark-chart",
+			  //controller: "skysparkWoGridCtrl'",
+			  //extras: ["Grid View", "Configure"]
+            }];
+          }
+        },
+      },
+    })
+	.state('dashes.wo4', {
+      url: 'workOrder4',
+      views: {
+        '': {
+          templateUrl: 'dashboards/oneColumn.html',
+          controller: function($scope) {
+            $scope.widgets = [{
+              header: "Skyspark Work Orders By Site",
+              dirName: "skyspark-wo-grid",
+			  //controller: "skysparkWoGridCtrl'",
+			  //extras: ["Grid View", "Configure"]
+            }];
+          }
+        },
+      },
+    })
+	
+.state("ahuChart",{
+    	url:'/equipChart',
+    	views:{
+    		'':{
+    			templateUrl:'views/ahuChart.html'
+    		}
+    	}
+    })
   .state('login', {
     url: '/login',
     views: {

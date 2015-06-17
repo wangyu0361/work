@@ -85,10 +85,10 @@ angular.module('icDash.loginPage', ['ui.router'])
 			dataType: 'json',
 			success: function(response) {
 				console.log(response.result);
-				sessionStorage.setItem("userName", response.result[0].userName);
+				sessionStorage.setItem("userName", response.result[1].userName);
 				
 				
-				var myPrefs = response.result[0].userPrefs;
+				var myPrefs = response.result[1].userPrefs;
 				
 				// Use the db response to populate sessionStorage for the user
 				$.each(myPrefs,function(key, myValue){

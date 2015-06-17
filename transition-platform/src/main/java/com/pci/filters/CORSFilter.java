@@ -49,7 +49,10 @@ public class CORSFilter implements Filter {
 		
 		if(httpRequest.getMethod().compareTo("OPTIONS") == 0){
 			httpResponse.setStatus(200);
+			httpResponse.getWriter().write("");
+			httpResponse.getWriter().flush();
 			httpResponse.getWriter().close();
+			
 		}
 		else{
 			chain.doFilter(req, res);

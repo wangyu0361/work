@@ -1,6 +1,6 @@
 angular.module('icDash.pciService', ['ui.router'])
 
-.factory('userPrefService', ['$rootScope', 'cleaningService', function($rootScope, cleaningService){
+.factory('userPrefService', ['$rootScope', 'cleaningService','featureCheck', function($rootScope, cleaningService,featureCheck){
 	return {
 		getUserPrefs: function(myWidget) {
 			/** ALL WIDGETS - PUT DEFAULT CONFIGS HERE! **/
@@ -627,28 +627,33 @@ angular.module('icDash.pciService', ['ui.router'])
 	return _serviceObj;
 	
 }])
+.factory('featureCheck',[function(){
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	var _addScript = function(url){
+		var script = document.createElement('script');
+		script.src = url;
+		var head = document.getElementsByTagName('head')[0],done=false;
+		
+		script.onload = script.onreadystatechange = function(){
+			if(!done && (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete')){
+				done = true;
+				script.onload = script.onreadystatechange=null;
+				head.removeChild(script);
+			};
+		};
+		head.appendChild(script);
+	}
+	
+	var _checkPromise = function(){
+		if(typeof(Promise) === "undefined"){	
+			console.log("promise undefined");
+			_addScript('bower_components/bluebird/js/browser/bluebird.min.js');
+		}
+	}()
+	
+	var serviceObject = {
+		checkPromise:_checkPromise
+	}
+	
+	return serviceObject;
+}])
