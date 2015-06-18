@@ -451,7 +451,7 @@ angular.module('icDash.multiAxisChart', ['ui.bootstrap'])
 			 }
 			 
 			 if(text !== ""){
-				 var id = text+"_line";
+				 var id = "line_"+text;
 				 toolTip.parentNode.parentNode.setAttribute("id",id);
 				 toolTip.parentNode.parentNode.setAttribute("hidden","true");
 				 var dots = toolTip.childNodes[0].childNodes;
@@ -562,7 +562,7 @@ angular.module('icDash.multiAxisChart', ['ui.bootstrap'])
 	 
 	 function getMyLine(point){
 		 var svg = chartInstance.svg();
-		 var myElems = svg.selectAll("#"+point+"_line")[0];
+		 var myElems = svg.selectAll("#line_"+point)[0];
 		 
 		 for(var k = 0; k < myElems.length; k++){
 			 if(myElems[k].parentNode === svg.node()){
@@ -916,7 +916,7 @@ angular.module('icDash.multiAxisChart', ['ui.bootstrap'])
 	 function removeOldLineCopies(){
 		 var svg = chartInstance.svg();
 		 for(var j = 0; j < allPoints.length; j++){
-			 var tips = svg.selectAll("#"+allPoints[j]+"_line")[0];
+			 var tips = svg.selectAll("#line_"+allPoints[j])[0];
 			 
 			 for(var k = 0; k < tips.length; k++){
 				 if(tips[k].parentNode === svg.node()){
