@@ -577,7 +577,7 @@ angular.module('icDash.pciService', ['ui.router'])
 	    var panel = element;
 	    
 	    while(angular.element(panel)[0].tagName !== "BODY"){
-	    	if(angular.element(panel)[0].className === "panel-body"){
+	    	if(angular.element(panel)[0].className === "panel-body" || angular.element(panel)[0].className === "ic-body-panel-body"){
 	    		break;
 	    	}else{
 	    		panel = angular.element(panel[0].parentElement);
